@@ -1,0 +1,21 @@
+// KAIROVersion 2.10
+Tool(t_Pang1)
+Dyn(d0)
+ Ramp(SINESQUARE)
+Ovl(or0)
+SetWeavingParams(1.0, 5.0, 20.0, 0.0, SINEWEAVE)
+   PTP(a_Home)
+   LOOP 50 DO
+   layeridx := 0
+   LOOP 3 DO
+      Lin(cp0, d1)
+      Lin(cp1)
+      Layer(weldlayer, layeridx)
+      Weaving(TRUE, World, cp2, cp3)
+      Lin(cp3)
+      Weaving(FALSE, World)
+      Lin(cp4)
+      Lin(cp5)
+      layeridx := layeridx + 1
+   END_LOOP
+END_LOOP

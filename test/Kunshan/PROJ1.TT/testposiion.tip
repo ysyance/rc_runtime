@@ -1,0 +1,11 @@
+// KAIROVersion 2.10
+LOOP 10 DO
+Tool(t0)
+PTP(ap_HOMEP)
+PTP(ap_MidPosition)
+PTP(ap_MidP2)
+PTP(ap_LastP)
+PTP(ap_LastP3)
+PTP(ap_LastP4)
+PTP(ap_RetMid1)
+END_LOOP

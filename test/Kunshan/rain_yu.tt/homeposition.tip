@@ -1,0 +1,7 @@
+// KAIROVersion 2.10
+PTP(ap0)
+WaitTime(5000)
+PTP(ap1)
+WaitTime(5000)
+PTP(ap2)
+PTP(a_HomeP610)

@@ -1,0 +1,50 @@
+// KAIROVersion 2.10
+LOOP 10 DO
+   Lin(ap3, d_z)
+   WaitTime(5000)
+   Lin(ap12, d_z)
+   WaitTime(5000)
+   Lin(ap13, d_z)
+   WaitTime(5000)
+   Lin(ap14, d_z)
+   WaitTime(5000)
+   Lin(ap2, d_z)
+   WaitTime(5000)
+END_LOOP
+   Lin(ap3, d_z)
+LOOP 10 DO
+   Lin(ap4, d_y)
+   WaitTime(5000)
+   Lin(ap15, d_y)
+   WaitTime(5000)
+   Lin(ap16, d_y)
+   WaitTime(5000)
+   Lin(ap17, d_y)
+   WaitTime(5000)
+   Lin(ap5, d_y)
+   WaitTime(5000)
+END_LOOP
+   Lin(ap4, d_y)
+LOOP 10 DO
+   Lin(ap6, d_x)
+   WaitTime(5000)
+   Lin(ap18, d_x)
+   WaitTime(5000)
+   Lin(ap19, d_x)
+   WaitTime(5000)
+   Lin(ap20, d_x)
+   WaitTime(5000)
+   Lin(ap7, d_x)
+   WaitTime(5000)
+END_LOOP
+   Lin(ap6, d_x)
+LOOP 10 DO
+   Lin(ap8, d0)
+   Lin(ap9, d0)
+END_LOOP
+   Lin(ap8, d0)
+LOOP 10 DO
+   Lin(ap10, d0)
+   Lin(ap11, d0)
+END_LOOP
+   Lin(ap10, d0)

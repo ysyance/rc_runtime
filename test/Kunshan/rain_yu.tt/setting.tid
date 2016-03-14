@@ -1,0 +1,4 @@
+d0 : DYNAMIC := (velAxis := 11, accAxis := 10, decAxis := 10, jerkAxis := 10, vel := 250, acc := 500, dec := 500, jerk := 1e+06, velOri := 90, accOri := 180, decOri := 180, jerkOri := 1000)
+oa0 : OVLABS := ()
+or1 : OVLREL := ()
+crs0 : CARTREFSYS := (baseRefSys := MAP(WeavingRefSys))

@@ -1,0 +1,10 @@
+// KAIROVersion 2.10
+WHILE TRUE DO
+PTP(ap0)
+PTP(ap1)
+PTP(ap5)
+PTP(ap2)
+PTP(ap3)
+PTP(ap4)
+END_WHILE
+PTP(ap6)

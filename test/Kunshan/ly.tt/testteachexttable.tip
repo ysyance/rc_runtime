@@ -1,0 +1,7 @@
+// KAIROVersion 2.10
+Tool(t_1011)
+RefSys(crsa0)
+PTP(ap0)
+PTP(ap1)
+PTP(ap2)
+PTP(ap3)

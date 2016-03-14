@@ -1,0 +1,6 @@
+ap0 : AXISPOS := (a2 := 0.5)
+cp3 : CARTPOS := ()
+cp4 : CARTPOS := ()
+vector3d : TriDimPoints := (TriTeachOriPoints := ((StartPoint := (), AuxPoint := ()), (StartPoint := (), AuxPoint := ()), (StartPoint := (), AuxPoint := ())))
+vector3d0 : TriDimPoints := (TriTeachOriPoints := ((StartPoint := (), AuxPoint := ()), (StartPoint := (), AuxPoint := ()), (StartPoint := (), AuxPoint := ())))
+ap1 : AXISPOS := (a1 := 6)

@@ -1,0 +1,7 @@
+// KAIROVersion 2.10
+Tool(t1_biaoding)
+PTP(ap0)
+PTP(ap1)
+PTP(ap2)
+PTP(ap3)
+PTP(ap4)

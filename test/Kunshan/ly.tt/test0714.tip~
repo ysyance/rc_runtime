@@ -1,0 +1,10 @@
+// KAIROVersion 2.10
+PTP(ap0)
+Lin(cp4)
+//SetWeavingParams(2.0, 3.0, -110.0, -10.0, SINEWEAVE)
+//Weaving(TRUE, World, cp4, cp0)
+ArcOn(FALSE, 2.0, 5.0, 3.0, 0)
+WaitTime(5000)
+//Lin(cp0)
+ArcOff(1.5, 5.0, 1.5, 0)
+//PTP(ap1)

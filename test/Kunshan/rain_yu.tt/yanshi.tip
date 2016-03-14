@@ -1,0 +1,7 @@
+// KAIROVersion 2.10
+LOOP 10 DO
+PTP(ap0)
+PTP(ap1)
+PTP(ap2)
+PTP(ap3)
+END_LOOP

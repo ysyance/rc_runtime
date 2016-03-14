@@ -1,0 +1,7 @@
+layerweld : LAYEROFFSETS := (layer := ((), (y := 6), (y := -6), (), (), (), (), (), (), (), ()))
+layerloop : DINT := 2
+apstart : AXISPOS := (a1 := 8.28577, a2 := -42.9077, a3 := 44.9539, a4 := 3.96419, a5 := -67.0561, a6 := 134.541, aux1 := 2004.45, aux2 := 138.135, aux3 := 669.36)
+cpstart : CARTPOS := (x := 1683.43, y := 1828.34, z := 914.868, a := 88.3836, b := 91.5607, c := -0.170557, mode := 0, aux1 := 2004.45, aux2 := 138.135, aux3 := 669.36)
+cpend : CARTPOS := (x := 1682.51, y := 1979.56, z := 914.868, a := 88.3837, b := 91.5607, c := -0.170547, mode := 0, aux1 := 2004.45, aux2 := 138.135, aux3 := 669.36)
+d1 : DYNAMIC := (velAxis := 15, accAxis := 15, decAxis := 15, jerkAxis := 15, vel := 500, acc := 2500, dec := 2500, jerk := 1e+06, velOri := 90, accOri := 180, decOri := 180, jerkOri := 1000)
+cpleave : CARTPOS := (x := 1682.51, y := 1979.56, z := 1002.34, a := 88.3836, b := 91.5607, c := -0.170558, mode := 0, aux1 := 2004.45, aux2 := 138.135, aux3 := 669.36)

@@ -1,0 +1,15 @@
+// KAIROVersion 2.10
+Tool(t_Pang1)
+   PTP(a_Home)
+   Dyn(d0)
+LOOP 50 DO
+   Ovl(oa0)
+   Lin(cp0, d1)
+   Lin(cp1)
+   SetWeavingParams(2.0, 5.0, 20.0, 0.0, SINEWEAVE)
+   Weaving(TRUE, World, cp2, cp3)
+   Lin(cp3)
+   Weaving(FALSE, World)
+   Lin(cp4)
+   Lin(cp5)
+END_LOOP

@@ -1,0 +1,12 @@
+// KAIROVersion 2.10
+RefRobotAxis(Aux1)
+RefRobotAxis(Aux2)
+RefRobotAxis(Aux3)
+RefRobotAxis(A1)
+RefRobotAxis(A2)
+RefRobotAxis(A3)
+RefRobotAxis(A4)
+RefRobotAxis(A5)
+RefRobotAxis(A6)
+RefRobotAxis(Aux4)
+PTP(ap0)

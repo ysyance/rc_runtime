@@ -1,0 +1,9 @@
+// KAIROVersion 2.10
+Dyn(d0)
+DynOvr(100)
+Ovl(or1)
+Ovl(oa0)
+Ramp(SINE, 10.0)
+RefSys(crs0)
+Tool(t_yu923)
+OriMode(WRISTJOINT)

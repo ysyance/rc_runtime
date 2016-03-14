@@ -1,0 +1,2050 @@
+Terminals unused in grammar
+
+   BOGUS_TOKEN_ID
+
+
+语法
+
+    0 $accept: start $end
+
+    1 start: statement_list
+
+    2 constant: numeric_literal
+    3         | character_string
+    4         | boolean_literal
+
+    5 numeric_literal: integer_literal
+    6                | real_literal
+
+    7 integer_literal: signed_integer
+
+    8 signed_integer: integer
+    9               | '+' integer
+   10               | '-' integer
+
+   11 real_literal: signed_real
+
+   12 signed_real: real
+   13            | '+' real
+   14            | '-' real
+
+   15 real: real_token
+
+   16 integer: integer_token
+
+   17 boolean_literal: TRUE
+   18                | FALSE
+
+   19 character_string: character_string_token
+
+   20 identifier: identifier_token
+
+   21 function_name: standard_function_name_token
+
+   22 robot_instruction_name: standard_robot_instruction_token
+
+   23 expression: and_expression
+   24           | expression OR and_expression
+
+   25 and_expression: comparison
+   26               | and_expression AND comparison
+
+   27 comparison: equ_expression
+   28           | comparison EQ equ_expression
+   29           | comparison NE equ_expression
+
+   30 equ_expression: add_expression
+   31               | equ_expression LT add_expression
+   32               | equ_expression GT add_expression
+   33               | equ_expression LE add_expression
+   34               | equ_expression GE add_expression
+
+   35 add_expression: term
+   36               | add_expression '+' term
+   37               | add_expression '-' term
+
+   38 term: power_expression
+   39     | term '*' power_expression
+   40     | term '/' power_expression
+   41     | term '%' power_expression
+
+   42 power_expression: unary_expression
+
+   43 unary_expression: primary_expression
+   44                 | NOT primary_expression
+
+   45 primary_expression: param
+   46                   | '(' expression ')'
+   47                   | function_invocation
+
+   48 function_invocation: function_name '(' param_assignment_list ')'
+
+   49 statement_list: %empty
+   50               | statement_list statement
+   51               | statement_list error
+
+   52 statement: robot_statement
+   53          | assignment_statement
+   54          | subprogram_statement
+   55          | selection_statement
+   56          | iteration_statement
+
+   57 assignment_statement: identifier ASSIGN expression
+
+   58 subprogram_statement: CALL identifier
+
+   59 selection_statement: if_statement
+
+   60 if_statement: IF expression THEN statement_list elseif_statement_list END_IF
+   61             | IF expression THEN statement_list elseif_statement_list ELSE statement_list END_IF
+
+   62 elseif_statement_list: %empty
+   63                      | elseif_statement_list elseif_statement
+
+   64 elseif_statement: ELSEIF expression THEN statement_list
+
+   65 iteration_statement: while_statement
+   66                    | loop_statement
+
+   67 while_statement: WHILE expression DO statement_list END_WHILE
+
+   68 loop_statement: LOOP const_expression DO statement_list END_LOOP
+
+   69 robot_statement: robot_instruction_name '(' param_assignment_list ')'
+
+   70 param_assignment_list: param
+   71                      | param_assignment_list ',' param
+
+   72 const_expression: integer_literal
+   73                 | identifier
+
+   74 param: constant
+   75      | identifier
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'%' (37) 41
+'(' (40) 46 48 69
+')' (41) 46 48 69
+'*' (42) 39
+'+' (43) 9 13 36
+',' (44) 71
+'-' (45) 10 14 37
+'/' (47) 40
+error (256) 51
+BOGUS_TOKEN_ID (258)
+identifier_token (259) 20
+integer_token (260) 16
+real_token (261) 15
+TRUE (262) 17
+FALSE (263) 18
+character_string_token (264) 19
+AND (265) 26
+OR (266) 24
+NOT (267) 44
+LT (268) 31
+LE (269) 33
+GT (270) 32
+GE (271) 34
+EQ (272) 28
+NE (273) 29
+ASSIGN (274) 57
+CALL (275) 58
+IF (276) 60 61
+THEN (277) 60 61 64
+ELSE (278) 61
+ELSEIF (279) 64
+END_IF (280) 60 61
+WHILE (281) 67
+DO (282) 67 68
+END_WHILE (283) 67
+LOOP (284) 68
+END_LOOP (285) 68
+standard_function_name_token (286) 21
+standard_robot_instruction_token (287) 22
+
+
+Nonterminals, with rules where they appear
+
+$accept (41)
+    左： 0
+start (42)
+    左： 1, 右： 0
+constant (43)
+    左： 2 3 4, 右： 74
+numeric_literal (44)
+    左： 5 6, 右： 2
+integer_literal (45)
+    左： 7, 右： 5 72
+signed_integer (46)
+    左： 8 9 10, 右： 7
+real_literal (47)
+    左： 11, 右： 6
+signed_real (48)
+    左： 12 13 14, 右： 11
+real (49)
+    左： 15, 右： 12 13 14
+integer (50)
+    左： 16, 右： 8 9 10
+boolean_literal (51)
+    左： 17 18, 右： 4
+character_string (52)
+    左： 19, 右： 3
+identifier (53)
+    左： 20, 右： 57 58 73 75
+function_name (54)
+    左： 21, 右： 48
+robot_instruction_name (55)
+    左： 22, 右： 69
+expression (56)
+    左： 23 24, 右： 24 46 57 60 61 64 67
+and_expression (57)
+    左： 25 26, 右： 23 24 26
+comparison (58)
+    左： 27 28 29, 右： 25 26 28 29
+equ_expression (59)
+    左： 30 31 32 33 34, 右： 27 28 29 31 32 33 34
+add_expression (60)
+    左： 35 36 37, 右： 30 31 32 33 34 36 37
+term (61)
+    左： 38 39 40 41, 右： 35 36 37 39 40 41
+power_expression (62)
+    左： 42, 右： 38 39 40 41
+unary_expression (63)
+    左： 43 44, 右： 42
+primary_expression (64)
+    左： 45 46 47, 右： 43 44
+function_invocation (65)
+    左： 48, 右： 47
+statement_list (66)
+    左： 49 50 51, 右： 1 50 51 60 61 64 67 68
+statement (67)
+    左： 52 53 54 55 56, 右： 50
+assignment_statement (68)
+    左： 57, 右： 53
+subprogram_statement (69)
+    左： 58, 右： 54
+selection_statement (70)
+    左： 59, 右： 55
+if_statement (71)
+    左： 60 61, 右： 59
+elseif_statement_list (72)
+    左： 62 63, 右： 60 61 63
+elseif_statement (73)
+    左： 64, 右： 63
+iteration_statement (74)
+    左： 65 66, 右： 56
+while_statement (75)
+    左： 67, 右： 65
+loop_statement (76)
+    左： 68, 右： 66
+robot_statement (77)
+    左： 69, 右： 52
+param_assignment_list (78)
+    左： 70 71, 右： 48 69 71
+const_expression (79)
+    左： 72 73, 右： 68
+param (80)
+    左： 74 75, 右： 45 70 71
+
+
+State 0
+
+    0 $accept: . start $end
+
+    $default  reduce using rule 49 (statement_list)
+
+    start           转到状态 1
+    statement_list  转到状态 2
+
+
+State 1
+
+    0 $accept: start . $end
+
+    $end  shift, and go to state 3
+
+
+State 2
+
+    1 start: statement_list .
+   50 statement_list: statement_list . statement
+   51               | statement_list . error
+
+    error                             shift, and go to state 4
+    identifier_token                  shift, and go to state 5
+    CALL                              shift, and go to state 6
+    IF                                shift, and go to state 7
+    WHILE                             shift, and go to state 8
+    LOOP                              shift, and go to state 9
+    standard_robot_instruction_token  shift, and go to state 10
+
+    $end  reduce using rule 1 (start)
+
+    identifier              转到状态 11
+    robot_instruction_name  转到状态 12
+    statement               转到状态 13
+    assignment_statement    转到状态 14
+    subprogram_statement    转到状态 15
+    selection_statement     转到状态 16
+    if_statement            转到状态 17
+    iteration_statement     转到状态 18
+    while_statement         转到状态 19
+    loop_statement          转到状态 20
+    robot_statement         转到状态 21
+
+
+State 3
+
+    0 $accept: start $end .
+
+    $default  接受
+
+
+State 4
+
+   51 statement_list: statement_list error .
+
+    $default  reduce using rule 51 (statement_list)
+
+
+State 5
+
+   20 identifier: identifier_token .
+
+    $default  reduce using rule 20 (identifier)
+
+
+State 6
+
+   58 subprogram_statement: CALL . identifier
+
+    identifier_token  shift, and go to state 5
+
+    identifier  转到状态 22
+
+
+State 7
+
+   60 if_statement: IF . expression THEN statement_list elseif_statement_list END_IF
+   61             | IF . expression THEN statement_list elseif_statement_list ELSE statement_list END_IF
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    expression           转到状态 45
+    and_expression       转到状态 46
+    comparison           转到状态 47
+    equ_expression       转到状态 48
+    add_expression       转到状态 49
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 8
+
+   67 while_statement: WHILE . expression DO statement_list END_WHILE
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    expression           转到状态 56
+    and_expression       转到状态 46
+    comparison           转到状态 47
+    equ_expression       转到状态 48
+    add_expression       转到状态 49
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 9
+
+   68 loop_statement: LOOP . const_expression DO statement_list END_LOOP
+
+    identifier_token  shift, and go to state 5
+    integer_token     shift, and go to state 23
+    '+'               shift, and go to state 57
+    '-'               shift, and go to state 58
+
+    integer_literal   转到状态 59
+    signed_integer    转到状态 36
+    integer           转到状态 40
+    identifier        转到状态 60
+    const_expression  转到状态 61
+
+
+State 10
+
+   22 robot_instruction_name: standard_robot_instruction_token .
+
+    $default  reduce using rule 22 (robot_instruction_name)
+
+
+State 11
+
+   57 assignment_statement: identifier . ASSIGN expression
+
+    ASSIGN  shift, and go to state 62
+
+
+State 12
+
+   69 robot_statement: robot_instruction_name . '(' param_assignment_list ')'
+
+    '('  shift, and go to state 63
+
+
+State 13
+
+   50 statement_list: statement_list statement .
+
+    $default  reduce using rule 50 (statement_list)
+
+
+State 14
+
+   53 statement: assignment_statement .
+
+    $default  reduce using rule 53 (statement)
+
+
+State 15
+
+   54 statement: subprogram_statement .
+
+    $default  reduce using rule 54 (statement)
+
+
+State 16
+
+   55 statement: selection_statement .
+
+    $default  reduce using rule 55 (statement)
+
+
+State 17
+
+   59 selection_statement: if_statement .
+
+    $default  reduce using rule 59 (selection_statement)
+
+
+State 18
+
+   56 statement: iteration_statement .
+
+    $default  reduce using rule 56 (statement)
+
+
+State 19
+
+   65 iteration_statement: while_statement .
+
+    $default  reduce using rule 65 (iteration_statement)
+
+
+State 20
+
+   66 iteration_statement: loop_statement .
+
+    $default  reduce using rule 66 (iteration_statement)
+
+
+State 21
+
+   52 statement: robot_statement .
+
+    $default  reduce using rule 52 (statement)
+
+
+State 22
+
+   58 subprogram_statement: CALL identifier .
+
+    $default  reduce using rule 58 (subprogram_statement)
+
+
+State 23
+
+   16 integer: integer_token .
+
+    $default  reduce using rule 16 (integer)
+
+
+State 24
+
+   15 real: real_token .
+
+    $default  reduce using rule 15 (real)
+
+
+State 25
+
+   17 boolean_literal: TRUE .
+
+    $default  reduce using rule 17 (boolean_literal)
+
+
+State 26
+
+   18 boolean_literal: FALSE .
+
+    $default  reduce using rule 18 (boolean_literal)
+
+
+State 27
+
+   19 character_string: character_string_token .
+
+    $default  reduce using rule 19 (character_string)
+
+
+State 28
+
+   44 unary_expression: NOT . primary_expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    primary_expression   转到状态 64
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 29
+
+   21 function_name: standard_function_name_token .
+
+    $default  reduce using rule 21 (function_name)
+
+
+State 30
+
+    9 signed_integer: '+' . integer
+   13 signed_real: '+' . real
+
+    integer_token  shift, and go to state 23
+    real_token     shift, and go to state 24
+
+    real     转到状态 65
+    integer  转到状态 66
+
+
+State 31
+
+   10 signed_integer: '-' . integer
+   14 signed_real: '-' . real
+
+    integer_token  shift, and go to state 23
+    real_token     shift, and go to state 24
+
+    real     转到状态 67
+    integer  转到状态 68
+
+
+State 32
+
+   46 primary_expression: '(' . expression ')'
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    expression           转到状态 69
+    and_expression       转到状态 46
+    comparison           转到状态 47
+    equ_expression       转到状态 48
+    add_expression       转到状态 49
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 33
+
+   74 param: constant .
+
+    $default  reduce using rule 74 (param)
+
+
+State 34
+
+    2 constant: numeric_literal .
+
+    $default  reduce using rule 2 (constant)
+
+
+State 35
+
+    5 numeric_literal: integer_literal .
+
+    $default  reduce using rule 5 (numeric_literal)
+
+
+State 36
+
+    7 integer_literal: signed_integer .
+
+    $default  reduce using rule 7 (integer_literal)
+
+
+State 37
+
+    6 numeric_literal: real_literal .
+
+    $default  reduce using rule 6 (numeric_literal)
+
+
+State 38
+
+   11 real_literal: signed_real .
+
+    $default  reduce using rule 11 (real_literal)
+
+
+State 39
+
+   12 signed_real: real .
+
+    $default  reduce using rule 12 (signed_real)
+
+
+State 40
+
+    8 signed_integer: integer .
+
+    $default  reduce using rule 8 (signed_integer)
+
+
+State 41
+
+    4 constant: boolean_literal .
+
+    $default  reduce using rule 4 (constant)
+
+
+State 42
+
+    3 constant: character_string .
+
+    $default  reduce using rule 3 (constant)
+
+
+State 43
+
+   75 param: identifier .
+
+    $default  reduce using rule 75 (param)
+
+
+State 44
+
+   48 function_invocation: function_name . '(' param_assignment_list ')'
+
+    '('  shift, and go to state 70
+
+
+State 45
+
+   24 expression: expression . OR and_expression
+   60 if_statement: IF expression . THEN statement_list elseif_statement_list END_IF
+   61             | IF expression . THEN statement_list elseif_statement_list ELSE statement_list END_IF
+
+    OR    shift, and go to state 71
+    THEN  shift, and go to state 72
+
+
+State 46
+
+   23 expression: and_expression .
+   26 and_expression: and_expression . AND comparison
+
+    AND  shift, and go to state 73
+
+    $default  reduce using rule 23 (expression)
+
+
+State 47
+
+   25 and_expression: comparison .
+   28 comparison: comparison . EQ equ_expression
+   29           | comparison . NE equ_expression
+
+    EQ  shift, and go to state 74
+    NE  shift, and go to state 75
+
+    $default  reduce using rule 25 (and_expression)
+
+
+State 48
+
+   27 comparison: equ_expression .
+   31 equ_expression: equ_expression . LT add_expression
+   32               | equ_expression . GT add_expression
+   33               | equ_expression . LE add_expression
+   34               | equ_expression . GE add_expression
+
+    LT  shift, and go to state 76
+    LE  shift, and go to state 77
+    GT  shift, and go to state 78
+    GE  shift, and go to state 79
+
+    $default  reduce using rule 27 (comparison)
+
+
+State 49
+
+   30 equ_expression: add_expression .
+   36 add_expression: add_expression . '+' term
+   37               | add_expression . '-' term
+
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+
+    $default  reduce using rule 30 (equ_expression)
+
+
+State 50
+
+   35 add_expression: term .
+   39 term: term . '*' power_expression
+   40     | term . '/' power_expression
+   41     | term . '%' power_expression
+
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
+    '%'  shift, and go to state 84
+
+    $default  reduce using rule 35 (add_expression)
+
+
+State 51
+
+   38 term: power_expression .
+
+    $default  reduce using rule 38 (term)
+
+
+State 52
+
+   42 power_expression: unary_expression .
+
+    $default  reduce using rule 42 (power_expression)
+
+
+State 53
+
+   43 unary_expression: primary_expression .
+
+    $default  reduce using rule 43 (unary_expression)
+
+
+State 54
+
+   47 primary_expression: function_invocation .
+
+    $default  reduce using rule 47 (primary_expression)
+
+
+State 55
+
+   45 primary_expression: param .
+
+    $default  reduce using rule 45 (primary_expression)
+
+
+State 56
+
+   24 expression: expression . OR and_expression
+   67 while_statement: WHILE expression . DO statement_list END_WHILE
+
+    OR  shift, and go to state 71
+    DO  shift, and go to state 85
+
+
+State 57
+
+    9 signed_integer: '+' . integer
+
+    integer_token  shift, and go to state 23
+
+    integer  转到状态 66
+
+
+State 58
+
+   10 signed_integer: '-' . integer
+
+    integer_token  shift, and go to state 23
+
+    integer  转到状态 68
+
+
+State 59
+
+   72 const_expression: integer_literal .
+
+    $default  reduce using rule 72 (const_expression)
+
+
+State 60
+
+   73 const_expression: identifier .
+
+    $default  reduce using rule 73 (const_expression)
+
+
+State 61
+
+   68 loop_statement: LOOP const_expression . DO statement_list END_LOOP
+
+    DO  shift, and go to state 86
+
+
+State 62
+
+   57 assignment_statement: identifier ASSIGN . expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    expression           转到状态 87
+    and_expression       转到状态 46
+    comparison           转到状态 47
+    equ_expression       转到状态 48
+    add_expression       转到状态 49
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 63
+
+   69 robot_statement: robot_instruction_name '(' . param_assignment_list ')'
+
+    identifier_token        shift, and go to state 5
+    integer_token           shift, and go to state 23
+    real_token              shift, and go to state 24
+    TRUE                    shift, and go to state 25
+    FALSE                   shift, and go to state 26
+    character_string_token  shift, and go to state 27
+    '+'                     shift, and go to state 30
+    '-'                     shift, and go to state 31
+
+    constant               转到状态 33
+    numeric_literal        转到状态 34
+    integer_literal        转到状态 35
+    signed_integer         转到状态 36
+    real_literal           转到状态 37
+    signed_real            转到状态 38
+    real                   转到状态 39
+    integer                转到状态 40
+    boolean_literal        转到状态 41
+    character_string       转到状态 42
+    identifier             转到状态 43
+    param_assignment_list  转到状态 88
+    param                  转到状态 89
+
+
+State 64
+
+   44 unary_expression: NOT primary_expression .
+
+    $default  reduce using rule 44 (unary_expression)
+
+
+State 65
+
+   13 signed_real: '+' real .
+
+    $default  reduce using rule 13 (signed_real)
+
+
+State 66
+
+    9 signed_integer: '+' integer .
+
+    $default  reduce using rule 9 (signed_integer)
+
+
+State 67
+
+   14 signed_real: '-' real .
+
+    $default  reduce using rule 14 (signed_real)
+
+
+State 68
+
+   10 signed_integer: '-' integer .
+
+    $default  reduce using rule 10 (signed_integer)
+
+
+State 69
+
+   24 expression: expression . OR and_expression
+   46 primary_expression: '(' expression . ')'
+
+    OR   shift, and go to state 71
+    ')'  shift, and go to state 90
+
+
+State 70
+
+   48 function_invocation: function_name '(' . param_assignment_list ')'
+
+    identifier_token        shift, and go to state 5
+    integer_token           shift, and go to state 23
+    real_token              shift, and go to state 24
+    TRUE                    shift, and go to state 25
+    FALSE                   shift, and go to state 26
+    character_string_token  shift, and go to state 27
+    '+'                     shift, and go to state 30
+    '-'                     shift, and go to state 31
+
+    constant               转到状态 33
+    numeric_literal        转到状态 34
+    integer_literal        转到状态 35
+    signed_integer         转到状态 36
+    real_literal           转到状态 37
+    signed_real            转到状态 38
+    real                   转到状态 39
+    integer                转到状态 40
+    boolean_literal        转到状态 41
+    character_string       转到状态 42
+    identifier             转到状态 43
+    param_assignment_list  转到状态 91
+    param                  转到状态 89
+
+
+State 71
+
+   24 expression: expression OR . and_expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    and_expression       转到状态 92
+    comparison           转到状态 47
+    equ_expression       转到状态 48
+    add_expression       转到状态 49
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 72
+
+   60 if_statement: IF expression THEN . statement_list elseif_statement_list END_IF
+   61             | IF expression THEN . statement_list elseif_statement_list ELSE statement_list END_IF
+
+    $default  reduce using rule 49 (statement_list)
+
+    statement_list  转到状态 93
+
+
+State 73
+
+   26 and_expression: and_expression AND . comparison
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    comparison           转到状态 94
+    equ_expression       转到状态 48
+    add_expression       转到状态 49
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 74
+
+   28 comparison: comparison EQ . equ_expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    equ_expression       转到状态 95
+    add_expression       转到状态 49
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 75
+
+   29 comparison: comparison NE . equ_expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    equ_expression       转到状态 96
+    add_expression       转到状态 49
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 76
+
+   31 equ_expression: equ_expression LT . add_expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    add_expression       转到状态 97
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 77
+
+   33 equ_expression: equ_expression LE . add_expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    add_expression       转到状态 98
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 78
+
+   32 equ_expression: equ_expression GT . add_expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    add_expression       转到状态 99
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 79
+
+   34 equ_expression: equ_expression GE . add_expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    add_expression       转到状态 100
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 80
+
+   36 add_expression: add_expression '+' . term
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    term                 转到状态 101
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 81
+
+   37 add_expression: add_expression '-' . term
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    term                 转到状态 102
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 82
+
+   39 term: term '*' . power_expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    power_expression     转到状态 103
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 83
+
+   40 term: term '/' . power_expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    power_expression     转到状态 104
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 84
+
+   41 term: term '%' . power_expression
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    power_expression     转到状态 105
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 85
+
+   67 while_statement: WHILE expression DO . statement_list END_WHILE
+
+    $default  reduce using rule 49 (statement_list)
+
+    statement_list  转到状态 106
+
+
+State 86
+
+   68 loop_statement: LOOP const_expression DO . statement_list END_LOOP
+
+    $default  reduce using rule 49 (statement_list)
+
+    statement_list  转到状态 107
+
+
+State 87
+
+   24 expression: expression . OR and_expression
+   57 assignment_statement: identifier ASSIGN expression .
+
+    OR  shift, and go to state 71
+
+    $default  reduce using rule 57 (assignment_statement)
+
+
+State 88
+
+   69 robot_statement: robot_instruction_name '(' param_assignment_list . ')'
+   71 param_assignment_list: param_assignment_list . ',' param
+
+    ')'  shift, and go to state 108
+    ','  shift, and go to state 109
+
+
+State 89
+
+   70 param_assignment_list: param .
+
+    $default  reduce using rule 70 (param_assignment_list)
+
+
+State 90
+
+   46 primary_expression: '(' expression ')' .
+
+    $default  reduce using rule 46 (primary_expression)
+
+
+State 91
+
+   48 function_invocation: function_name '(' param_assignment_list . ')'
+   71 param_assignment_list: param_assignment_list . ',' param
+
+    ')'  shift, and go to state 110
+    ','  shift, and go to state 109
+
+
+State 92
+
+   24 expression: expression OR and_expression .
+   26 and_expression: and_expression . AND comparison
+
+    AND  shift, and go to state 73
+
+    $default  reduce using rule 24 (expression)
+
+
+State 93
+
+   50 statement_list: statement_list . statement
+   51               | statement_list . error
+   60 if_statement: IF expression THEN statement_list . elseif_statement_list END_IF
+   61             | IF expression THEN statement_list . elseif_statement_list ELSE statement_list END_IF
+
+    error                             shift, and go to state 4
+    identifier_token                  shift, and go to state 5
+    CALL                              shift, and go to state 6
+    IF                                shift, and go to state 7
+    WHILE                             shift, and go to state 8
+    LOOP                              shift, and go to state 9
+    standard_robot_instruction_token  shift, and go to state 10
+
+    ELSE    reduce using rule 62 (elseif_statement_list)
+    ELSEIF  reduce using rule 62 (elseif_statement_list)
+    END_IF  reduce using rule 62 (elseif_statement_list)
+
+    identifier              转到状态 11
+    robot_instruction_name  转到状态 12
+    statement               转到状态 13
+    assignment_statement    转到状态 14
+    subprogram_statement    转到状态 15
+    selection_statement     转到状态 16
+    if_statement            转到状态 17
+    elseif_statement_list   转到状态 111
+    iteration_statement     转到状态 18
+    while_statement         转到状态 19
+    loop_statement          转到状态 20
+    robot_statement         转到状态 21
+
+
+State 94
+
+   26 and_expression: and_expression AND comparison .
+   28 comparison: comparison . EQ equ_expression
+   29           | comparison . NE equ_expression
+
+    EQ  shift, and go to state 74
+    NE  shift, and go to state 75
+
+    $default  reduce using rule 26 (and_expression)
+
+
+State 95
+
+   28 comparison: comparison EQ equ_expression .
+   31 equ_expression: equ_expression . LT add_expression
+   32               | equ_expression . GT add_expression
+   33               | equ_expression . LE add_expression
+   34               | equ_expression . GE add_expression
+
+    LT  shift, and go to state 76
+    LE  shift, and go to state 77
+    GT  shift, and go to state 78
+    GE  shift, and go to state 79
+
+    $default  reduce using rule 28 (comparison)
+
+
+State 96
+
+   29 comparison: comparison NE equ_expression .
+   31 equ_expression: equ_expression . LT add_expression
+   32               | equ_expression . GT add_expression
+   33               | equ_expression . LE add_expression
+   34               | equ_expression . GE add_expression
+
+    LT  shift, and go to state 76
+    LE  shift, and go to state 77
+    GT  shift, and go to state 78
+    GE  shift, and go to state 79
+
+    $default  reduce using rule 29 (comparison)
+
+
+State 97
+
+   31 equ_expression: equ_expression LT add_expression .
+   36 add_expression: add_expression . '+' term
+   37               | add_expression . '-' term
+
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+
+    $default  reduce using rule 31 (equ_expression)
+
+
+State 98
+
+   33 equ_expression: equ_expression LE add_expression .
+   36 add_expression: add_expression . '+' term
+   37               | add_expression . '-' term
+
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+
+    $default  reduce using rule 33 (equ_expression)
+
+
+State 99
+
+   32 equ_expression: equ_expression GT add_expression .
+   36 add_expression: add_expression . '+' term
+   37               | add_expression . '-' term
+
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+
+    $default  reduce using rule 32 (equ_expression)
+
+
+State 100
+
+   34 equ_expression: equ_expression GE add_expression .
+   36 add_expression: add_expression . '+' term
+   37               | add_expression . '-' term
+
+    '+'  shift, and go to state 80
+    '-'  shift, and go to state 81
+
+    $default  reduce using rule 34 (equ_expression)
+
+
+State 101
+
+   36 add_expression: add_expression '+' term .
+   39 term: term . '*' power_expression
+   40     | term . '/' power_expression
+   41     | term . '%' power_expression
+
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
+    '%'  shift, and go to state 84
+
+    $default  reduce using rule 36 (add_expression)
+
+
+State 102
+
+   37 add_expression: add_expression '-' term .
+   39 term: term . '*' power_expression
+   40     | term . '/' power_expression
+   41     | term . '%' power_expression
+
+    '*'  shift, and go to state 82
+    '/'  shift, and go to state 83
+    '%'  shift, and go to state 84
+
+    $default  reduce using rule 37 (add_expression)
+
+
+State 103
+
+   39 term: term '*' power_expression .
+
+    $default  reduce using rule 39 (term)
+
+
+State 104
+
+   40 term: term '/' power_expression .
+
+    $default  reduce using rule 40 (term)
+
+
+State 105
+
+   41 term: term '%' power_expression .
+
+    $default  reduce using rule 41 (term)
+
+
+State 106
+
+   50 statement_list: statement_list . statement
+   51               | statement_list . error
+   67 while_statement: WHILE expression DO statement_list . END_WHILE
+
+    error                             shift, and go to state 4
+    identifier_token                  shift, and go to state 5
+    CALL                              shift, and go to state 6
+    IF                                shift, and go to state 7
+    WHILE                             shift, and go to state 8
+    END_WHILE                         shift, and go to state 112
+    LOOP                              shift, and go to state 9
+    standard_robot_instruction_token  shift, and go to state 10
+
+    identifier              转到状态 11
+    robot_instruction_name  转到状态 12
+    statement               转到状态 13
+    assignment_statement    转到状态 14
+    subprogram_statement    转到状态 15
+    selection_statement     转到状态 16
+    if_statement            转到状态 17
+    iteration_statement     转到状态 18
+    while_statement         转到状态 19
+    loop_statement          转到状态 20
+    robot_statement         转到状态 21
+
+
+State 107
+
+   50 statement_list: statement_list . statement
+   51               | statement_list . error
+   68 loop_statement: LOOP const_expression DO statement_list . END_LOOP
+
+    error                             shift, and go to state 4
+    identifier_token                  shift, and go to state 5
+    CALL                              shift, and go to state 6
+    IF                                shift, and go to state 7
+    WHILE                             shift, and go to state 8
+    LOOP                              shift, and go to state 9
+    END_LOOP                          shift, and go to state 113
+    standard_robot_instruction_token  shift, and go to state 10
+
+    identifier              转到状态 11
+    robot_instruction_name  转到状态 12
+    statement               转到状态 13
+    assignment_statement    转到状态 14
+    subprogram_statement    转到状态 15
+    selection_statement     转到状态 16
+    if_statement            转到状态 17
+    iteration_statement     转到状态 18
+    while_statement         转到状态 19
+    loop_statement          转到状态 20
+    robot_statement         转到状态 21
+
+
+State 108
+
+   69 robot_statement: robot_instruction_name '(' param_assignment_list ')' .
+
+    $default  reduce using rule 69 (robot_statement)
+
+
+State 109
+
+   71 param_assignment_list: param_assignment_list ',' . param
+
+    identifier_token        shift, and go to state 5
+    integer_token           shift, and go to state 23
+    real_token              shift, and go to state 24
+    TRUE                    shift, and go to state 25
+    FALSE                   shift, and go to state 26
+    character_string_token  shift, and go to state 27
+    '+'                     shift, and go to state 30
+    '-'                     shift, and go to state 31
+
+    constant          转到状态 33
+    numeric_literal   转到状态 34
+    integer_literal   转到状态 35
+    signed_integer    转到状态 36
+    real_literal      转到状态 37
+    signed_real       转到状态 38
+    real              转到状态 39
+    integer           转到状态 40
+    boolean_literal   转到状态 41
+    character_string  转到状态 42
+    identifier        转到状态 43
+    param             转到状态 114
+
+
+State 110
+
+   48 function_invocation: function_name '(' param_assignment_list ')' .
+
+    $default  reduce using rule 48 (function_invocation)
+
+
+State 111
+
+   60 if_statement: IF expression THEN statement_list elseif_statement_list . END_IF
+   61             | IF expression THEN statement_list elseif_statement_list . ELSE statement_list END_IF
+   63 elseif_statement_list: elseif_statement_list . elseif_statement
+
+    ELSE    shift, and go to state 115
+    ELSEIF  shift, and go to state 116
+    END_IF  shift, and go to state 117
+
+    elseif_statement  转到状态 118
+
+
+State 112
+
+   67 while_statement: WHILE expression DO statement_list END_WHILE .
+
+    $default  reduce using rule 67 (while_statement)
+
+
+State 113
+
+   68 loop_statement: LOOP const_expression DO statement_list END_LOOP .
+
+    $default  reduce using rule 68 (loop_statement)
+
+
+State 114
+
+   71 param_assignment_list: param_assignment_list ',' param .
+
+    $default  reduce using rule 71 (param_assignment_list)
+
+
+State 115
+
+   61 if_statement: IF expression THEN statement_list elseif_statement_list ELSE . statement_list END_IF
+
+    $default  reduce using rule 49 (statement_list)
+
+    statement_list  转到状态 119
+
+
+State 116
+
+   64 elseif_statement: ELSEIF . expression THEN statement_list
+
+    identifier_token              shift, and go to state 5
+    integer_token                 shift, and go to state 23
+    real_token                    shift, and go to state 24
+    TRUE                          shift, and go to state 25
+    FALSE                         shift, and go to state 26
+    character_string_token        shift, and go to state 27
+    NOT                           shift, and go to state 28
+    standard_function_name_token  shift, and go to state 29
+    '+'                           shift, and go to state 30
+    '-'                           shift, and go to state 31
+    '('                           shift, and go to state 32
+
+    constant             转到状态 33
+    numeric_literal      转到状态 34
+    integer_literal      转到状态 35
+    signed_integer       转到状态 36
+    real_literal         转到状态 37
+    signed_real          转到状态 38
+    real                 转到状态 39
+    integer              转到状态 40
+    boolean_literal      转到状态 41
+    character_string     转到状态 42
+    identifier           转到状态 43
+    function_name        转到状态 44
+    expression           转到状态 120
+    and_expression       转到状态 46
+    comparison           转到状态 47
+    equ_expression       转到状态 48
+    add_expression       转到状态 49
+    term                 转到状态 50
+    power_expression     转到状态 51
+    unary_expression     转到状态 52
+    primary_expression   转到状态 53
+    function_invocation  转到状态 54
+    param                转到状态 55
+
+
+State 117
+
+   60 if_statement: IF expression THEN statement_list elseif_statement_list END_IF .
+
+    $default  reduce using rule 60 (if_statement)
+
+
+State 118
+
+   63 elseif_statement_list: elseif_statement_list elseif_statement .
+
+    $default  reduce using rule 63 (elseif_statement_list)
+
+
+State 119
+
+   50 statement_list: statement_list . statement
+   51               | statement_list . error
+   61 if_statement: IF expression THEN statement_list elseif_statement_list ELSE statement_list . END_IF
+
+    error                             shift, and go to state 4
+    identifier_token                  shift, and go to state 5
+    CALL                              shift, and go to state 6
+    IF                                shift, and go to state 7
+    END_IF                            shift, and go to state 121
+    WHILE                             shift, and go to state 8
+    LOOP                              shift, and go to state 9
+    standard_robot_instruction_token  shift, and go to state 10
+
+    identifier              转到状态 11
+    robot_instruction_name  转到状态 12
+    statement               转到状态 13
+    assignment_statement    转到状态 14
+    subprogram_statement    转到状态 15
+    selection_statement     转到状态 16
+    if_statement            转到状态 17
+    iteration_statement     转到状态 18
+    while_statement         转到状态 19
+    loop_statement          转到状态 20
+    robot_statement         转到状态 21
+
+
+State 120
+
+   24 expression: expression . OR and_expression
+   64 elseif_statement: ELSEIF expression . THEN statement_list
+
+    OR    shift, and go to state 71
+    THEN  shift, and go to state 122
+
+
+State 121
+
+   61 if_statement: IF expression THEN statement_list elseif_statement_list ELSE statement_list END_IF .
+
+    $default  reduce using rule 61 (if_statement)
+
+
+State 122
+
+   64 elseif_statement: ELSEIF expression THEN . statement_list
+
+    $default  reduce using rule 49 (statement_list)
+
+    statement_list  转到状态 123
+
+
+State 123
+
+   50 statement_list: statement_list . statement
+   51               | statement_list . error
+   64 elseif_statement: ELSEIF expression THEN statement_list .
+
+    error                             shift, and go to state 4
+    identifier_token                  shift, and go to state 5
+    CALL                              shift, and go to state 6
+    IF                                shift, and go to state 7
+    WHILE                             shift, and go to state 8
+    LOOP                              shift, and go to state 9
+    standard_robot_instruction_token  shift, and go to state 10
+
+    ELSE    reduce using rule 64 (elseif_statement)
+    ELSEIF  reduce using rule 64 (elseif_statement)
+    END_IF  reduce using rule 64 (elseif_statement)
+
+    identifier              转到状态 11
+    robot_instruction_name  转到状态 12
+    statement               转到状态 13
+    assignment_statement    转到状态 14
+    subprogram_statement    转到状态 15
+    selection_statement     转到状态 16
+    if_statement            转到状态 17
+    iteration_statement     转到状态 18
+    while_statement         转到状态 19
+    loop_statement          转到状态 20
+    robot_statement         转到状态 21

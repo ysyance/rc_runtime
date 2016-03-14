@@ -1,0 +1,1 @@
+d0weld : DYNAMIC := (velAxis := 10, accAxis := 50, decAxis := 40, jerkAxis := 100, vel := 50, acc := 250, dec := 250, jerk := 2500, velOri := 90, accOri := 180, decOri := 180, jerkOri := 1e+06)

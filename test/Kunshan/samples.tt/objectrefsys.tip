@@ -1,0 +1,10 @@
+// KAIROVersion 2.10
+Tool(t_Pang1)
+RefSys(crsBox)
+PTP(astartpos)
+LOOP 50 DO
+   RefSys(crsOffset)
+   Lin(cp0)
+   Lin(cp1)
+   Lin(cp2)
+END_LOOP
