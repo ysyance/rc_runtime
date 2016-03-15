@@ -90,6 +90,8 @@ template<typename value_type, int null_value> class symtable_c {
     void print(void);
 };
 
+
+
 }
 
 /* Templates must include the source into the code! */

@@ -99,8 +99,8 @@ int main(int argc, char **argv) {
 	/***************************************************/
 	robot_data_file_process::DEF_SYM_SYM symtable_of_symtable;
 	robot_program_file_process::DEF_SUBPROGRAM_SYMTABLE subprogram_symtable;
-	const char *project_directory = "Kunshan/ly.tt";
-        const char *exec_directory = "Kunshan/ly.tt/testa6";
+	const char *project_directory = "test/Kunshan/ly.tt";
+	const char *exec_directory = "test/Kunshan/ly.tt/testa6";
 
 
 	/***************************************************/
@@ -112,7 +112,7 @@ int main(int argc, char **argv) {
 	ret = program_myftw(argv[1], project_directory, subprogram_symtable, symtable_of_symtable);
 	std::cout << "program file return value: " << ret << std::endl;
 
-        ret = stage5(symtable_of_symtable, subprogram_symtable, exec_directory, project_directory);
+	ret = stage5(symtable_of_symtable, subprogram_symtable, exec_directory, project_directory);
 	std::cout << "stage5 return value: " << ret << std::endl;
 
 
