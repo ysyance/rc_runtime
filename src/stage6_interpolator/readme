@@ -2,3 +2,4 @@
 2.方法：
     1）使用专门的数学库 MPC（GMP MPFR MPIR）以及使用Fortran进行数值计算
     2）使用浮点处理器
+http://blog.csdn.net/yanmy2012/article/details/8111600

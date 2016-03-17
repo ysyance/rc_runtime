@@ -86,73 +86,129 @@ struct joint_jerk
 		~joint_jerk() {}
 };
 
-int calculate_center_radius(robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_aux, robot_data_file_process::cartpos p_end, 
-		double &center_x, double &center_y, double &center_z, 
-		double &radius,
-		double &alpha, double &beta, double &gama, double &theta_distance);
+int calculate_center_radius(robot_data_file_process::cartpos p_start,
+							robot_data_file_process::cartpos p_aux,
+							robot_data_file_process::cartpos p_end,
+							double &center_x,
+							double &center_y,
+							double &center_z,
+							double &radius,
+							double &alpha,
+							double &beta,
+							double &gama,
+							double &theta_distance);
 
 
-int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data_file_process::axispos &p_end,
-		joint_velocity &v_start, joint_velocity &v_end, joint_velocity &v_target,
-		joint_acc &acc, joint_acc &dec,
-		double cycle,
-		std::vector<robot_data_file_process::axispos> &points_set, std::vector<joint_velocity> &points_velocity, std::vector<joint_acc> &points_acc );
+int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start,
+						   robot_data_file_process::axispos &p_end,
+						   joint_velocity &v_start,
+						   joint_velocity &v_end,
+						   joint_velocity &v_target,
+						   joint_acc &acc,
+						   joint_acc &dec,
+						   double cycle,
+						   std::vector<robot_data_file_process::axispos> &points_set,
+						   std::vector<joint_velocity> &points_velocity,
+						   std::vector<joint_acc> &points_acc );
 
-int Lin_TMode_interpolator(
-		robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_end,
-		double v_start, double v_end, double v_target,
-		double acc, double dec,
-		double cycle, 
-		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set);
-int Circ_TMode_interpolator(
-		robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_aux, robot_data_file_process::cartpos p_end,
-		double vori_start, double vori_end, double vori_target,
-		double accori, double decori,
-		double cycle, 
-		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set);
+int Lin_TMode_interpolator(robot_data_file_process::cartpos p_start,
+						   robot_data_file_process::cartpos p_end,
+						   double v_start,
+						   double v_end,
+						   double v_target,
+						   double acc,
+						   double dec,
+						   double cycle,
+						   std::vector<interpolation_point> &points_set,
+						   std::vector<robot_data_file_process::cartpos> &disp_set);
 
-
-
-int PTP_SMode_interpolator(robot_data_file_process::axispos &p_start, robot_data_file_process::axispos &p_end,
-		joint_velocity &v_start, joint_velocity &v_end, joint_velocity &v_target,
-		joint_acc &acc, joint_acc &dec,
-		joint_jerk &jerk,
-		double cycle,
-		std::vector<robot_data_file_process::axispos> &points_set, std::vector<joint_velocity> &points_velocity, std::vector<joint_acc> &points_acc, std::vector<joint_jerk> &points_jerk );
-int Lin_SMode_interpolator(
-		robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_end,
-		double v_start, double v_end, double v_target,
-		double acc, double dec,
-                double jerk,
-		double cycle, 
-		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set);
-int Circ_SMode_interpolator(
-		robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_aux, robot_data_file_process::cartpos p_end,
-		double vori_start, double vori_end, double vori_target,
-		double accori, double decori,
-		double jerkori,
-		double cycle, 
-		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set);
+int Circ_TMode_interpolator(robot_data_file_process::cartpos p_start,
+							robot_data_file_process::cartpos p_aux,
+							robot_data_file_process::cartpos p_end,
+							double vori_start,
+							double vori_end,
+							double vori_target,
+							double accori,
+							double decori,
+							double cycle,
+							std::vector<interpolation_point> &points_set,
+							std::vector<robot_data_file_process::cartpos> &disp_set);
 
 
 
-int PTP_TrigMode_interpolator(robot_data_file_process::axispos &p_start, robot_data_file_process::axispos &p_end,
-		joint_velocity &v_start, joint_velocity &v_end, joint_velocity &v_target,
-		joint_acc &acc, joint_acc &dec,
-		double cycle,
-		std::vector<robot_data_file_process::axispos> &points_set, std::vector<joint_velocity> &points_velocity, std::vector<joint_acc> &points_acc );
-int Lin_TrigMode_interpolator(
-		robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_end,
-		double v_start, double v_end, double v_target,
-		double acc, double dec,
-		double cycle, 
-		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set);
-int Circ_TrigMode_interpolator(
-		robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_aux, robot_data_file_process::cartpos p_end,
-		double vori_start, double vori_end, double vori_target,
-		double accori, double decori,
-		double cycle, 
-		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set);
+int PTP_SMode_interpolator(robot_data_file_process::axispos &p_start,
+						   robot_data_file_process::axispos &p_end,
+						   joint_velocity &v_start,
+						   joint_velocity &v_end,
+						   joint_velocity &v_target,
+						   joint_acc &acc,
+						   joint_acc &dec,
+						   joint_jerk &jerk,
+						   double cycle,
+						   std::vector<robot_data_file_process::axispos> &points_set,
+						   std::vector<joint_velocity> &points_velocity,
+						   std::vector<joint_acc> &points_acc,
+						   std::vector<joint_jerk> &points_jerk );
+
+int Lin_SMode_interpolator(robot_data_file_process::cartpos p_start,
+						   robot_data_file_process::cartpos p_end,
+						   double v_start,
+						   double v_end,
+						   double v_target,
+						   double acc,
+						   double dec,
+						   double jerk,
+						   double cycle,
+						   std::vector<interpolation_point> &points_set,
+						   std::vector<robot_data_file_process::cartpos> &disp_set);
+
+int Circ_SMode_interpolator(robot_data_file_process::cartpos p_start,
+							robot_data_file_process::cartpos p_aux,
+							robot_data_file_process::cartpos p_end,
+							double vori_start,
+							double vori_end,
+							double vori_target,
+							double accori,
+							double decori,
+							double jerkori,
+							double cycle,
+							std::vector<interpolation_point> &points_set,
+							std::vector<robot_data_file_process::cartpos> &disp_set);
+
+int PTP_TrigMode_interpolator(robot_data_file_process::axispos &p_start,
+							  robot_data_file_process::axispos &p_end,
+							  joint_velocity &v_start,
+							  joint_velocity &v_end,
+							  joint_velocity &v_target,
+							  joint_acc &acc,
+							  joint_acc &dec,
+							  double cycle,
+							  std::vector<robot_data_file_process::axispos> &points_set,
+							  std::vector<joint_velocity> &points_velocity,
+							  std::vector<joint_acc> &points_acc );
+
+int Lin_TrigMode_interpolator(robot_data_file_process::cartpos p_start,
+							  robot_data_file_process::cartpos p_end,
+							  double v_start,
+							  double v_end,
+							  double v_target,
+							  double acc,
+							  double dec,
+							  double cycle,
+							  std::vector<interpolation_point> &points_set,
+							  std::vector<robot_data_file_process::cartpos> &disp_set);
+
+int Circ_TrigMode_interpolator(robot_data_file_process::cartpos p_start,
+							   robot_data_file_process::cartpos p_aux,
+							   robot_data_file_process::cartpos p_end,
+							   double vori_start,
+							   double vori_end,
+							   double vori_target,
+							   double accori,
+							   double decori,
+							   double cycle,
+							   std::vector<interpolation_point> &points_set,
+							   std::vector<robot_data_file_process::cartpos> &disp_set);
 
 
 

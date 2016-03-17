@@ -99,9 +99,13 @@ int main(int argc, char **argv) {
 	/***************************************************/
 	robot_data_file_process::DEF_SYM_SYM symtable_of_symtable;
 	robot_program_file_process::DEF_SUBPROGRAM_SYMTABLE subprogram_symtable;
-	const char *project_directory = "test/Kunshan/ly.tt";
-	const char *exec_directory = "test/Kunshan/ly.tt/testa6";
+	const char *project_directory = "/root/workspace/RobotControl/rc_runtime/test/lab";
+	const char *exec_directory = "/root/workspace/RobotControl/rc_runtime/test/lab/control";
 
+	/*if(argc < 3){
+		printf("lack of arguements !\n");
+		exit(1);
+	}*/
 
 	/***************************************************/
 	/* Part 0102--Process data && program files        */
@@ -235,7 +239,7 @@ int main(int argc, char **argv) {
 
 bool regex_data_match(char *program_directory, char **program_name)
 {
-	char *pattern = "(.+).tid$";
+	char *pattern = (char *) std::string("(.+).tid$").c_str();
 	char errbuf[1024];
 	regex_t reg;
 	int err = -1,nm = 2;
@@ -357,7 +361,7 @@ int data_dopath(const char *project_directory, robot_data_file_process::DEF_SYM_
 /******************************************/
 bool regex_program_match(char *program_directory, char **program_name)
 {
-	char *pattern = "(.+).tip$";
+	char *pattern = (char *) std::string("(.+).tip$").c_str();
 	char errbuf[1024];
 	regex_t reg;
 	int err = -1,nm = 2;

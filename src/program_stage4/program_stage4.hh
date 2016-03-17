@@ -51,22 +51,22 @@ enum StmtType{
 
 
 class statement_node{
-	public:
-		StmtType stmt_type;
-		union {
-			ASSIGN_STMT *assign_stmt;
-			CALL_STMT *call_stmt;
-			IF_STMT *if_stmt;
-			WHILE_STMT *while_stmt;
-			LOOP_STMT *loop_stmt;
-			ROBOT_STMT *robot_stmt;
-		}statement;
-		statement_node *next;
-		statement_node *outer;
+public:
+	StmtType stmt_type;
+	union {
+		ASSIGN_STMT *assign_stmt;
+		CALL_STMT *call_stmt;
+		IF_STMT *if_stmt;
+		WHILE_STMT *while_stmt;
+		LOOP_STMT *loop_stmt;
+		ROBOT_STMT *robot_stmt;
+	}statement;
+	statement_node *next;
+	statement_node *outer;
 
-	public:
-		statement_node():next(NULL),outer(NULL) {}
-		~statement_node() {}
+public:
+	statement_node():next(NULL),outer(NULL) {}
+	~statement_node() {}
 };
 
 

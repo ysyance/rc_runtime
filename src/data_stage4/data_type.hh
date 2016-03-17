@@ -172,10 +172,11 @@ struct tool {
 		double CGy;
 		double CGz;
 	public:
-                tool():x(0.0),y(0.0),z(0.0),a(0.0),b(0.0),c(0.0), CGx(0.0), CGy(0.0), CGz(0.0) {}
-                tool(double a11, double a12, double a13, double a14, double a15, double a16, double a21, double a22, double a23):x(a11),y(a12),z(a13),a(a14),b(a15),c(a16), CGx(a21), CGy(a22), CGz(a23) {}
-                tool(double a11, double a12, double a13, double a14, double a15, double a16):x(a11),y(a12),z(a13),a(a14),b(a15),c(a16), CGx(0.0), CGy(0.0), CGz(0.0) {}
-                ~tool() {}
+		tool():x(0.0),y(0.0),z(0.0),a(0.0),b(0.0),c(0.0), CGx(0.0), CGy(0.0), CGz(0.0) {}
+		tool(double a11, double a12, double a13, double a14, double a15, double a16, double a21, double a22, double a23):x(a11),y(a12),z(a13),a(a14),b(a15),c(a16), CGx(a21), CGy(a22), CGz(a23) {}
+		tool(double a11, double a12, double a13, double a14, double a15, double a16):x(a11),y(a12),z(a13),a(a14),b(a15),c(a16), CGx(0.0), CGy(0.0), CGz(0.0) {}
+		~tool() {}
+
 		void print()
 		{
 			std::cout << "x:  " << x << std::endl;
@@ -200,9 +201,10 @@ struct cartrefsys {
 		double b;
 		double c;
 	public:
-                cartrefsys():x(0.0),y(0.0),z(0.0),a(0.0),b(0.0),c(0.0) {}
-                cartrefsys(double a11, double a12, double a13, double a14, double a15, double a16):x(a11),y(a12),z(a13),a(a14),b(a15),c(a16) {}
-                ~cartrefsys() {}
+		cartrefsys():x(0.0),y(0.0),z(0.0),a(0.0),b(0.0),c(0.0) {}
+		cartrefsys(double a11, double a12, double a13, double a14, double a15, double a16):x(a11),y(a12),z(a13),a(a14),b(a15),c(a16) {}
+		~cartrefsys() {}
+
 		void print()
 		{
 			std::cout << "x:  " << x << std::endl;
@@ -223,9 +225,10 @@ struct percent {
 	public:
 		int perc;
 	public:
-                percent():perc(0) {}
-                percent(int val):perc(val) {}
-                ~percent() {}
+		percent():perc(0) {}
+		percent(int val):perc(val) {}
+		~percent() {}
+
 		void print()
 		{
 			std::cout << "perc:  " << perc << std::endl;

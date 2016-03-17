@@ -26,21 +26,31 @@ int main()
 	std::vector<robot_data_file_process::cartpos> disp_set;
 
 
-	int ret = Circ_TrigMode_interpolator(p_start, p_aux, p_end, v_start, v_end, v_target, acc, dec, cycle, points_set, disp_set);
+	int ret = Circ_TrigMode_interpolator(p_start,
+										 p_aux,
+										 p_end,
+										 v_start,
+										 v_end,
+										 v_target,
+										 acc,
+										 dec,
+										 cycle,
+										 points_set,
+										 disp_set);
 	if(ret != 0)
 	{
 		std::cout << "error" << std::endl;
 	}
 
 	FILE *fp, *fp1;
-	fp=fopen("./acc.txt","w");
+	fp=fopen("./testdata/acc.txt","w");
 	for(std::vector<interpolation_point>::iterator iter = points_set.begin(); iter != points_set.end(); ++iter)
 	{
 		fprintf(fp, "%lf %lf %lf %lf\n",iter->distance, iter->velocity, iter->acc, iter->jerk );
 	}
 	fclose(fp);
 
-	fp1=fopen("./pos.txt","w");
+	fp1=fopen("./testdata/pos.txt","w");
 	for(std::vector<robot_data_file_process::cartpos>::iterator iter = disp_set.begin(); iter != disp_set.end(); ++iter)
 	{
 		fprintf(fp1, "%lf %lf %lf\n",iter->x, iter->y, iter->z);

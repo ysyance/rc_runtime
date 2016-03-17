@@ -41,54 +41,56 @@
 
 namespace robot_data_file_process{
 
-enum VarType { TYPE_BOOL, TYPE_DINT, TYPE_REAL, 
-			//TYPE_DWORD, 
-                        TYPE_STRING,
-			TYPE_AXISPOS, TYPE_CARTPOS, 
-			//TYPE_AXISPOSEXT, TYPE_CARTPOSEXT,
-			TYPE_ROBAXISPOS, TYPE_AUXAXISPOS, TYPE_ROBCARTPOS,
-			TYPE_CARTREFSYS, 
-                        //TYPE_CARTREFSYSEXT,TYPE_CARTREFSYSAXIS,
-			TYPE_TOOL, 
-                        //TYPE_TOOLSTATIC,
-			TYPE_OVLREL, TYPE_OVLABS,
-			TYPE_DYNAMIC,
-			TYPE_PERCENT, TYPE_PERC200
+enum VarType {
+	TYPE_BOOL,
+	TYPE_DINT,
+	TYPE_REAL,			//TYPE_DWORD,
+
+    TYPE_STRING,
+	TYPE_AXISPOS,		//TYPE_AXISPOSEXT,
+	TYPE_CARTPOS,		// TYPE_CARTPOSEXT,
+
+	TYPE_ROBAXISPOS,
+	TYPE_AUXAXISPOS,
+	TYPE_ROBCARTPOS,
+	TYPE_CARTREFSYS,	//TYPE_CARTREFSYSEXT,// TYPE_CARTREFSYSAXIS,
+
+	TYPE_TOOL,			//TYPE_TOOLSTATIC,
+	TYPE_OVLREL,
+	TYPE_OVLABS,
+	TYPE_DYNAMIC,
+	TYPE_PERCENT,
+	TYPE_PERC200
 };
 
 class sym_element {
-	public:		
-                VarType *id_type; 
-//		std::string id_belongTo_program_name;
-		union  {
-			bool *bv;
-			int *dv;
-			double *rv;
-			//dword
-			std::string *sv;
-			axispos *apv;
-			cartpos *cpv;
-			//axisposext
-			//cartposext
-			robaxispos *rapv;
-			robcartpos *rcpv;
-			auxaxispos *aapv;
-			tool *tv;
-			//toolstatic
-			cartrefsys *crsv;
-			//cartrefsysaxis *crsav;
-			//cartrefsysext
-			percent *pv;
-			perc200 *p2v;
-			ovlrel *orv;
-			ovlabs *oav;
-			dynamic *dynv;
-		} id_value;
+public:
+	VarType *id_type;
+//	std::string id_belongTo_program_name;
+	union  {
+		bool *bv;
+		int *dv;
+		double *rv;		//dword
+		std::string *sv;
+		axispos *apv;	//axisposext
+		cartpos *cpv;	//cartposext
+		robaxispos *rapv;
+		robcartpos *rcpv;
+		auxaxispos *aapv;
+		tool *tv;		//toolstatic
+		cartrefsys *crsv;
+		//cartrefsysaxis *crsav; //cartrefsysext
+		percent *pv;
+		perc200 *p2v;
+		ovlrel *orv;
+		ovlabs *oav;
+		dynamic *dynv;
+	} id_value;
 
 
-	public:
-		sym_element() {}
-		~sym_element() {}
+public:
+	sym_element() {}
+	~sym_element() {}
 };
 
 #define NULL_ELEMENT 0

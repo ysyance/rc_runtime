@@ -88,9 +88,9 @@ int stage5_core(robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable, robo
 			case robot_program_file_process::ST_ROBOT:
 				ret = robot_interpreter(pStmt->statement.robot_stmt, exec_directory, symtable_of_symtable);
 				break;
-                        default:
-                                std::cout << "can not process this type" << std::endl;
-                                break;
+			default:
+				std::cout << "can not process this type" << std::endl;
+				break;
 		}
 		if(ret == 0)
 			pStmt = pStmt->next;
