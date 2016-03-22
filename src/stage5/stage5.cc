@@ -30,6 +30,7 @@
 
 
 #include <cstring>
+#include <unistd.h>
 #include "../data_util/symtable.hh"
 #include "../program_util/symtable.hh"
 //#include "../data_stage4/data_stage4.hh"
@@ -96,6 +97,7 @@ int stage5_core(robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable, robo
 			pStmt = pStmt->next;
 		else 
 			return ret;
+//		usleep(100);
 	}
 	return ret;
 }

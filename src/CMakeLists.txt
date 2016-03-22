@@ -37,5 +37,5 @@ ADD_EXECUTABLE(rc_runtime.exe   ${MAIN_SRC}
                                 ${PROG_STAGE4_GENSTM_SRC}
                                 ${STAGE5_SRC}
                                 ${STAGE5_INTER_SRC}
-                                ${STAGE5_to_6_SRC})
+                                ${STAGE5_to_6_SRC} )
 

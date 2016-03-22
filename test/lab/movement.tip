@@ -1,0 +1,12 @@
+// KAIROVersion 2.10
+//PTP(ap0,ap1)
+//PTPRel(ad0)
+//WaitIsFinished(100)
+//WaitJustInTime()
+//StopRobot()
+//Lin(cp0)
+//LinRel(cd0)
+LOOP 5 DO
+	PTP(ap0, ap1)
+	PTP(ap1, ap2)
+END_LOOP

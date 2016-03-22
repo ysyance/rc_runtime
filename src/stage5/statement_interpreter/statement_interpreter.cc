@@ -435,10 +435,14 @@ int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  
 			variable = filename_symtable->find_value(tempstr1);
 			if(*(variable->id_type) == robot_data_file_process::TYPE_AXISPOS){
 				temp_order.args[0].apv = variable->id_value.apv;
+				std::cout << "=========ap1========" << std::endl;
+				temp_order.args[0].apv->print();
 			}
 			variable = filename_symtable->find_value(tempstr2);
 			if(*(variable->id_type) == robot_data_file_process::TYPE_AXISPOS){
 				temp_order.args[1].apv = variable->id_value.apv;
+				std::cout << "=========ap2========" << std::endl;
+				temp_order.args[1].apv->print();
 			}
 
 
@@ -487,7 +491,8 @@ int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  
 			break;
 	}
 	if(!order_queue.isFull()){
-		order_queue.write(temp_order);
+		while(order_queue.write(temp_order))
+			continue;
 	}
 	return 0;
 }
