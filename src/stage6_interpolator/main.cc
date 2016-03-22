@@ -69,7 +69,7 @@ int main()
 	robot_data_file_process::axispos p_end(110.0, -73.0, -10.0, -45.0, -62.0, 58.0);
 	joint_velocity v_start(0,0,0,0,0,0), v_target(400,250,350,550,650,750), v_end(0,0,0,0,0,0);
 	joint_acc acc(2300,2100,2500,2900,3000,4000), dec(2300,2100,2500,2900,3000,4000);
-        joint_jerk jerk(1000000, 1000000, 1000000, 1000000, 1000000, 1000000);
+	joint_jerk jerk(1000000, 1000000, 1000000, 1000000, 1000000, 1000000);
 	double cycle = 0.001;
 
 	std::vector<robot_data_file_process::axispos> points_set;
@@ -84,28 +84,28 @@ int main()
 	}
 
 	FILE *fp_pos, *fp_vel, *fp_acc, *fp_jerk;
-	fp_pos=fopen("./pos_ptp.txt","w");
+	fp_pos=fopen("./testdata/pos_ptp.txt","w");
 	for(std::vector<robot_data_file_process::axispos>::iterator iter = points_set.begin(); iter != points_set.end(); ++iter)
 	{
 		fprintf(fp_pos, "%lf %lf %lf %lf %lf %lf\n",iter->a1, iter->a2, iter->a3, iter->a4, iter->a5, iter->a6);
 	}
 	fclose(fp_pos);
 
-	fp_vel=fopen("./vel_ptp.txt","w");
+	fp_vel=fopen("./testdata/vel_ptp.txt","w");
 	for(std::vector<joint_velocity>::iterator iter = points_velocity.begin(); iter != points_velocity.end(); ++iter)
 	{
 		fprintf(fp_vel, "%lf %lf %lf %lf %lf %lf\n",iter->v_a1, iter->v_a2, iter->v_a3, iter->v_a4, iter->v_a5, iter->v_a6);
 	}
 	fclose(fp_vel);
 
-	fp_acc=fopen("./acc_ptp.txt","w");
+	fp_acc=fopen("./testdata/acc_ptp.txt","w");
 	for(std::vector<joint_acc>::iterator iter = points_acc.begin(); iter != points_acc.end(); ++iter)
 	{
 		fprintf(fp_acc, "%lf %lf %lf %lf %lf %lf\n",iter->a_a1, iter->a_a2, iter->a_a3, iter->a_a4, iter->a_a5, iter->a_a6);
 	}
 	fclose(fp_acc);
 
-	fp_jerk=fopen("./jerk_ptp.txt","w");
+	fp_jerk=fopen("./testdata/jerk_ptp.txt","w");
 	for(std::vector<joint_jerk>::iterator iter = points_jerk.begin(); iter != points_jerk.end(); ++iter)
 	{
 		fprintf(fp_jerk, "%lf %lf %lf %lf %lf %lf\n",iter->j_a1, iter->j_a2, iter->j_a3, iter->j_a4, iter->j_a5, iter->j_a6);

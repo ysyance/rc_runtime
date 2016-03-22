@@ -61,7 +61,7 @@ struct cartpos {
 		double aux5;
 		double aux6;
 
-                int mode;
+		int mode;
 	public:
                 cartpos():x(0.0),y(0.0),z(0.0),a(0.0),b(0.0),c(0.0),aux1(0.0),aux2(0.0),aux3(0.0),aux4(0.0),aux5(0.0),aux6(0.0),mode(-1) {}
                 cartpos(double a11, double a12, double a13, double a14, double a15, double a16, double a21, double a22, double a23, double a24, double a25, double a26):x(a11),y(a12),z(a13),a(a14),b(a15),c(a16),aux1(a21),aux2(a22),aux3(a23),aux4(a24),aux5(a25),aux6(a26) {}

@@ -1467,7 +1467,7 @@ int PTP_SMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 		points_set.push_back(tmp_point); //Attention here!
 		points_velocity.push_back(tmp_velocity);
 		points_acc.push_back(tmp_acc);
-                points_jerk.push_back(tmp_jerk);
+		points_jerk.push_back(tmp_jerk);
 	}
 
 	//The last point of interpolator

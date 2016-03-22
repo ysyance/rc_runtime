@@ -1,4 +1,6 @@
 #include <iostream>
+#include <stage5_to_6.h>
+#include <program_type.hh>
 //#include <cstring>
 #include "../../data_util/symtable.hh"
 #include "../../program_util/symtable.hh"
@@ -403,17 +405,43 @@ int loop_interpreter(robot_program_file_process::LOOP_STMT *loop_stmt, const cha
 	{
 		int ret = -1;
                 std::cout << "The order is:" << loop_num << std::endl;
-		ret = stage5_core(symtable_of_symtable, subprogram_symtable, loop_stmt->stmt,  exec_directory,project_directory);
+		ret = stage5_core(symtable_of_symtable, subprogram_symtable, loop_stmt->stmt, exec_directory, project_directory);
 	}
 	return 0;
 }
+#include <cstring>
+#include <data_stage4.hh>
+#include "stage5_to_6.h"
 
-int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  char *exec_directory, robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable)
+int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  char *exec_directory,  robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable)
 {
+
+	char *tempstr1 ;
+	char *tempstr2 ;
+	char *tempstr3 ;
+//	std::cout << exec_directory << std::endl;
+	robot_data_file_process::DEF_SYMTABLE *filename_symtable = symtable_of_symtable.find_value(exec_directory);
+	robot_data_file_process::sym_element *variable ;
+	ROBOT_ORDER temp_order;
+	temp_order.ri_type = robot_program_file_process::RT_PTP;
 	switch(robot_stmt->ri_type)
 	{
 		case robot_program_file_process::RT_PTP:
+
 			std::cout << "PTP()" << std::endl;
+			std::cout << *(robot_stmt->parameter_list) << std::endl;
+			tempstr1 = const_cast<char*>((robot_stmt->parameter_list)->param->value.identifier);
+			tempstr2 = const_cast<char*>((robot_stmt->parameter_list)->next->param->value.identifier);
+			variable = filename_symtable->find_value(tempstr1);
+			if(*(variable->id_type) == robot_data_file_process::TYPE_AXISPOS){
+				temp_order.args[0].apv = variable->id_value.apv;
+			}
+			variable = filename_symtable->find_value(tempstr2);
+			if(*(variable->id_type) == robot_data_file_process::TYPE_AXISPOS){
+				temp_order.args[1].apv = variable->id_value.apv;
+			}
+
+
 			break;
 		case robot_program_file_process::RT_LIN:
 			std::cout << "LIN()" << std::endl;
@@ -457,6 +485,9 @@ int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  
 		case robot_program_file_process::RT_ERROR:
 			std::cout << "ERROR()" << std::endl;
 			break;
+	}
+	if(!order_queue.isFull()){
+		order_queue.write(temp_order);
 	}
 	return 0;
 }

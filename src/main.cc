@@ -49,12 +49,14 @@
 #include "program_util/symtable.hh"
 #include "program_stage4/program_stage4.hh"
 #include "stage5/stage5.hh"
+#include "stage5_to_6.h"
 
 #include <sys/stat.h>
 #include <dirent.h>
 #include <limits.h>
 #include <regex.h>
 #include <sys/types.h>
+#include <thread>
 
 //using namespace std;
 //using namespace robot_data_file_process;
@@ -106,7 +108,7 @@ int main(int argc, char **argv) {
 		printf("lack of arguements !\n");
 		exit(1);
 	}*/
-
+	std::thread reader(order_consumer);
 	/***************************************************/
 	/* Part 0102--Process data && program files        */
 	/***************************************************/

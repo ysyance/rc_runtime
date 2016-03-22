@@ -24,6 +24,26 @@ struct value_type{
 		double *rv;
 		std::string *sv;
 	}value;
+public:
+	friend std::ostream &operator<<(std::ostream &os, const value_type contents){
+		if(contents.v_type == TYPE_IDENTIFIER){
+			os << "TYPE_IDENTIFIER:";
+			os << std::string(contents.value.identifier) << " ";
+		} else if(contents.v_type == TYPE_BOOL){
+			os << "TYPE_BOOL:";
+			os << *(contents.value.bv) << " ";
+		} else if(contents.v_type == TYPE_DINT){
+			os << "TYPE_DINT:";
+			os << *(contents.value.dv) << " ";
+		} else if(contents.v_type == TYPE_REAL){
+			os << "TYPE_REAL:";
+			os << *(contents.value.rv) << " ";
+		} else {
+			os << "TYPE_STRING:";
+			os << *(contents.value.sv) << " ";
+		}
+		return os;
+	}
 };
 
 struct param_list{
@@ -33,6 +53,18 @@ struct param_list{
 	public:
 		param_list():param(NULL), next(NULL) {}
 		~param_list() {}
+	public:
+		friend std::ostream &operator<<(std::ostream &os, const param_list contents){
+			if(contents.param != nullptr){
+				os << "param: ";
+				os << *(contents.param);
+			}
+			if(contents.next != nullptr){
+				os << "next: ";
+				os << *(contents.next);
+			}
+			return os;
+		}
 };
 
 struct ASSIGN_STMT{
@@ -114,6 +146,7 @@ struct ROBOT_STMT{
 	public:
 		RobotInstructionType ri_type;
 		param_list *parameter_list;
+//		robot_data_file_process::DEF_SYMTABLE *datafile; //add by yaoshun
 	public:
 		ROBOT_STMT(): parameter_list(NULL) {} 
 		~ROBOT_STMT() {}

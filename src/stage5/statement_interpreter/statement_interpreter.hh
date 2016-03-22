@@ -3,6 +3,7 @@
 
 #include "../../data_stage4/data_stage4.hh"
 #include "../../program_stage4/program_stage4.hh"
+#include "stage5_to_6.h"
 
 int assign_interpreter(robot_program_file_process::ASSIGN_STMT *assign_stmt,const  char *exec_directory, const char *project_directory, robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable, robot_program_file_process::DEF_SUBPROGRAM_SYMTABLE &subprogram_symtable);
 int elseif_interpreter(robot_program_file_process::ELSEIF_STMT *elseif_stmt,const  char *exec_directory, const char *project_directory,robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable, bool &flag, robot_program_file_process::DEF_SUBPROGRAM_SYMTABLE &subprogram_symtable);

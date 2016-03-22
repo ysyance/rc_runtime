@@ -1,6 +1,7 @@
 /* algo1-1.c 计算1-1/x+1/x*x… */
  #include<stdio.h>
  #include<sys/timeb.h>
+
  void main()
  {
    struct timeb t1,t2;
