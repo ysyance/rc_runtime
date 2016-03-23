@@ -139,7 +139,8 @@ enum RobotInstructionType{
 	RT_STOP,
 	RT_INFO,
 	RT_WARNING,
-	RT_ERROR
+	RT_ERROR,
+	RT_NULL //add by yaoshun
 };
 
 struct ROBOT_STMT{

@@ -411,6 +411,7 @@ int loop_interpreter(robot_program_file_process::LOOP_STMT *loop_stmt, const cha
 }
 #include <cstring>
 #include <data_stage4.hh>
+#include <unistd.h>
 #include "stage5_to_6.h"
 
 int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  char *exec_directory,  robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable)
@@ -419,7 +420,7 @@ int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  
 	char *tempstr1 ;
 	char *tempstr2 ;
 	char *tempstr3 ;
-//	std::cout << exec_directory << std::endl;
+	std::cout << exec_directory << std::endl;
 	robot_data_file_process::DEF_SYMTABLE *filename_symtable = symtable_of_symtable.find_value(exec_directory);
 	robot_data_file_process::sym_element *variable ;
 	ROBOT_ORDER temp_order;
@@ -435,14 +436,14 @@ int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  
 			variable = filename_symtable->find_value(tempstr1);
 			if(*(variable->id_type) == robot_data_file_process::TYPE_AXISPOS){
 				temp_order.args[0].apv = variable->id_value.apv;
-				std::cout << "=========ap1========" << std::endl;
-				temp_order.args[0].apv->print();
+//				std::cout << "=========ap1========" << std::endl;
+//				temp_order.args[0].apv->print();
 			}
 			variable = filename_symtable->find_value(tempstr2);
 			if(*(variable->id_type) == robot_data_file_process::TYPE_AXISPOS){
 				temp_order.args[1].apv = variable->id_value.apv;
-				std::cout << "=========ap2========" << std::endl;
-				temp_order.args[1].apv->print();
+//				std::cout << "=========ap2========" << std::endl;
+//				temp_order.args[1].apv->print();
 			}
 
 
@@ -490,10 +491,13 @@ int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  
 			std::cout << "ERROR()" << std::endl;
 			break;
 	}
+	while(order_queue.isFull());
 	if(!order_queue.isFull()){
-		while(order_queue.write(temp_order))
+		while(!order_queue.write(std::move(temp_order)))
 			continue;
 	}
+
+	usleep(1000);
 	return 0;
 }
 

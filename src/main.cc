@@ -90,9 +90,9 @@ int main(int argc, char **argv) {
 //	ret = stage5(symtable_of_symtable, subprogram_symtable, exec_directory, project_directory);
 //	std::cout << "stage5 return value: " << ret << std::endl;
 
-	auto bind_stage5 = std::bind(stage5, symtable_of_symtable, subprogram_symtable, exec_directory, project_directory);
+	auto order_producer = std::bind(stage5, symtable_of_symtable, subprogram_symtable, exec_directory, project_directory);
+	std::thread writer(order_producer);
 	std::thread reader(order_consumer);
-	std::thread writer(bind_stage5);
 
 	reader.join();
 	writer.join();

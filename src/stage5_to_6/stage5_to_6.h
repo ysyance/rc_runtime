@@ -27,14 +27,65 @@ public:
     ROBOT_ORDER(){}
     ~ROBOT_ORDER(){}
 
+public :
+    ROBOT_ORDER(ROBOT_ORDER &order){
+        this->ri_type = order.ri_type;
+        if(order.ri_type == robot_program_file_process::RT_PTP){
+            this->args[0].apv = order.args[0].apv;
+            this->args[1].apv = order.args[1].apv;
+        }
+    }
+    ROBOT_ORDER& operator=(ROBOT_ORDER& order){
+        this->ri_type = order.ri_type;
+        if(order.ri_type == robot_program_file_process::RT_PTP){
+            this->args[0].apv = order.args[0].apv;
+            this->args[1].apv = order.args[1].apv;
+        }
+        return *this;
+    }
+    ROBOT_ORDER(ROBOT_ORDER &&order) {
+        this->ri_type = order.ri_type;
+        if(order.ri_type == robot_program_file_process::RT_PTP){
+            this->args[0].apv = order.args[0].apv;
+            this->args[1].apv = order.args[1].apv;
+        }
+    }
+    ROBOT_ORDER& operator=(ROBOT_ORDER&& order) {
+        this->ri_type = order.ri_type;
+        if(order.ri_type == robot_program_file_process::RT_PTP){
+            this->args[0].apv = order.args[0].apv;
+            this->args[1].apv = order.args[1].apv;
+        }
+        return *this;
+    }
+
+public:
+    void print(){
+        std::cout << "ROBOT_ORDER TYPE: " << this->ri_type  << std::endl;
+        std::cout << "ROBOT_ORDER TYPE: " << robot_program_file_process::RT_PTP  << std::endl;
+        if(this->ri_type == robot_program_file_process::RT_PTP){
+            this->args[0].apv->print();
+            this->args[1].apv->print();
+        }
+    }
+
+    void clear(){
+        this->ri_type = robot_program_file_process::RT_NULL;
+        for(int i = 0; i < 4; i++){
+            this->args[i].apv = nullptr;
+        }
+    }
+
 };
 
 
 
-static folly::ProducerConsumerQueue<ROBOT_ORDER> order_queue(10);
+extern folly::ProducerConsumerQueue<ROBOT_ORDER> order_queue;
 
 
-void order_producer();
+
+
+//void order_producer();
 
 
 void order_consumer();
