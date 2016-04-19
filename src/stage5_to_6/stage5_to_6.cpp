@@ -29,7 +29,7 @@ std::vector<joint_jerk> points_jerk;
 
 void order_consumer(){
     int ret = 0;
-
+    int cnt = 1;
     std::cout << "start consumer" << std::endl;
     while(runflag){
         std::cout << "order_consumer" << std::endl;
@@ -42,21 +42,26 @@ void order_consumer(){
         }
         switch(temp_order.ri_type){
             case robot_program_file_process::RT_PTP:
-                temp_order.args[0].apv->print();
-                temp_order.args[1].apv->print();
-                ret = PTP_SMode_interpolator(*(temp_order.args[0].apv),
+//                temp_order.args[0].apv->print();   // just for debug
+//                temp_order.args[1].apv->print();   // just for debug
+                ret = PTP_TMode_interpolator(*(temp_order.args[0].apv),
                                              *(temp_order.args[1].apv),
                                              robot_v_start,
                                              robot_v_end,
                                              robot_v_target,
                                              robot_acc,
                                              robot_dec,
-                                             robot_jerk,
                                              robot_cycle,
                                              points_set,
                                              points_velocity,
-                                             points_acc,
-                                             points_jerk);
+                                             points_acc
+                                             );
+                if(ret != 0) {
+                    std::cout << "error" << std::endl;
+                } else {
+                    std::cout << "success" << std::endl;
+                }
+                std::cout << "PTP_TMode_interpolator " << cnt ++ << std::endl;
                 break;
             case robot_program_file_process::RT_LIN:
                 break;

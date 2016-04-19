@@ -420,7 +420,7 @@ int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  
 	char *tempstr1 ;
 	char *tempstr2 ;
 	char *tempstr3 ;
-	std::cout << exec_directory << std::endl;
+//	std::cout << exec_directory << std::endl;   	// just for debug
 	robot_data_file_process::DEF_SYMTABLE *filename_symtable = symtable_of_symtable.find_value(exec_directory);
 	robot_data_file_process::sym_element *variable ;
 	ROBOT_ORDER temp_order;
