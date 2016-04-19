@@ -767,7 +767,10 @@ int PTP_SMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 		joint_acc &acc, joint_acc &dec,
 		joint_jerk &jerk,
 		double cycle,
-		std::vector<robot_data_file_process::axispos> &points_set, std::vector<joint_velocity> &points_velocity, std::vector<joint_acc> &points_acc, std::vector<joint_jerk> &points_jerk )
+		std::vector<robot_data_file_process::axispos> &points_set,
+		std::vector<joint_velocity> &points_velocity,
+		std::vector<joint_acc> &points_acc,
+		std::vector<joint_jerk> &points_jerk )
 {
 	int ret = 0;
 	//joint a1

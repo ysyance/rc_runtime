@@ -5,6 +5,7 @@
 #ifndef RC_RUNTIME_STAGE5_TO_6_H
 #define RC_RUNTIME_STAGE5_TO_6_H
 
+#include "interpolator.hh"
 #include "ProducerConsumerQueue.h"
 #include "data_stage4.hh"
 #include "program_stage4.hh"
@@ -82,6 +83,17 @@ public:
 
 extern folly::ProducerConsumerQueue<ROBOT_ORDER> order_queue;
 
+/* ROBOT CONFIGURATION ARGUEMENTS  */
+extern joint_velocity robot_v_start;
+extern joint_velocity robot_v_target;
+extern joint_velocity robot_v_end;
+
+extern joint_acc robot_acc;
+extern joint_acc robot_dec;
+
+extern joint_jerk robot_jerk;
+
+extern double robot_cycle;
 
 
 

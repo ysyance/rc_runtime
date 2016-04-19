@@ -19,11 +19,12 @@ AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/program_stage4/generate_stmt_no
 AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/stage5 STAGE5_SRC)
 AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/stage5/statement_interpreter STAGE5_INTER_SRC)
 AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/stage6_interpolator STAGE6_SRC)
+AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/stage6_interpolator/stage6_test STAGE6_TEST_SRC)
 AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/stage5_to_6 STAGE5_to_6_SRC)
 ADD_SUBDIRECTORY(data_stage1_2)
 ADD_SUBDIRECTORY(program_stage1_2)
 
-ADD_EXECUTABLE(testinterpolator.exe ${STAGE6_SRC} stage6_interpolator/stage6..cpp)
+ADD_EXECUTABLE(testinterpolator.exe ${STAGE6_TEST_SRC} ${STAGE6_SRC})
 ADD_EXECUTABLE(rc_runtime.exe   ${MAIN_SRC}
                                 ${DATA_ABSYNTAX_SRC}
                                 ${DATA_STAGE1_2_SRC}
@@ -37,5 +38,6 @@ ADD_EXECUTABLE(rc_runtime.exe   ${MAIN_SRC}
                                 ${PROG_STAGE4_GENSTM_SRC}
                                 ${STAGE5_SRC}
                                 ${STAGE5_INTER_SRC}
+                                ${STAGE6_SRC}
                                 ${STAGE5_to_6_SRC} )
 

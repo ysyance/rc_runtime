@@ -36,7 +36,7 @@
 
 
 #define TEST_DATA_FILE_RESULT       0
-#define TEST_PROGRAM_FILE_RESULT    1
+#define TEST_PROGRAM_FILE_RESULT    0
 
 
 #include "preprocess.hh"
@@ -72,11 +72,6 @@ int main(int argc, char **argv) {
 	robot_program_file_process::DEF_SUBPROGRAM_SYMTABLE subprogram_symtable;
 	const char *project_directory = "/root/workspace/RobotControl/rc_runtime/test/lab";
 	const char *exec_directory = "/root/workspace/RobotControl/rc_runtime/test/lab/control";
-
-	/*if(argc < 3){
-		printf("lack of arguements !\n");
-		exit(1);
-	}*/
 
 	/***************************************************/
 	/* Part 0102--Process data && program files        */

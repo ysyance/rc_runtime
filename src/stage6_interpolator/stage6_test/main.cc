@@ -4,8 +4,8 @@
 #include "interpolator.hh"
 #include "../data_stage4/data_type.hh"
 
-#define CART_TEST 1
-#define JOINT_TEST 0
+#define CART_TEST 0
+#define JOINT_TEST 1
 
 int main()
 {
@@ -43,14 +43,17 @@ int main()
 	}
 
 	FILE *fp, *fp1;
-	fp=fopen("./testdata/acc.txt","w");
+	fp=fopen("../testdata/acc.txt","w");
+	std::cout << "come here" << std::endl;
+	std::cout << "points_set size: " << points_set.size() << std::endl;
 	for(std::vector<interpolation_point>::iterator iter = points_set.begin(); iter != points_set.end(); ++iter)
 	{
 		fprintf(fp, "%lf %lf %lf %lf\n",iter->distance, iter->velocity, iter->acc, iter->jerk );
 	}
+	std::cout << "come pass here" << std::endl;
 	fclose(fp);
 
-	fp1=fopen("./testdata/pos.txt","w");
+	fp1=fopen("../testdata/pos.txt","w");
 	for(std::vector<robot_data_file_process::cartpos>::iterator iter = disp_set.begin(); iter != disp_set.end(); ++iter)
 	{
 		fprintf(fp1, "%lf %lf %lf\n",iter->x, iter->y, iter->z);
@@ -77,35 +80,48 @@ int main()
 	std::vector<joint_acc> points_acc;
 	std::vector<joint_jerk> points_jerk;
 
-	int ret = PTP_SMode_interpolator(p_start, p_end, v_start, v_end, v_target, acc, dec, jerk, cycle, points_set, points_velocity, points_acc, points_jerk);
+	int ret = PTP_SMode_interpolator(p_start,
+									 p_end,
+									 v_start,
+									 v_end,
+									 v_target,
+									 acc,
+									 dec,
+									 jerk,
+									 cycle,
+									 points_set,
+									 points_velocity,
+									 points_acc,
+									 points_jerk);
 	if(ret != 0)
 	{
 		std::cout << "error" << std::endl;
 	}
 
 	FILE *fp_pos, *fp_vel, *fp_acc, *fp_jerk;
-	fp_pos=fopen("./testdata/pos_ptp.txt","w");
+	fp_pos=fopen("./pos_ptp.txt","w");
+	std::cout << "points_set size: " << points_set.size() << std::endl;
 	for(std::vector<robot_data_file_process::axispos>::iterator iter = points_set.begin(); iter != points_set.end(); ++iter)
 	{
 		fprintf(fp_pos, "%lf %lf %lf %lf %lf %lf\n",iter->a1, iter->a2, iter->a3, iter->a4, iter->a5, iter->a6);
 	}
 	fclose(fp_pos);
-
-	fp_vel=fopen("./testdata/vel_ptp.txt","w");
+	std::cout << "points_set size: " << points_velocity.size() << std::endl;
+	fp_vel=fopen("./vel_ptp.txt","w");
 	for(std::vector<joint_velocity>::iterator iter = points_velocity.begin(); iter != points_velocity.end(); ++iter)
 	{
 		fprintf(fp_vel, "%lf %lf %lf %lf %lf %lf\n",iter->v_a1, iter->v_a2, iter->v_a3, iter->v_a4, iter->v_a5, iter->v_a6);
 	}
 	fclose(fp_vel);
 
-	fp_acc=fopen("./testdata/acc_ptp.txt","w");
+	fp_acc=fopen("./acc_ptp.txt","w");
 	for(std::vector<joint_acc>::iterator iter = points_acc.begin(); iter != points_acc.end(); ++iter)
 	{
 		fprintf(fp_acc, "%lf %lf %lf %lf %lf %lf\n",iter->a_a1, iter->a_a2, iter->a_a3, iter->a_a4, iter->a_a5, iter->a_a6);
 	}
 	fclose(fp_acc);
 
-	fp_jerk=fopen("./testdata/jerk_ptp.txt","w");
+	fp_jerk=fopen("./jerk_ptp.txt","w");
 	for(std::vector<joint_jerk>::iterator iter = points_jerk.begin(); iter != points_jerk.end(); ++iter)
 	{
 		fprintf(fp_jerk, "%lf %lf %lf %lf %lf %lf\n",iter->j_a1, iter->j_a2, iter->j_a3, iter->j_a4, iter->j_a5, iter->j_a6);
