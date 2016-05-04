@@ -35,7 +35,9 @@ void order_consumer(){
         std::cout << "order_consumer" << std::endl;
         ROBOT_ORDER temp_order;
         std::cout << "order_queue size: " << order_queue.sizeGuess() << std::endl;
-        while(order_queue.isEmpty());
+        while(order_queue.isEmpty()){
+            // std::this_thread::yield();
+        }
         if(!order_queue.isEmpty()){
             while(!order_queue.read(temp_order))
                 continue;

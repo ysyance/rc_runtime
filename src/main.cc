@@ -33,14 +33,15 @@
  Pass 3: executes stage 4
  Pass 4: executes stage 4+1
  */
-
+#include "preprocess.hh"
 
 #define TEST_DATA_FILE_RESULT       0
 #define TEST_PROGRAM_FILE_RESULT    0
 
 
-#include "preprocess.hh"
 
+
+#define RUN_IN_PC  0
 
 
 
@@ -70,9 +71,14 @@ int main(int argc, char **argv) {
 	/***************************************************/
 	robot_data_file_process::DEF_SYM_SYM symtable_of_symtable;
 	robot_program_file_process::DEF_SUBPROGRAM_SYMTABLE subprogram_symtable;
-	const char *project_directory = "/root/workspace/RobotControl/rc_runtime/test/lab";
-	const char *exec_directory = "/root/workspace/RobotControl/rc_runtime/test/lab/control";
 
+#if	RUN_IN_PC
+	const char *project_directory = "/root/workspace/robotspace/Coruntime/rc-runtime/test/lab";
+	const char *exec_directory = "/root/workspace/robotspace/Coruntime/rc-runtime/test/lab/control";
+#else
+	const char *project_directory = "/mnt/share/rc-runtime/test/lab";
+	const char *exec_directory = "/mnt/share/rc-runtime/test/lab/control";
+#endif
 	/***************************************************/
 	/* Part 0102--Process data && program files        */
 	/***************************************************/
@@ -89,8 +95,9 @@ int main(int argc, char **argv) {
 	std::thread writer(order_producer);
 	std::thread reader(order_consumer);
 
-	reader.join();
 	writer.join();
+	reader.join();
+	
 #if TEST_DATA_FILE_RESULT
 	/***************************************************/
 	/* Part 0103--Test result(data files)              */

@@ -485,7 +485,7 @@ int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  
 			std::cout << "INFO()" << std::endl;
 			break;
 		case robot_program_file_process::RT_WARNING:
-			std::cout << "ERROR()" << std::endl;
+			std::cout << "WARNING()" << std::endl;
 			break;
 		case robot_program_file_process::RT_ERROR:
 			std::cout << "ERROR()" << std::endl;

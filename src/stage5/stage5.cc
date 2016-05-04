@@ -45,10 +45,12 @@ int stage5(robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable, robot_pro
 	robot_program_file_process::statement_node *exec_program_head = subprogram_symtable.find_value(exec_directory);
 	if(exec_program_head == NULL)
 	{
+		printf("exec_program_head is NULL ...\n");
 	}
 	int ret;
+	// printf("Stage5 start...\n");
 	ret = stage5_core(symtable_of_symtable, subprogram_symtable, exec_program_head, exec_directory, project_directory);
-
+	// printf("Stage5 end...\n");
 	return ret;
 }
 
@@ -56,10 +58,10 @@ int stage5_core(robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable, robo
 {
 	robot_program_file_process::statement_node *pStmt = exec_program_head;
 	int ret = -10;
-
+	if(pStmt == NULL){
+	}
 	while(pStmt != NULL)
 	{
-
 		switch(pStmt->stmt_type)
 		{
 			case robot_program_file_process::ST_ASSIGN:
@@ -97,7 +99,7 @@ int stage5_core(robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable, robo
 			pStmt = pStmt->next;
 		else 
 			return ret;
-//		usleep(100);
+		usleep(100);
 	}
 	return ret;
 }

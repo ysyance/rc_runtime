@@ -1,8 +1,17 @@
 # This file is in /src
-SET(CMAKE_C_COMPILER g++)
-#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall -Wno-unused-variable -pthread")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -pthread")
-#SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
+
+# SET(CMAKE_C_COMPILER g++)
+
+SET(CMAKE_CXX_COMPILER arm-linux-gnueabi-g++)
+SET(CMAKE_C_COMPILER arm-linux-gnueabi-g++)
+
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall -Wno-unused-variable -pthread")
+# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -g  -I/home/mynfs/usr/xenomai/include -L/home/mynfs/usr/xenomai/lib")
+# SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c++0x -g  -I/home/mynfs/usr/xenomai/include -L/home/mynfs/usr/xenomai/lib")
+
+# SET(LIBRARIES libnative.so libnative.a libxenomai.so libxenomai.a libpthread_rt.so libpthread_rt.a)
+
+# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g")
 AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR} MAIN_SRC)
 AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/data_absyntax DATA_ABSYNTAX_SRC)
 AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/data_stage1_2 DATA_STAGE1_2_SRC)
@@ -25,7 +34,7 @@ ADD_SUBDIRECTORY(data_stage1_2)
 ADD_SUBDIRECTORY(program_stage1_2)
 
 ADD_EXECUTABLE(testinterpolator.exe ${STAGE6_TEST_SRC} ${STAGE6_SRC})
-ADD_EXECUTABLE(rc_runtime.exe   ${MAIN_SRC}
+ADD_EXECUTABLE(rc-runtime.exe   ${MAIN_SRC}
                                 ${DATA_ABSYNTAX_SRC}
                                 ${DATA_STAGE1_2_SRC}
                                 ${DATA_STAGE4_SRC}
