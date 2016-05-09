@@ -247,3 +247,8 @@ int program_dopath(const char *project_directory, robot_program_file_process::DE
     return(ret);
 }
 
+void error_exit(const char *file_name, int line_no) {
+    std::cerr << "\nInternal program error in file " << file_name
+        << " at line " << line_no << "\n\n\n";
+    exit(EXIT_FAILURE);
+}

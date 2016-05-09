@@ -19,5 +19,6 @@ INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src/data_absyntax
         ${PROJECT_SOURCE_DIR}/src/stage5
         ${PROJECT_SOURCE_DIR}/src/statement_interpreter
         ${PROJECT_SOURCE_DIR}/src/stage6_interpolator
-        ${PROJECT_SOURCE_DIR}/src/stage5_to_6)
+        ${PROJECT_SOURCE_DIR}/src/stage5_to_6
+        /home/mynfs/usr/xenomai/include)
 ADD_SUBDIRECTORY(src)

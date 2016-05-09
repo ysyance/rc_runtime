@@ -48,9 +48,9 @@ int stage5(robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable, robot_pro
 		printf("exec_program_head is NULL ...\n");
 	}
 	int ret;
-	// printf("Stage5 start...\n");
+	printf("Stage5 start...\n");
 	ret = stage5_core(symtable_of_symtable, subprogram_symtable, exec_program_head, exec_directory, project_directory);
-	// printf("Stage5 end...\n");
+	printf("Stage5 end...\n");
 	return ret;
 }
 
@@ -99,7 +99,7 @@ int stage5_core(robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable, robo
 			pStmt = pStmt->next;
 		else 
 			return ret;
-		usleep(100);
+		usleep(10);
 	}
 	return ret;
 }

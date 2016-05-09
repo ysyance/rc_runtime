@@ -44,7 +44,7 @@ bool regex_program_match(char *program_directory, char *program_name);
 int program_myftw(char *robot_name, const char *project_directory, robot_program_file_process::DEF_SUBPROGRAM_SYMTABLE &subprogram_symtable, robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable);
 int program_dopath(const char *project_directory, robot_program_file_process::DEF_SUBPROGRAM_SYMTABLE &subprogram_symtable, robot_data_file_process::DEF_SYM_SYM &symtable_of_symtable);
 
-
+void error_exit(const char *file_name, int line_no);
 
 
 

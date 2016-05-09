@@ -35,37 +35,43 @@
  */
 #include "preprocess.hh"
 
+#include <native/task.h>
+
+#include <signal.h>
+#include <unistd.h>
+
+/* these defines for debug  */
 #define TEST_DATA_FILE_RESULT       0
 #define TEST_PROGRAM_FILE_RESULT    0
-
-
-
-
 #define RUN_IN_PC  0
 
 
+#define RC_TASK_NAME "rc_task"
 
-void error_exit(const char *file_name, int line_no) {
-	std::cerr << "\nInternal program error in file " << file_name
-		<< " at line " << line_no << "\n\n\n";
-	exit(EXIT_FAILURE);
+RT_TASK task_desc;
+
+void thread1(){
+	while(1){
+		printf("Hello \n");
+		sleep(1);
+	}
+	
+}
+
+void thread2(){
+	while(1){
+		printf("World \n");
+		sleep(1);
+	}
 }
 
 
 
+void task_routine(void *cookie){
 
-/***************************************************/
-/***************************************************/
-/*Section 01  : Process data && program files...   */
-/*Author      : Wang Zhen                          */
-/*Create Date : 2014.12.29                         */
-/*Last Update : 2014.12.30                         */
-/***************************************************/
-/***************************************************/
+	char** argv = (char**)cookie;
 
-
-int main(int argc, char **argv) {
-
+	// for(;;){
 	/***************************************************/
 	/* Part 0101--Key intermediate data structures     */
 	/***************************************************/
@@ -95,9 +101,12 @@ int main(int argc, char **argv) {
 	std::thread writer(order_producer);
 	std::thread reader(order_consumer);
 
+	// std::thread writer(thread1);
+	// std::thread reader(thread2);	
+
 	writer.join();
 	reader.join();
-	
+
 #if TEST_DATA_FILE_RESULT
 	/***************************************************/
 	/* Part 0103--Test result(data files)              */
@@ -199,9 +208,37 @@ int main(int argc, char **argv) {
 	}
 
 #endif /*TEST_PROGRAM_FILE_RESULT */
+	// }
+	
+
+}
+
+void cleanup(void){
+	rt_task_delete(&task_desc);
+}
+
+void sig_handler(int signo){
+	if(signo == SIGINT){
+	    printf("Receive Signal No: %d \n", signo);
+	    cleanup();
+	    exit(0);
+  }
+}
 
 
 
+int main(int argc, char **argv) {
+	int err;
+
+	signal(SIGINT, sig_handler);
+	printf("RC Start ...\n");
+
+	err = rt_task_create(&task_desc, RC_TASK_NAME, 0, 80, T_JOINABLE);
+
+	if(!err){
+		rt_task_start(&task_desc, &task_routine, argv);
+	}
+ 	rt_task_join(&task_desc);
 
 	return 0;
 }

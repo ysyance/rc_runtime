@@ -1,6 +1,7 @@
 #include <iostream>
 #include <stage5_to_6.h>
 #include <program_type.hh>
+#include <thread>
 //#include <cstring>
 #include "../../data_util/symtable.hh"
 #include "../../program_util/symtable.hh"
@@ -491,13 +492,14 @@ int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  
 			std::cout << "ERROR()" << std::endl;
 			break;
 	}
-	while(order_queue.isFull());
+	while(order_queue.isFull())
+		std::this_thread::yield();
 	if(!order_queue.isFull()){
 		while(!order_queue.write(std::move(temp_order)))
 			continue;
 	}
 
-	usleep(1000);
+	usleep(100);
 	return 0;
 }
 
