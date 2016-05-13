@@ -34,11 +34,13 @@
  Pass 4: executes stage 4+1
  */
 #include "preprocess.hh"
+#include "rc.h"
 
 #include <native/task.h>
 
 #include <signal.h>
 #include <unistd.h>
+
 
 /* these defines for debug  */
 #define TEST_DATA_FILE_RESULT       0
@@ -46,32 +48,27 @@
 #define RUN_IN_PC  0
 
 
-#define RC_TASK_NAME "rc_task"
+#define RC_TASK_NAME "rc_task"		/* RC任务名 */
+#define RC_TASK_PRIORITY 80			/* RC任务优先级 */
 
-RT_TASK task_desc;
-
-void thread1(){
-	while(1){
-		printf("Hello \n");
-		sleep(1);
-	}
-	
-}
-
-void thread2(){
-	while(1){
-		printf("World \n");
-		sleep(1);
-	}
-}
+RT_TASK task_desc;					/*　RC任务描述符 */
+RCMem *rc_shm;						/* RC与PLC共享内存区指针 */
+RT_HEAP rc_heap_desc;				/* 共享内存区描述符 */
+RobotConfig *rc_conf;				/* 机器人配置信息变量指针 */
 
 
-
+/**
+ * 函数名：task_routine
+ * 函数功能：RC实时任务，其中包含连个线程：解释执行器线程和插补器线程，两个线程通过无锁环形队列（单消费者单生产者模型）联系
+ * 参数：cookie  用户给定参数
+ * 返回值：无
+ */
 void task_routine(void *cookie){
 
 	char** argv = (char**)cookie;
 
-	// for(;;){
+    rc_mem_bind(rc_shm, rc_conf);			/* rc_shm绑定共享内存区地址 */
+
 	/***************************************************/
 	/* Part 0101--Key intermediate data structures     */
 	/***************************************************/
@@ -85,10 +82,12 @@ void task_routine(void *cookie){
 	const char *project_directory = "/mnt/share/rc-runtime/test/lab";
 	const char *exec_directory = "/mnt/share/rc-runtime/test/lab/control";
 #endif
+	printf("rc task start ...\n");
 	/***************************************************/
 	/* Part 0102--Process data && program files        */
 	/***************************************************/
-	int ret = 1; 
+	int ret = 1;
+
 	ret = data_myftw(argv[1], project_directory, symtable_of_symtable);
 	std::cout << "data file return value: " << ret << std::endl;
 	ret = program_myftw(argv[1], project_directory, subprogram_symtable, symtable_of_symtable);
@@ -100,9 +99,6 @@ void task_routine(void *cookie){
 	auto order_producer = std::bind(stage5, symtable_of_symtable, subprogram_symtable, exec_directory, project_directory);
 	std::thread writer(order_producer);
 	std::thread reader(order_consumer);
-
-	// std::thread writer(thread1);
-	// std::thread reader(thread2);	
 
 	writer.join();
 	reader.join();
@@ -208,8 +204,7 @@ void task_routine(void *cookie){
 	}
 
 #endif /*TEST_PROGRAM_FILE_RESULT */
-	// }
-	
+
 
 }
 
@@ -233,7 +228,7 @@ int main(int argc, char **argv) {
 	signal(SIGINT, sig_handler);
 	printf("RC Start ...\n");
 
-	err = rt_task_create(&task_desc, RC_TASK_NAME, 0, 80, T_JOINABLE);
+	err = rt_task_create(&task_desc, RC_TASK_NAME, 0, RC_TASK_PRIORITY, T_JOINABLE);
 
 	if(!err){
 		rt_task_start(&task_desc, &task_routine, argv);
@@ -242,4 +237,3 @@ int main(int argc, char **argv) {
 
 	return 0;
 }
-

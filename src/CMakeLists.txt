@@ -30,6 +30,7 @@ AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/stage5/statement_interpreter ST
 AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/stage6_interpolator STAGE6_SRC)
 AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/stage6_interpolator/stage6_test STAGE6_TEST_SRC)
 AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/stage5_to_6 STAGE5_to_6_SRC)
+AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/plc_interface PLC_INTERFACE)
 ADD_SUBDIRECTORY(data_stage1_2)
 ADD_SUBDIRECTORY(program_stage1_2)
 
@@ -48,6 +49,6 @@ ADD_EXECUTABLE(rc-runtime.exe   ${MAIN_SRC}
                                 ${STAGE5_SRC}
                                 ${STAGE5_INTER_SRC}
                                 ${STAGE6_SRC}
-                                ${STAGE5_to_6_SRC} )
+                                ${STAGE5_to_6_SRC}
+                                ${PLC_INTERFACE})
 target_link_libraries(rc-runtime.exe ${LIBRARIES})
-

@@ -492,14 +492,16 @@ int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  
 			std::cout << "ERROR()" << std::endl;
 			break;
 	}
-	while(order_queue.isFull())
+	while(order_queue.isFull()){
 		std::this_thread::yield();
+		usleep(100);
+	}
 	if(!order_queue.isFull()){
 		while(!order_queue.write(std::move(temp_order)))
 			continue;
 	}
 
-	usleep(100);
+	usleep(10);
 	return 0;
 }
 
