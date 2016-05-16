@@ -34,7 +34,7 @@
  Pass 4: executes stage 4+1
  */
 #include "preprocess.hh"
-#include "rc.h"
+#include "plc.h"
 
 #include <native/task.h>
 
@@ -56,6 +56,9 @@ RCMem *rc_shm;						/* RC与PLC共享内存区指针 */
 RT_HEAP rc_heap_desc;				/* 共享内存区描述符 */
 RobotConfig *rc_conf;				/* 机器人配置信息变量指针 */
 
+RT_COND rc_cond_desc;               /* RC/PLC同步对象－－条件变量描述符 */
+RT_MUTEX rc_mutex_desc;             /* RC/PLC同步对象－－互斥量描述符 */
+
 
 /**
  * 函数名：task_routine
@@ -68,6 +71,7 @@ void task_routine(void *cookie){
 	char** argv = (char**)cookie;
 
     rc_mem_bind(rc_shm, rc_conf);			/* rc_shm绑定共享内存区地址 */
+	rc_syncobj_bind(&rc_mutex_desc, RC_MUTEX_NAME, &rc_cond_desc, RC_COND_NAME);    /* 绑定RC/PLC同步对象 */
 
 	/***************************************************/
 	/* Part 0101--Key intermediate data structures     */
@@ -93,119 +97,12 @@ void task_routine(void *cookie){
 	ret = program_myftw(argv[1], project_directory, subprogram_symtable, symtable_of_symtable);
 	std::cout << "program file return value: " << ret << std::endl;
 
-//	ret = stage5(symtable_of_symtable, subprogram_symtable, exec_directory, project_directory);
-//	std::cout << "stage5 return value: " << ret << std::endl;
-
 	auto order_producer = std::bind(stage5, symtable_of_symtable, subprogram_symtable, exec_directory, project_directory);
 	std::thread writer(order_producer);
 	std::thread reader(order_consumer);
 
 	writer.join();
 	reader.join();
-
-#if TEST_DATA_FILE_RESULT
-	/***************************************************/
-	/* Part 0103--Test result(data files)              */
-	/***************************************************/
-	for(robot_data_file_process::DEF_SYM_SYM::iterator i = symtable_of_symtable.begin();
-			i != symtable_of_symtable.end();
-			i++)
-	{
-		std::cout << "Data file's name is :" << i->first << "\n";
-		std::cout << "=====================\n";
-		for(robot_data_file_process::DEF_SYMTABLE::iterator j = i->second->begin(); j != i->second->end(); ++j)
-		{
-			std::cout << "Variable's name:" << j->first;
-			switch(*(j->second->id_type))
-			{
-				case robot_data_file_process::TYPE_BOOL:
-					std::cout << "||Type: BOOL" << std::endl;
-					std::cout << *(j->second->id_value.bv) << std::endl;
-					break;
-				case robot_data_file_process::TYPE_DINT:
-					std::cout << "||Type: DINT" << std::endl;
-					std::cout << *(j->second->id_value.iv) << std::endl;
-					break;
-				case robot_data_file_process::TYPE_REAL:
-					std::cout << "||Type: REAL" << std::endl;
-					std::cout << *(j->second->id_value.dv) << std::endl;
-					break;
-				case robot_data_file_process::TYPE_STRING:
-					std::cout << "||Type: STRING" << std::endl;
-					std::cout << *(j->second->id_value.sv) << std::endl;
-					break;
-				case robot_data_file_process::TYPE_AXISPOS:
-					std::cout << "||Type: AXISPOS" << std::endl;
-					j->second->id_value.apv->print();
-					break;
-				case robot_data_file_process::TYPE_CARTPOS:
-					std::cout << "||Type: CARTPOS" << std::endl;
-					j->second->id_value.cpv->print();
-					break;
-				case robot_data_file_process::TYPE_ROBAXISPOS:
-					std::cout << "||Type: ROBAXISPOS" << std::endl;
-					j->second->id_value.rapv->print();
-					break;
-				case robot_data_file_process::TYPE_AUXAXISPOS:
-					std::cout << "||Type: AUXAXISPOS" << std::endl;
-					j->second->id_value.aapv->print();
-				case robot_data_file_process::TYPE_ROBCARTPOS:
-					std::cout << "||Type: ROBCARTPOS" << std::endl;
-					j->second->id_value.rcpv->print();
-					break;
-				case robot_data_file_process::TYPE_CARTREFSYS:
-					std::cout << "||Type: CARTREFSYS" << std::endl;
-					j->second->id_value.crsv->print();
-					break;
-				case robot_data_file_process::TYPE_TOOL:
-					std::cout << "||Type: TOOL" << std::endl;
-					j->second->id_value.tv->print();
-					break;
-				case robot_data_file_process::TYPE_OVLREL:
-					std::cout << "||Type: OVLREL" << std::endl;
-					j->second->id_value.orv->print();
-					break;
-				case robot_data_file_process::TYPE_OVLABS:
-					std::cout << "||Type: OVLABS" << std::endl;
-					j->second->id_value.oav->print();
-					break;
-				case robot_data_file_process::TYPE_DYNAMIC:
-					std::cout << "||Type: DYNAMIC" << std::endl;
-					j->second->id_value.dynv->print();
-					break;
-				case robot_data_file_process::TYPE_PERCENT:
-					std::cout << "||Type: PERCENT" << std::endl;
-					j->second->id_value.pv->print();
-					break;
-				case robot_data_file_process::TYPE_PERC200:
-					std::cout << "||Type: PERC200" << std::endl;
-					j->second->id_value.p2v->print();
-					break;
-				default:
-					std::cout << "Error type!" << std::endl;
-					break;
-			}
-		}
-	}
-
-#endif /*TEST_DATA_FILE_RESULT */
-
-#if TEST_PROGRAM_FILE_RESULT
-	/***************************************************/
-	/* Part 0104--Test result(program files)           */
-	/***************************************************/
-
-	for(robot_program_file_process::DEF_SUBPROGRAM_SYMTABLE::iterator i = subprogram_symtable.begin();
-			i != subprogram_symtable.end();
-			i++)
-	{
-		std::cout << "Program file's name is :" << i->first << "\n";
-		std::cout << "=====================\n";
-	}
-
-#endif /*TEST_PROGRAM_FILE_RESULT */
-
-
 }
 
 void cleanup(void){
