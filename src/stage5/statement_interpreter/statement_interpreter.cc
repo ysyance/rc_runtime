@@ -501,7 +501,6 @@ int robot_interpreter(robot_program_file_process::ROBOT_STMT *robot_stmt,const  
 			continue;
 	}
 
-	usleep(10);
+	usleep(100);
 	return 0;
 }
-

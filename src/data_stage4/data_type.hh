@@ -268,7 +268,7 @@ struct ovlabs {
 		double linAxDist;
 		double rotAxDist;
 		bool vConst;
-		
+
 	public:
                 ovlabs():posDist(0.0), oriDist(360.0), linAxDist(10000.0),rotAxDist(360.0), vConst(false) {}
                 ovlabs(double a1, double a2, double a3, double a4, bool b1):posDist(a1), oriDist(a2), linAxDist(a3),rotAxDist(a4), vConst(b1) {}
@@ -280,8 +280,8 @@ struct ovlabs {
 			std::cout << "linAxDist:  " << linAxDist << std::endl;
 			std::cout << "rotAxDist:  " << rotAxDist << std::endl;
 			std::cout << "vConst:  " << vConst << std::endl;
-		}	
-}; 
+		}
+};
 
 // Part 06 -- Dynamic data structure
 struct dynamic {
@@ -325,8 +325,8 @@ struct dynamic {
 		}
 };
 
+
+
 }
 
 #endif
-
-

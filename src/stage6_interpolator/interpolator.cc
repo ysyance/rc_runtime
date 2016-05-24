@@ -8,6 +8,38 @@
 #define rate 57.295779513028
 #define rate2 0.017453292519943
 
+static void interp_valuetype_convert(robot_data_file_process::axispos &points_pos,
+								joint_velocity &points_velocity,
+								joint_acc &points_acc,
+								RobotInterpData &robot_interp_data){
+	robot_interp_data.size = 6;
+
+	robot_interp_data.interp_value[0].command_pos = points_pos.a1;
+	robot_interp_data.interp_value[0].command_vel = points_velocity.v_a1;
+	robot_interp_data.interp_value[0].command_acc = points_acc.a_a1;
+
+	robot_interp_data.interp_value[1].command_pos = points_pos.a2;
+	robot_interp_data.interp_value[1].command_vel = points_velocity.v_a2;
+	robot_interp_data.interp_value[1].command_acc = points_acc.a_a2;
+
+	robot_interp_data.interp_value[2].command_pos = points_pos.a3;
+	robot_interp_data.interp_value[2].command_vel = points_velocity.v_a3;
+	robot_interp_data.interp_value[2].command_acc = points_acc.a_a3;
+
+	robot_interp_data.interp_value[3].command_pos = points_pos.a4;
+	robot_interp_data.interp_value[3].command_vel = points_velocity.v_a4;
+	robot_interp_data.interp_value[3].command_acc = points_acc.a_a4;
+
+	robot_interp_data.interp_value[4].command_pos = points_pos.a5;
+	robot_interp_data.interp_value[4].command_vel = points_velocity.v_a5;
+	robot_interp_data.interp_value[4].command_acc = points_acc.a_a5;
+
+	robot_interp_data.interp_value[5].command_pos = points_pos.a6;
+	robot_interp_data.interp_value[5].command_vel = points_velocity.v_a6;
+	robot_interp_data.interp_value[5].command_acc = points_acc.a_a6;
+}
+
+
 int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data_file_process::axispos &p_end,
 		joint_velocity &v_start, joint_velocity &v_end, joint_velocity &v_target,
 		joint_acc &acc, joint_acc &dec,
@@ -135,7 +167,7 @@ int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 	k5 = time_max/time_a5;
 	k6 = time_max/time_a6;
 
-	// step2. caculate the interpolation points 
+	// step2. caculate the interpolation points
 
 	double v_tmp1_a1 = (2*distance1/k1 - v_start.v_a1*ret_value_a1.time1 - v_end.v_a1*ret_value_a1.time3)/(ret_value_a1.time1+2*ret_value_a1.time2+ret_value_a1.time3);
 	ret_value_a1.time1 = ret_value_a1.time1*k1;
@@ -224,6 +256,7 @@ int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 	robot_data_file_process::axispos tmp_point; //Attention here!
 	joint_velocity tmp_velocity;
 	joint_acc tmp_acc;
+	RobotInterpData single_robot_interp_data;
 
 	for(int i = 0; i < num-1; ++i)
 	{
@@ -235,7 +268,7 @@ int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a1 = v_start.v_a1 + acc.a_a1*t;
 			tmp_point.a1 = v_start.v_a1*t + 0.5*acc.a_a1*t*t;
 		}
-		else if(t >= t1_a1 && t < t2_a1) 
+		else if(t >= t1_a1 && t < t2_a1)
 		{
 			tmp_acc.a_a1 = 0;
 			tmp_velocity.v_a1 = v_tmp1_a1;
@@ -254,7 +287,7 @@ int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a2 = v_start.v_a2 + acc.a_a2*t;
 			tmp_point.a2 = v_start.v_a2*t + 0.5*acc.a_a2*t*t;
 		}
-		else if(t >= t1_a2 && t < t2_a2) 
+		else if(t >= t1_a2 && t < t2_a2)
 		{
 			tmp_acc.a_a2 = 0;
 			tmp_velocity.v_a2 = v_tmp1_a2;
@@ -273,7 +306,7 @@ int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a3 = v_start.v_a3 + acc.a_a3*t;
 			tmp_point.a3 = v_start.v_a3*t + 0.5*acc.a_a3*t*t;
 		}
-		else if(t >= t1_a3 && t < t2_a3) 
+		else if(t >= t1_a3 && t < t2_a3)
 		{
 			tmp_acc.a_a3 = 0;
 			tmp_velocity.v_a3 = v_tmp1_a3;
@@ -292,7 +325,7 @@ int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a4 = v_start.v_a4 + acc.a_a4*t;
 			tmp_point.a4 = v_start.v_a4*t + 0.5*acc.a_a4*t*t;
 		}
-		else if(t >= t1_a4 && t < t2_a4) 
+		else if(t >= t1_a4 && t < t2_a4)
 		{
 			tmp_acc.a_a4 = 0;
 			tmp_velocity.v_a4 = v_tmp1_a4;
@@ -311,7 +344,7 @@ int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a5 = v_start.v_a5 + acc.a_a5*t;
 			tmp_point.a5 = v_start.v_a5*t + 0.5*acc.a_a5*t*t;
 		}
-		else if(t >= t1_a5 && t < t2_a5) 
+		else if(t >= t1_a5 && t < t2_a5)
 		{
 			tmp_acc.a_a5 = 0;
 			tmp_velocity.v_a5 = v_tmp1_a5;
@@ -330,7 +363,7 @@ int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a6 = v_start.v_a6 + acc.a_a6*t;
 			tmp_point.a6 = v_start.v_a6*t + 0.5*acc.a_a6*t*t;
 		}
-		else if(t >= t1_a6 && t < t2_a6) 
+		else if(t >= t1_a6 && t < t2_a6)
 		{
 			tmp_acc.a_a6 = 0;
 			tmp_velocity.v_a6 = v_tmp1_a6;
@@ -350,9 +383,21 @@ int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 		tmp_point.a5 = tmp_point.a5*flag5 + p_start.a5;
 		tmp_point.a6 = tmp_point.a6*flag6 + p_start.a6;
 
-		points_set.push_back(tmp_point); //Attention here!
-		points_velocity.push_back(tmp_velocity);
-		points_acc.push_back(tmp_acc);
+		// std::cout << "write in ..." << std::endl;
+		// std::cout << tmp_point.a1 << " " << tmp_point.a2 << " " << tmp_point.a3 << " " << tmp_point.a4 << " " << tmp_point.a5 << std::endl;
+
+		interp_valuetype_convert(tmp_point, tmp_velocity, tmp_acc, single_robot_interp_data); /* 插补值数据结构转换 */
+
+		// for(int i = 0; i < 6; i ++){
+        //     printf("rc axis %d, pos: %f, vel: %f, acc: %f\n", i,single_robot_interp_data.interp_value[i].command_pos, single_robot_interp_data.interp_value[i].command_vel, single_robot_interp_data.interp_value[i].command_acc);
+        //     fflush(stdin);
+        // }
+
+		rc_shm_servo_write(rc_shm, &single_robot_interp_data);		/* RC向共享内存区写入插补值 */
+
+		// points_set.push_back(tmp_point); //Attention here!
+		// points_velocity.push_back(tmp_velocity);
+		// points_acc.push_back(tmp_acc);
 	}
 
 	//The last point of interpolator
@@ -376,10 +421,13 @@ int PTP_TMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 	//tmp_acc.a_a4 = -dec.a_a4;
 	//tmp_acc.a_a5 = -dec.a_a5;
 	//tmp_acc.a_a6 = -dec.a_a6;
+	std::cout << "write in ..." << std::endl;
+	interp_valuetype_convert(tmp_point, tmp_velocity, tmp_acc, single_robot_interp_data); /* 插补值数据结构转换 */
+	rc_shm_servo_write(rc_shm, &single_robot_interp_data);		/* RC向共享内存区写入插补值 */
 
-	points_set.push_back(tmp_point); //Attention here!
-	points_velocity.push_back(tmp_velocity);
-	points_acc.push_back(tmp_acc);
+	// points_set.push_back(tmp_point); //Attention here!
+	// points_velocity.push_back(tmp_velocity);
+	// points_acc.push_back(tmp_acc);
 
 	return 0;
 
@@ -392,7 +440,7 @@ int Lin_TMode_interpolator(
 		robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_end,
 		double v_start, double v_end, double v_target,
 		double acc, double dec,
-		double cycle, 
+		double cycle,
 		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set)
 {
 
@@ -414,7 +462,7 @@ int Lin_TMode_interpolator(
 	double ky = (p_start.y - p_end.y)/distance;
 	double kz = (p_start.z - p_end.z)/distance;
 
-	// step2. caculate the interpolation points 
+	// step2. caculate the interpolation points
 	int num = ceil((time1+time2+time3)/cycle);
 	double t1 = time1;
 	double t2 = time1 + time2;
@@ -444,7 +492,7 @@ int Lin_TMode_interpolator(
 			tmp_dis.b = p_start.b + (tmp_point.distance/distance)*(p_end.b - p_start.b);
 			tmp_dis.c = p_start.c + (tmp_point.distance/distance)*(p_end.c - p_start.c);
 		}
-		else if(t >= t1 && t < t2) 
+		else if(t >= t1 && t < t2)
 		{
 			tmp_point.acc = 0;
 			tmp_point.velocity = v_tmp1;
@@ -493,8 +541,8 @@ int Lin_TMode_interpolator(
 
 }
 
-int calculate_center_radius(robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_aux, robot_data_file_process::cartpos p_end, 
-		double &center_x, double &center_y, double &center_z, 
+int calculate_center_radius(robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_aux, robot_data_file_process::cartpos p_end,
+		double &center_x, double &center_y, double &center_z,
 		double &radius,
 		double &alpha, double &beta, double &gama, double &theta_distance)
 {
@@ -576,7 +624,7 @@ int calculate_center_radius(robot_data_file_process::cartpos p_start, robot_data
 	double flag_value = ix*ix_n + jy*jy_n + kz*kz_n;
 	if(flag_value >= 0)
 		theta_distance = theta;
-	else 
+	else
 		theta_distance = 2*PI - theta;
 
 	return 0;
@@ -590,7 +638,7 @@ int Circ_TMode_interpolator(
 		robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_aux, robot_data_file_process::cartpos p_end,
 		double vori_start, double vori_end, double vori_target,
 		double accori, double decori,
-		double cycle, 
+		double cycle,
 		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set)
 {
 	double center_x = 0.0, center_y = 0.0, center_z = 0.0, radius = 0.0, alpha = 0.0, beta = 0.0, gama = 0.0, theta_distance;
@@ -620,7 +668,7 @@ int Circ_TMode_interpolator(
 	std::cout << "v_start: " << vori_start << std::endl;
 	std::cout << "v_end: " << vori_end << std::endl;
 
-	// step2. caculate the interpolation points 
+	// step2. caculate the interpolation points
 	int num = ceil((time1+time2+time3)/cycle);
 	double t1 = time1;
 	double t2 = time1 + time2;
@@ -684,7 +732,7 @@ int Circ_TMode_interpolator(
 			tmp_dis.b = p_start.b + (tmp_point.distance/theta_distance)*(p_end.b - p_start.b);
 			tmp_dis.c = p_start.c + (tmp_point.distance/theta_distance)*(p_end.c - p_start.c);
 		}
-		else if(t >= t1 && t < t2) 
+		else if(t >= t1 && t < t2)
 		{
 			tmp_point.acc = 0;
 			tmp_point.velocity = v_tmp1;
@@ -881,7 +929,7 @@ int PTP_SMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 	time_max = (time_a3 > time_max) ? time_a6 : time_max;
 
 
-	// step2. caculate the interpolation points 
+	// step2. caculate the interpolation points
 	/***********************a1************************************/
 	double rate_a1 = 0.0;
 	double tmp_f1 = ret_value_a1.time1*ret_value_a1.time1*(ret_value_a1.time1 + 1.5*ret_value_a1.time2 + 2*ret_value_a1.time5 + ret_value_a1.time6  )
@@ -1161,7 +1209,7 @@ int PTP_SMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a1 = v_start.v_a1+0.5*jerk.j_a1*t*t;
 			tmp_point.a1 = v_start.v_a1*t+jerk.j_a1*t*t*t/6;
 		}
-		else if(t >= t1_a1 && t < t2_a1) 
+		else if(t >= t1_a1 && t < t2_a1)
 		{
 			tmp_jerk.j_a1 = 0;
 			tmp_acc.a_a1 = jerk.j_a1*ret_value_a1.time1;
@@ -1212,7 +1260,7 @@ int PTP_SMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a2 = v_start.v_a2+0.5*jerk.j_a2*t*t;
 			tmp_point.a2 = v_start.v_a2*t+jerk.j_a2*t*t*t/6;
 		}
-		else if(t >= t1_a2 && t < t2_a2) 
+		else if(t >= t1_a2 && t < t2_a2)
 		{
 			tmp_jerk.j_a2 = 0;
 			tmp_acc.a_a2 = jerk.j_a2*ret_value_a2.time1;
@@ -1263,7 +1311,7 @@ int PTP_SMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a3 = v_start.v_a3+0.5*jerk.j_a3*t*t;
 			tmp_point.a3 = v_start.v_a3*t+jerk.j_a3*t*t*t/6;
 		}
-		else if(t >= t1_a3 && t < t2_a3) 
+		else if(t >= t1_a3 && t < t2_a3)
 		{
 			tmp_jerk.j_a3 = 0;
 			tmp_acc.a_a3 = jerk.j_a3*ret_value_a3.time1;
@@ -1314,7 +1362,7 @@ int PTP_SMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a4 = v_start.v_a4+0.5*jerk.j_a4*t*t;
 			tmp_point.a4 = v_start.v_a4*t+jerk.j_a4*t*t*t/6;
 		}
-		else if(t >= t1_a4 && t < t2_a4) 
+		else if(t >= t1_a4 && t < t2_a4)
 		{
 			tmp_jerk.j_a4 = 0;
 			tmp_acc.a_a4 = jerk.j_a4*ret_value_a4.time1;
@@ -1365,7 +1413,7 @@ int PTP_SMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a5 = v_start.v_a5+0.5*jerk.j_a5*t*t;
 			tmp_point.a5 = v_start.v_a5*t+jerk.j_a5*t*t*t/6;
 		}
-		else if(t >= t1_a5 && t < t2_a5) 
+		else if(t >= t1_a5 && t < t2_a5)
 		{
 			tmp_jerk.j_a5 = 0;
 			tmp_acc.a_a5 = jerk.j_a5*ret_value_a5.time1;
@@ -1416,7 +1464,7 @@ int PTP_SMode_interpolator(robot_data_file_process::axispos &p_start, robot_data
 			tmp_velocity.v_a6 = v_start.v_a6+0.5*jerk.j_a6*t*t;
 			tmp_point.a6 = v_start.v_a6*t+jerk.j_a6*t*t*t/6;
 		}
-		else if(t >= t1_a6 && t < t2_a6) 
+		else if(t >= t1_a6 && t < t2_a6)
 		{
 			tmp_jerk.j_a6 = 0;
 			tmp_acc.a_a6 = jerk.j_a6*ret_value_a6.time1;
@@ -1513,7 +1561,7 @@ int Lin_SMode_interpolator(
 		double v_start, double v_end, double v_target,
 		double acc, double dec,
 		double jerk,
-		double cycle, 
+		double cycle,
 		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set)
 {
 	// step1. caculate time1, time2, time2, maybe should reset v_start, v_end
@@ -1549,7 +1597,7 @@ int Lin_SMode_interpolator(
 	double ky = (p_start.y - p_end.y)/distance;
 	double kz = (p_start.z - p_end.z)/distance;
 
-	// step2. caculate the interpolation points 
+	// step2. caculate the interpolation points
 	int num = ceil((time1+time2+time3+time4+time5+time6+time7)/cycle);
 	double t1 = time1;
 	double t2 = time1 + time2;
@@ -1594,7 +1642,7 @@ int Lin_SMode_interpolator(
 			tmp_dis.b = p_start.b + (tmp_point.distance/distance)*(p_end.b - p_start.b);
 			tmp_dis.c = p_start.c + (tmp_point.distance/distance)*(p_end.c - p_start.c);
 		}
-		else if(t >= t1 && t < t2) 
+		else if(t >= t1 && t < t2)
 		{
 			tmp_point.jerk = 0;
 			tmp_point.acc = jerk*time1;
@@ -1706,7 +1754,7 @@ int Circ_SMode_interpolator(
 		double vori_start, double vori_end, double vori_target,
 		double accori, double decori,
 		double jerkori,
-		double cycle, 
+		double cycle,
 		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set)
 {
 	double center_x = 0.0, center_y = 0.0, center_z = 0.0, radius = 0.0, alpha = 0.0, beta = 0.0, gama = 0.0, theta_distance;
@@ -1744,7 +1792,7 @@ int Circ_SMode_interpolator(
 	std::cout << "v_start: " << vori_start << std::endl;
 	std::cout << "v_end: " << vori_end << std::endl;
 
-	// step2. caculate the interpolation points 
+	// step2. caculate the interpolation points
 	int num = ceil((time1+time2+time3+time4+time5+time6+time7)/cycle);
 	double t1 = time1;
 	double t2 = time1 + time2;
@@ -1823,7 +1871,7 @@ int Circ_SMode_interpolator(
 			tmp_dis.b = p_start.b + (tmp_point.distance/theta_distance)*(p_end.b - p_start.b);
 			tmp_dis.c = p_start.c + (tmp_point.distance/theta_distance)*(p_end.c - p_start.c);
 		}
-		else if(t >= t1 && t < t2) 
+		else if(t >= t1 && t < t2)
 		{
 			tmp_point.jerk = 0;
 			tmp_point.acc = jerkori*time1;
@@ -2143,7 +2191,7 @@ int PTP_TrigMode_interpolator(robot_data_file_process::axispos &p_start, robot_d
 	k5 = time_max/time_a5;
 	k6 = time_max/time_a6;
 
-	// step2. caculate the interpolation points 
+	// step2. caculate the interpolation points
 
 	ret_value_a1.time1 = ret_value_a1.time1*k1;
 	ret_value_a1.time2 = ret_value_a1.time2*k1;
@@ -2235,7 +2283,7 @@ int PTP_TrigMode_interpolator(robot_data_file_process::axispos &p_start, robot_d
 			tmp_velocity.v_a1 = 0.5*(v_tmp1_a1+v_start.v_a1) - 0.5*(v_tmp1_a1 - v_start.v_a1)*cos(PI*t/ret_value_a1.time1);
 			tmp_point.a1 = 0.5*(v_tmp1_a1+v_start.v_a1)*t - ret_value_a1.time1*(v_tmp1_a1 - v_start.v_a1)*sin(PI*t/ret_value_a1.time1)/(2*PI);
 		}
-		else if(t >= t1_a1 && t < t2_a1) 
+		else if(t >= t1_a1 && t < t2_a1)
 		{
 			tmp_acc.a_a1 = 0;
 			tmp_velocity.v_a1 = v_tmp1_a1;
@@ -2255,7 +2303,7 @@ int PTP_TrigMode_interpolator(robot_data_file_process::axispos &p_start, robot_d
 			tmp_velocity.v_a2 = 0.5*(v_tmp1_a2+v_start.v_a2) - 0.5*(v_tmp1_a2 - v_start.v_a2)*cos(PI*t/ret_value_a2.time1);
 			tmp_point.a2 = 0.5*(v_tmp1_a2+v_start.v_a2)*t - ret_value_a2.time1*(v_tmp1_a2 - v_start.v_a2)*sin(PI*t/ret_value_a2.time1)/(2*PI);
 		}
-		else if(t >= t1_a2 && t < t2_a2) 
+		else if(t >= t1_a2 && t < t2_a2)
 		{
 			tmp_acc.a_a2 = 0;
 			tmp_velocity.v_a2 = v_tmp1_a2;
@@ -2275,7 +2323,7 @@ int PTP_TrigMode_interpolator(robot_data_file_process::axispos &p_start, robot_d
 			tmp_velocity.v_a3 = 0.5*(v_tmp1_a3+v_start.v_a3) - 0.5*(v_tmp1_a3 - v_start.v_a3)*cos(PI*t/ret_value_a3.time1);
 			tmp_point.a3 = 0.5*(v_tmp1_a3+v_start.v_a3)*t - ret_value_a3.time1*(v_tmp1_a3 - v_start.v_a3)*sin(PI*t/ret_value_a3.time1)/(2*PI);
 		}
-		else if(t >= t1_a3 && t < t2_a3) 
+		else if(t >= t1_a3 && t < t2_a3)
 		{
 			tmp_acc.a_a3 = 0;
 			tmp_velocity.v_a3 = v_tmp1_a3;
@@ -2295,7 +2343,7 @@ int PTP_TrigMode_interpolator(robot_data_file_process::axispos &p_start, robot_d
 			tmp_velocity.v_a4 = 0.5*(v_tmp1_a4+v_start.v_a4) - 0.5*(v_tmp1_a4 - v_start.v_a4)*cos(PI*t/ret_value_a4.time1);
 			tmp_point.a4 = 0.5*(v_tmp1_a4+v_start.v_a4)*t - ret_value_a4.time1*(v_tmp1_a4 - v_start.v_a4)*sin(PI*t/ret_value_a4.time1)/(2*PI);
 		}
-		else if(t >= t1_a4 && t < t2_a4) 
+		else if(t >= t1_a4 && t < t2_a4)
 		{
 			tmp_acc.a_a4 = 0;
 			tmp_velocity.v_a4 = v_tmp1_a4;
@@ -2315,7 +2363,7 @@ int PTP_TrigMode_interpolator(robot_data_file_process::axispos &p_start, robot_d
 			tmp_velocity.v_a5 = 0.5*(v_tmp1_a5+v_start.v_a5) - 0.5*(v_tmp1_a5 - v_start.v_a5)*cos(PI*t/ret_value_a5.time1);
 			tmp_point.a5 = 0.5*(v_tmp1_a5+v_start.v_a5)*t - ret_value_a5.time1*(v_tmp1_a5 - v_start.v_a5)*sin(PI*t/ret_value_a5.time1)/(2*PI);
 		}
-		else if(t >= t1_a5 && t < t2_a5) 
+		else if(t >= t1_a5 && t < t2_a5)
 		{
 			tmp_acc.a_a5 = 0;
 			tmp_velocity.v_a5 = v_tmp1_a5;
@@ -2335,7 +2383,7 @@ int PTP_TrigMode_interpolator(robot_data_file_process::axispos &p_start, robot_d
 			tmp_velocity.v_a6 = 0.5*(v_tmp1_a6+v_start.v_a6) - 0.5*(v_tmp1_a6 - v_start.v_a6)*cos(PI*t/ret_value_a6.time1);
 			tmp_point.a6 = 0.5*(v_tmp1_a6+v_start.v_a6)*t - ret_value_a6.time1*(v_tmp1_a6 - v_start.v_a6)*sin(PI*t/ret_value_a6.time1)/(2*PI);
 		}
-		else if(t >= t1_a6 && t < t2_a6) 
+		else if(t >= t1_a6 && t < t2_a6)
 		{
 			tmp_acc.a_a6 = 0;
 			tmp_velocity.v_a6 = v_tmp1_a6;
@@ -2400,7 +2448,7 @@ int Lin_TrigMode_interpolator(
 		robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_end,
 		double v_start, double v_end, double v_target,
 		double acc, double dec,
-		double cycle, 
+		double cycle,
 		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set)
 {
 	// step1. caculate time1, time2, time2, maybe should reset v_start, v_end
@@ -2429,7 +2477,7 @@ int Lin_TrigMode_interpolator(
 	double ky = (p_start.y - p_end.y)/distance;
 	double kz = (p_start.z - p_end.z)/distance;
 
-	// step2. caculate the interpolation points 
+	// step2. caculate the interpolation points
 	int num = ceil((time1+time2+time3)/cycle);
 	double t1 = time1;
 	double t2 = time1 + time2;
@@ -2457,7 +2505,7 @@ int Lin_TrigMode_interpolator(
 			tmp_dis.b = p_start.b + (tmp_point.distance/distance)*(p_end.b - p_start.b);
 			tmp_dis.c = p_start.c + (tmp_point.distance/distance)*(p_end.c - p_start.c);
 		}
-		else if(t >= t1 && t < t2) 
+		else if(t >= t1 && t < t2)
 		{
 			tmp_point.acc = 0;
 			tmp_point.velocity = v_target;
@@ -2515,7 +2563,7 @@ int Circ_TrigMode_interpolator(
 		robot_data_file_process::cartpos p_start, robot_data_file_process::cartpos p_aux, robot_data_file_process::cartpos p_end,
 		double vori_start, double vori_end, double vori_target,
 		double accori, double decori,
-		double cycle, 
+		double cycle,
 		std::vector<interpolation_point> &points_set, std::vector<robot_data_file_process::cartpos> &disp_set)
 {
 	double center_x = 0.0, center_y = 0.0, center_z = 0.0, radius = 0.0, alpha = 0.0, beta = 0.0, gama = 0.0, theta_distance;
@@ -2545,7 +2593,7 @@ int Circ_TrigMode_interpolator(
 	std::cout << "v_start: " << vori_start << std::endl;
 	std::cout << "v_end: " << vori_end << std::endl;
 
-	// step2. caculate the interpolation points 
+	// step2. caculate the interpolation points
 	int num = ceil((time1+time2+time3)/cycle);
 	double t1 = time1;
 	double t2 = time1 + time2;
@@ -2608,7 +2656,7 @@ int Circ_TrigMode_interpolator(
 			tmp_dis.b = p_start.b + (tmp_point.distance/theta_distance)*(p_end.b - p_start.b);
 			tmp_dis.c = p_start.c + (tmp_point.distance/theta_distance)*(p_end.c - p_start.c);
 		}
-		else if(t >= t1 && t < t2) 
+		else if(t >= t1 && t < t2)
 		{
 			tmp_point.acc = 0;
 			tmp_point.velocity = vori_target;

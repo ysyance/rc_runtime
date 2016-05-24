@@ -51,7 +51,7 @@
 #define RC_TASK_NAME "rc_task"		/* RC任务名 */
 #define RC_TASK_PRIORITY 80			/* RC任务优先级 */
 
-RT_TASK task_desc;					/*　RC任务描述符 */
+RT_TASK task_desc;					/* RC任务描述符 */
 RCMem *rc_shm;						/* RC与PLC共享内存区指针 */
 RT_HEAP rc_heap_desc;				/* 共享内存区描述符 */
 RobotConfig *rc_conf;				/* 机器人配置信息变量指针 */
@@ -59,10 +59,9 @@ RobotConfig *rc_conf;				/* 机器人配置信息变量指针 */
 RT_COND rc_cond_desc;               /* RC/PLC同步对象－－条件变量描述符 */
 RT_MUTEX rc_mutex_desc;             /* RC/PLC同步对象－－互斥量描述符 */
 
-
 /**
  * 函数名：task_routine
- * 函数功能：RC实时任务，其中包含连个线程：解释执行器线程和插补器线程，两个线程通过无锁环形队列（单消费者单生产者模型）联系
+ * 函数功能：RC实时任务，其中包含两个线程：解释执行器线程和插补器线程，两个线程通过无锁环形队列（单消费者单生产者模型）联系
  * 参数：cookie  用户给定参数
  * 返回值：无
  */
@@ -72,6 +71,8 @@ void task_routine(void *cookie){
 
     rc_mem_bind(rc_shm, rc_conf);			/* rc_shm绑定共享内存区地址 */
 	rc_syncobj_bind(&rc_mutex_desc, RC_MUTEX_NAME, &rc_cond_desc, RC_COND_NAME);    /* 绑定RC/PLC同步对象 */
+
+
 
 	/***************************************************/
 	/* Part 0101--Key intermediate data structures     */
@@ -125,7 +126,7 @@ int main(int argc, char **argv) {
 	signal(SIGINT, sig_handler);
 	printf("RC Start ...\n");
 
-	err = rt_task_create(&task_desc, RC_TASK_NAME, 0, RC_TASK_PRIORITY, T_JOINABLE);
+	err = rt_task_create(&task_desc, RC_TASK_NAME, 0, RC_TASK_PRIORITY, T_JOINABLE|T_CPU(1));
 
 	if(!err){
 		rt_task_start(&task_desc, &task_routine, argv);

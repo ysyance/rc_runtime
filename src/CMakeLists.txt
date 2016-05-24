@@ -6,7 +6,8 @@ SET(CMAKE_CXX_COMPILER arm-linux-gnueabi-g++)
 SET(CMAKE_C_COMPILER arm-linux-gnueabi-g++)
 
 # SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall -Wno-unused-variable -pthread")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall -Wno-unused-variable -pthread")
+# SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g -Wall -Wno-unused-variable -pthread")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -g  -pthread")
 # SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c++0x -g -I/home/mynfs/usr/xenomai/include -L/home/mynfs/usr/xenomai/lib")
 
 link_directories(/home/mynfs/usr/xenomai/lib)
@@ -34,7 +35,7 @@ AUX_SOURCE_DIRECTORY(${CMAKE_CURRENT_SOURCE_DIR}/plc_interface PLC_INTERFACE)
 ADD_SUBDIRECTORY(data_stage1_2)
 ADD_SUBDIRECTORY(program_stage1_2)
 
-ADD_EXECUTABLE(testinterpolator.exe ${STAGE6_TEST_SRC} ${STAGE6_SRC})
+# ADD_EXECUTABLE(testinterpolator.exe ${STAGE6_TEST_SRC} ${STAGE6_SRC} ${PLC_INTERFACE})
 ADD_EXECUTABLE(rc-runtime.exe   ${MAIN_SRC}
                                 ${DATA_ABSYNTAX_SRC}
                                 ${DATA_STAGE1_2_SRC}

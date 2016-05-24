@@ -100,14 +100,6 @@ void order_consumer(){
                 break;
         }
         temp_order.clear();
-        usleep(10);
+        usleep(100);
     }
 }
-
-
-
-
-
-
-
-

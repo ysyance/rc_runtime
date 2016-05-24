@@ -6,12 +6,17 @@
 #include <native/mutex.h>
 #include <native/cond.h>
 
-#define ROBOT_AXIS_COUNT 6          /* 机器人轴个数 */
-#define CIRCULAR_INTERP_QUEUE_SIZE 50   /* 环形插补队列大小 */
+#include "data_type.hh"
+#include "interpolator.hh"
 
- extern RT_HEAP rc_heap_desc;
- extern RT_COND rc_cond_desc;
- extern RT_MUTEX rc_mutex_desc;
+#define ROBOT_AXIS_COUNT 6          /* 机器人轴个数 */
+#define CIRCULAR_INTERP_QUEUE_SIZE 10   /* 环形插补队列大小 */
+
+extern RT_HEAP rc_heap_desc;
+extern RT_COND rc_cond_desc;
+extern RT_MUTEX rc_mutex_desc;
+
+
 
  /*-----------------------------------------------------------------------------
   * Robot Configuration
@@ -24,41 +29,41 @@
  /*-----------------------------------------------------------------------------
   * RC PLC Shared Memory Data Structure
   *---------------------------------------------------------------------------*/
-  typedef struct {
+  struct SingleInterpData{        /* 单轴插补值,来自RC */
       double command_pos;         /* 目标位置 */
       double command_vel;         /* 目标速度 */
       double command_acc;         /* 目标加速度 */
-  } SingleInterpData; /* 单轴插补值,来自RC */
+  } ;
 
-  typedef struct {
-  	double actual_pos;          /* 实际位置 */
+  struct SingleAxisInfo{          /* 单轴实际位置值,来自PLC  */
+  	double actual_pos;            /* 实际位置 */
       double actual_vel;          /* 实际速度 */
       double actual_acc;          /* 实际加速度 */
-  } SingleAxisInfo;  /* 单轴实际位置值,来自PLC  */
+  } ;
 
-  typedef struct {
-  	int size ;                 /* 机器人轴个数 */
+  struct RobotAxisActualInfo{     /* 机器人各个轴的信息 */
+  	int size ;                    /* 机器人轴个数 */
   	SingleAxisInfo axis_info[ROBOT_AXIS_COUNT];    /* 对应各个轴的位置，速度，加速度信息 */
-  } RobotAxisActualInfo;  /* 机器人各个轴的信息 */
+  } ;
 
-  typedef struct {
-  	int size;			/* 机器人轴个数 */
+  struct RobotInterpData{         /* 机器人各个轴的插补值 */
+  	int size;			          /* 机器人轴个数 */
   	SingleInterpData interp_value[ROBOT_AXIS_COUNT];   /* 对应各个轴的插补值 */
-  } RobotInterpData;      /* 机器人各个轴的插补值 */
+  } ;
 
-  typedef struct {
-  	int queue_size;        /* 环形插补队列大小 */
-  	int head;              /* 环形队列头指针（实际是data[]数组的索引，即0～queue_size-1之间），RC由此写入插补值 */
-  	int tail;              /* 环形队列尾指针（实际是data[]数组的索引，即0～queue_size-1之间），PLC由此读出插补值 */
+  struct CircularInterpQueue{/* 环形插补队列 */
+  	int queue_size;          /* 环形插补队列大小 */
+  	int head;                /* 环形队列头指针（实际是data[]数组的索引，即0～queue_size-1之间），RC由此写入插补值 */
+  	int tail;                /* 环形队列尾指针（实际是data[]数组的索引，即0～queue_size-1之间），PLC由此读出插补值 */
   	RobotInterpData data[CIRCULAR_INTERP_QUEUE_SIZE];  /* 环形队列中存放插补值的实际数组 */
-  } CircularInterpQueue;  /* 环形插补队列 */
+  } ;
 
-  typedef struct {
-  	RobotAxisActualInfo actual_info;       /* 机器人各个轴实际位置，速度，加速度值 */
-  	CircularInterpQueue interp_queue;      /* 机器人插补值队列 */
-  } RCMem;    /* RC与PLC共享内存数据结构 */
+  struct RCMem{                              /* RC与PLC共享内存数据结构 */
+  	RobotAxisActualInfo actual_info;         /* 机器人各个轴实际位置，速度，加速度值 */
+  	CircularInterpQueue interp_queue;        /* 机器人插补值队列 */
+  } ;
 
-
+ extern RCMem *rc_shm;						/* RC与PLC共享内存区指针 */
 
 /*-----------------------------------------------------------------------------
  * RC Shared Memory　Create Operation Funcions
@@ -111,6 +116,7 @@ inline void io_mem_unbind(RCMem *rcmem, RobotConfig *config) {
      }
  }
 
-
+void rc_shm_servo_write(RCMem *rc_shm, RobotInterpData *axis_command_info);
+void rc_shm_servo_read(RCMem *rc_shm, RobotAxisActualInfo *axis_actual_info);
 
 #endif
