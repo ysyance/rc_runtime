@@ -4,6 +4,8 @@
 #include "rc_exception.h"
 #include "rc_logger.h"
 
+#include "opmanager.hh"
+
 
 class RCBaseStatement {
 public:
@@ -140,13 +142,73 @@ public:
 											 {}
 public:
 	virtual int execute(void *cookie) override {
+		ROBOT_INST temp_inst;			// define a temp robot inst
+		rc_core.cur_linenum = lineno;
+		STEPCHECK(rc_core.cur_linenum);
 		switch(type) {
 			case MOVJ: {
 				LOGGER_TRACE(lineno, "MOVJ");
+				/* step 1: setting the robot inst type */
+				temp_inst.ri_type = PTP;
+				/* step 2: specify the first point(the current position) of MOVJ inst  */	
+				AxisPos_Deg p1(6);
+				rt_mutex_acquire(&rc_mutex_desc, TM_INFINITE);
+				for(int i = 0; i < 6; i ++) {
+					p1[i] = -rc_shm->actual_info.axis_info[i].actual_pos;
+				}
+				p1[1] = rc_shm->actual_info.axis_info[1].actual_pos;
+				rt_mutex_release(&rc_mutex_desc);
+
+				temp_inst.args[0].apv = p1;
+				/* step 3: specify the second point(the target position) of MOVJ inst  */	
+				AxisPos_Deg p2(6);
+				int posIndex = addrspace[endpointIndex].v.value_ap;
+				for(int i = 0; i < 6; i ++) {
+					p2[i] = apaddr[posIndex][i];
+				}
+				temp_inst.args[1].apv = p2;
+
+				/* step 4: insert inst into inst-buffer */
+				inst_buffer_write(temp_inst);	
 				break;
 			}
 			case MOVL: {
 				LOGGER_TRACE(lineno, "MOVL");
+				/* step 1: setting the robot inst type */
+				temp_inst.ri_type = LIN;
+				/* step 2: specify the first point(the current position) of MOVL inst  */	
+				AxisPos_Deg p1(6);
+				rt_mutex_acquire(&rc_mutex_desc, TM_INFINITE);
+				for(int i = 0; i < 6; i ++) {
+					p1[i] = -rc_shm->actual_info.axis_info[i].actual_pos;
+				}
+				p1[1] = rc_shm->actual_info.axis_info[1].actual_pos;
+				rt_mutex_release(&rc_mutex_desc);
+
+				XyzPose Oripos;
+				calForwardKin(p1, rc_runtime_param.Axis, Oripos);
+				temp_inst.args[0].cpv = Oripos;
+
+				/* step 3: specify the second point(the target position) of MOVL inst  */
+				XyzPose Tarpos;
+				if(addrspace[endpointIndex].type == TTRPOSE) {
+					int posIndex = addrspace[endpointIndex].v.value_cp;
+					for(int i = 0; i < 6; i ++) {
+						Tarpos[i] = cpaddr[posIndex][i];
+					}
+				} else if(addrspace[endpointIndex].type == TJTPOSE) {
+					int posIndex = addrspace[endpointIndex].v.value_ap;
+					AxisPos_Deg p2(6);
+					for(int i = 0; i < 6; i ++) {
+						p2[i] = apaddr[posIndex][i];
+					}
+					calForwardKin(p2, rc_runtime_param.Axis, Tarpos);
+				}
+				
+				temp_inst.args[1].cpv = Tarpos;
+				/* step 4: insert inst into inst-buffer */
+				inst_buffer_write(temp_inst);
+
 				break;
 			}
 			case MOVC: {

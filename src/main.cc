@@ -148,21 +148,19 @@ static void executor_routine(void *cookie){
 		if(rc_core.startup) { 			/* 判断是否启动运行 */
 			rc_core.exec_run_mode = 1;
 
-			// robot_data_file_process::DEF_SYM_SYM symtable_of_symtable;
-			// robot_program_file_process::DEF_SUBPROGRAM_SYMTABLE subprogram_symtable;
+			RCInterpreter executor(rc_core.cur_project, rc_core.cur_program);
 
-			// char *project_directory = (char*)strdup(rc_core.cur_project.c_str());
-			// char *exec_directory = (char*)strdup(rc_core.cur_program.c_str());
-
-			// int ret = 1;
-			// ret = data_myftw(project_directory, project_directory, symtable_of_symtable);
-			// std::cout << "data file return value: " << ret << std::endl;
-			// ret = program_myftw(project_directory, project_directory, subprogram_symtable, symtable_of_symtable);
-			// std::cout << "program file return value: " << ret << std::endl;
-
-			// // STEPCHECK(rc_core.cur_linenum);			// 解释执行器起点
-			// auto order_producer = std::bind(stage5, symtable_of_symtable, subprogram_symtable, exec_directory, project_directory);
-			// order_producer();
+			try{
+				executor.compile();
+				STEPCHECK(1);
+				executor.execute();
+			} catch(rc_exception &e) {
+				e.what();
+				longjmp(exec_startpoint, 0);        /* 跳转至解释器起点 */
+			} catch(std::exception &e) {
+				std::cout << "C++ runtime exception" << std::endl;
+				longjmp(exec_startpoint, 0);        /* 跳转至解释器起点 */
+			}
 		}
 		rt_task_sleep(1000000);
 	}
@@ -209,7 +207,7 @@ static void manager_routine(void *cookie){
 
 	rt_queue_create(&mq_rc_exec_desc, MQ_RC_EXEC_NAME, 50, Q_UNLIMITED, Q_FIFO);
 	rt_queue_create(&mq_rc_manager_desc, MQ_RC_MANAGER_NAME, 50, Q_UNLIMITED, Q_FIFO);
-	rt_queue_create(&mq_rc_rsi_desc, MQ_RC_RSI_NAME, 50, Q_UNLIMITED, Q_FIFO);
+	// rt_queue_create(&mq_rc_rsi_desc, MQ_RC_RSI_NAME, 50, Q_UNLIMITED, Q_FIFO);
 
 	rt_mutex_create(&inst_mutex_desc, INST_MUTEX_NAME);
 	rt_cond_create(&inst_cond_desc, INST_COND_NAME);
@@ -217,12 +215,12 @@ static void manager_routine(void *cookie){
 	err = rt_task_create(&rc_executor_desc, RC_EXECUTOR_NAME, 0, RC_EXECUTOR_PRIORITY, T_JOINABLE|T_FPU|T_CPU(1));
 	err = rt_task_create(&rc_supervisor_desc, RC_SUPERVISOR_NAME, 0, RC_SUPERVISOR_PRIORITY, T_JOINABLE|T_CPU(1));
 	err = rt_task_create(&rc_interp_desc, RC_INTERP_NAME, 0, RC_INTERP_PRIORITY, T_JOINABLE|T_FPU|T_CPU(1));
-	err = rt_task_create(&rc_rsi_desc, RC_RSI_NAME, 0, RC_RSI_PRIORITY, T_JOINABLE|T_FPU);
+	// err = rt_task_create(&rc_rsi_desc, RC_RSI_NAME, 0, RC_RSI_PRIORITY, T_JOINABLE|T_FPU);
 	if(!err){
 		rt_task_start(&rc_executor_desc, &executor_routine, NULL);
 		rt_task_start(&rc_interp_desc, &interp_routine, NULL);
 		rt_task_start(&rc_supervisor_desc, &supervisor_routine, NULL);
-		rt_task_start(&rc_rsi_desc, &rsi_routine, NULL);
+		// rt_task_start(&rc_rsi_desc, &rsi_routine, NULL);
 	}
 
 	rc_core_init();					// rc状态信息初始化
@@ -240,7 +238,6 @@ void cleanup(void){
 	rt_queue_delete(&mq_rc_exec_desc);
 	rt_queue_delete(&mq_rc_manager_desc);
 	rt_queue_delete(&mq_rc_rsi_desc);
-	// close(connfd);
 }
 
 void sig_handler(int signo){
@@ -249,7 +246,7 @@ void sig_handler(int signo){
 	    cleanup();
 	    exit(0);
   	} else {
-
+  		exit(0);
 	}
 }
 
@@ -260,21 +257,10 @@ int main(int argc, char **argv) {
 	signal(SIGUSR1, sig_handler);
 	printf("RC Start ...\n");
 
-	// int err = rt_task_create(&rc_manager_desc, RC_MANAGER_NAME, 0, RC_MANAGER_PRIORITY, T_JOINABLE|T_CPU(1));
+	int err = rt_task_create(&rc_manager_desc, RC_MANAGER_NAME, 0, RC_MANAGER_PRIORITY, T_JOINABLE|T_CPU(1));
 
-	// if(!err){
-	// 	rt_task_start(&rc_manager_desc, &manager_routine, argv);
-	// }
-	// RSIMain();
-
-	RCInterpreter executor("system", "system/sample");
-	try{
-		executor.compile();
-		executor.execute();
-	} catch(rc_exception &e) {
-		e.what();
-	} catch(std::exception &e) {
-		std::cout << "C++ runtime exception" << std::endl;
+	if(!err){
+		rt_task_start(&rc_manager_desc, &manager_routine, argv);
 	}
 
 	pause();

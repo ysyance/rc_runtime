@@ -4,9 +4,9 @@
 PROJECT(RC_RUNTIME)
 CMAKE_MINIMUM_REQUIRED(VERSION 2.8)
 SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_SOURCE_DIR})
-INCLUDE_DIRECTORIES(
+INCLUDE_DIRECTORIES(${PROJECT_SOURCE_DIR}/src
         ${PROJECT_SOURCE_DIR}/src/rcinterpolator
-        ${PROJECT_SOURCE_DIR}/src/plc_interface
+        ${PROJECT_SOURCE_DIR}/src/plcInterface
         ${PROJECT_SOURCE_DIR}/src/rcinterpolator/estun
         ${PROJECT_SOURCE_DIR}/src/teachbox
         ${PROJECT_SOURCE_DIR}/src/RSI

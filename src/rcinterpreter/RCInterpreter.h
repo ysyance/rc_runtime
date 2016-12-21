@@ -47,7 +47,7 @@ public:
 		dir = opendir(projName.c_str());
 		if(dir != NULL) {
 
-			std::ifstream dataFile(programName + ".tid");     
+			std::ifstream dataFile(programName + ".dat");     
 			std::ifstream codeFile(programName + ".tip"); 
 
 			compileOnePragam(programName, symbolTable, dataFile, codeFile);
@@ -89,6 +89,8 @@ public:
 
 		/* *************************   add to progList    ************************** */
 		progList.insert({name, code});
+		/* JUST FOR DEBUG */
+		Utility::printfCodeShadow(code);
 	}
 
 public:
