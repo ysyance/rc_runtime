@@ -1,8 +1,0 @@
-// KAIROVersion 2.10
-//PTP(ap0)
-PTP(ap1)
-//ArcOn(TRUE, 4.0, 4.0, 6.0, 0)
-PTP(cp0)
-WaitTime(1000)
-//ArcOff(2.5, 5.0, 3.0, 50)
-PTP(cp3)

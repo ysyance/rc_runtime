@@ -1,5 +1,0 @@
-// KAIROVersion 2.10
-PTP(ap1)
-Lin(cp3)
-OnDistance(FROMBEGIN, 1200.0, 0)
-Lin(cp4)

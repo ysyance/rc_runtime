@@ -1,8 +1,0 @@
-// KAIROVersion 2.10
-Tool(tool_720)
-PTP(ap0)
-Lin(cp0)
-//SetWeavingParams(2.0, 5.0, 0.0, 0.0, SINEWEAVE)
-//Weaving(TRUE, World, cp0, cp2)
-Lin(cp2)
-//Weaving(FALSE, World)

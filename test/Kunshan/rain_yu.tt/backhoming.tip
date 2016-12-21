@@ -1,4 +1,0 @@
-// KAIROVersion 2.10
-RefRobotAxis(A1)
-RefRobotAxisAsync(A1)
-WaitRefFinished()

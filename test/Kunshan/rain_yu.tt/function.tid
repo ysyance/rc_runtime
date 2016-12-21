@@ -1,4 +1,0 @@
-w0 : DWORD := 0
-str0 : STRING := ""
-w1 : DWORD := 0
-str1 : STRING := ""

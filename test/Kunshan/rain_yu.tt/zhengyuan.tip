@@ -1,5 +1,0 @@
-// KAIROVersion 2.10
-LOOP 10 DO
-PTP(cp0)
-Circ(cp3, cp4)
-END_LOOP

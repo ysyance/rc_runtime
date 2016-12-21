@@ -1,4 +1,0 @@
-// KAIROVersion 2.10
-Tool(t_BiaoDing)
-PTP(cp2)
-Circ(cp0, cp1)

@@ -1,4 +1,0 @@
-// KAIROVersion 2.10
-Info("i am yushaoxing!", w0, str0)
-Warning("So  bad!", w1, str1)
-Error("it is  dangerous!")

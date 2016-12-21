@@ -1,6 +1,0 @@
-// KAIROVersion 2.10
-Tool(tool_yu)
-PTP(ap0)
-TriTeachPoint(cp3, cp4, vector3d, vector3d0)
-TriCorrectionRoutine()
-PTP(ap1)

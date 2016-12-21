@@ -1,8 +1,0 @@
-// KAIROVersion 2.10
-PTP(ap0)
-RefSys(crs1)
-Lin(cp0)
- //RefSys(crs1)
-Lin(cp3)
-Lin(cp4)
-Lin(cp5)

@@ -4,12 +4,38 @@
 #include <native/task.h>
 #include <native/event.h>
 #include <native/queue.h>
+#include <native/mutex.h>
+#include <native/cond.h>
 
 #include <iostream>
 #include <string>
 #include <setjmp.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <errno.h>
+#include <string.h>
+#include <unistd.h>
+#include <netdb.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <sys/types.h>
+#include <arpa/inet.h>
 
-#include "preprocess.hh"
+#include "inst_type.h"
+#include "Interpolation.hh"
+
+#include "rclinterface.h"
+
+
+#define PORTNUMBER  8899  // 与示教盒连接端口号
+
+extern int connfd;          // 与示教盒连接socket描述符
+
+int teach_conn_init();        // 与示教盒连接初始化
+
+
+#define RC_SUPERVISOR_PERIODE  100000000       // RC监控器循环周期
+
 
 // RC运行模式
 enum RcMode{
@@ -20,7 +46,7 @@ enum RcMode{
 // RC运行管理器控制解释器命令
 enum RcCommand{
     CMD_START,          // 开始运行
-    CMD_STEP,           // 单步运行
+    CMD_NEXT,           // 单步运行
     CMD_RUN,            // 自动运行
     CMD_RESET,          // 返回程序起点
     CMD_STOP            // 停止运行
@@ -35,12 +61,29 @@ enum  RcStatusMachine{
     STATUS_PAUSE        // 暂停态
 };
 
-extern RT_QUEUE mq_manager2exec_desc;        // 运行管理器 ---> 解释器 消息队列描述符
-extern RT_QUEUE mq_exec2manager_desc;        // 解释器 ---> 运行管理器 消息队列描述符
-#define MQ_MANAGER2EXEC    "mq_manager2exec"  // 运行管理器 ---> 解释器 消息队列名
-#define MQ_EXEC2MANAGER    "mq_exec2manager"  // 解释器 ---> 运行管理器 消息队列名
+
+extern RT_QUEUE mq_rc_exec_desc;                    // RC解释器 消息队列描述符
+#define MQ_RC_EXEC_NAME    "mq_rc_exec"             // RC解释器 消息队列名
+
+extern RT_QUEUE mq_rc_manager_desc;                 // RC运行管理器 消息队列描述符
+#define MQ_RC_MANAGER_NAME    "mq_rc_manager"       // RC运行管理器 消息队列名
+
+extern RT_QUEUE mq_rc_interp_desc;                  // RC插补器 消息队列描述符
+#define MQ_RC_INTERP_NAME    "mq_rc_interp"         // RC插补器 消息队列名
+
+extern RT_QUEUE mq_plc_desc;                        // PLC 消息队列描述符
+#define MQ_PLC_NAME    "mq_plc"                     // PLC 消息队列名
+
+extern RT_QUEUE mq_rc_rsi_desc;                     // RSI 消息队列描述符 
+#define MQ_RC_RSI_NAME "mq_rc_rsi"                  // RSI 消息队列名
 
 
+extern RT_COND inst_cond_desc;               /* 同步对象－－条件变量描述符 */
+extern RT_MUTEX inst_mutex_desc;             /* 同步对象－－互斥量描述符 */
+#define INST_COND_NAME   "inst_cond"
+#define INST_MUTEX_NAME  "inst_mutex"
+extern ROBOT_INST robot_inst_buffer_code;              // inst buffer
+extern bool robot_inst_buffer_flag ;                   // inst buffer flag
 
 
 // 运行管理器核心数据结构——当前RC运行状态信息数据
@@ -51,48 +94,218 @@ struct RCOperationCtrl{
 
     std::string cur_project;        // 当前工程
     std::string cur_program;        // 当前程序
-    robot_program_file_process::statement_node *exec_program_head; // 当前程序头指针
-    robot_program_file_process::statement_node *pc;     // 程序指针PC
+    // robot_program_file_process::statement_node *exec_program_head; // 当前程序头指针
+    // robot_program_file_process::statement_node *pc;     // 程序指针PC
     int cur_linenum;                    // 当前指令对应程序文件行号
-    int exec_run_mode;              // 当前程序运行状态，0:待机态，1:执行态，2:等待态
+    int exec_run_mode;              // 当前程序运行状态，0:待机态，1:执行态
     RcStatusMachine  status;        // RC状态机
+    int interp_status;              // 0:standy, 1:run
+    int prog_ready;
+
+    int jog_mode;
+    JogProc procedure;  
+    int jog_startup;
+
+    double vper;
+    double aper;
+    double Ts;
+
+    int coordinate;                 // 0: joint 1: base 2: tool
 public:
-    // RCOperationCtrl():mode(OP_TEACH), startup(0), stepflag(0),
-    //                 cur_project(NULL), cur_program(NULL), cur_linenum(0),
-    //                 exec_program_head(NULL), pc(NULL),exec_run_mode(0)
-    // {}
+    RCOperationCtrl():mode(OP_TEACH), startup(0), stepflag(1),
+                    cur_linenum(0),exec_run_mode(0),vper(5), aper(40),Ts(0.008),
+                    jog_mode(0), coordinate(0), procedure(JOG_STOP)
+    {}
 
 };
 
+extern RobotConfig  rc_runtime_param;
 extern RCOperationCtrl rc_core;         /* RC核心管理器 */
-extern jmp_buf exec_startpoint;			/* 解释执行器起点 */
-extern void* rc_cmd;                    /* RC控制命令 */
+
+extern jmp_buf exec_startpoint;         /* 解释执行器起点 */
+extern jmp_buf interp_startpoint;       /* RC插补器起点 */
+extern jmp_buf rsi_startpoint;          /* RSI实时任务起点 */
 
 
-#define STEPCHECK(linenum)     {if(!rc_core.startup || rc_core.stepflag) {  /* 当前处于停止模式或单步运行模式，进入消息等待*/  \
-                                do{                                                                                  \
-                                    void *line = rt_queue_alloc(&mq_exec2manager_desc, 4);   /* 分配4个字节内存存放行号 */      \
-                                    (*(int*)line) = linenum;                                                          \
-                                    rt_queue_send(&mq_exec2manager_desc, line, 1, Q_NORMAL);  /* 返回行号给管理器  */        \
-                                    int len = rt_queue_receive(&mq_manager2exec_desc, &rc_cmd, TM_INFINITE);   /* 等待管理器命令 */\
-                                    printf("received message> len=%d bytes, cmd=%d\n", len, *((const char *)rc_cmd));       \
-                                    char cmd = *((const char *)rc_cmd);                                               \
-                                    switch(cmd) {                                                                       \
-                                        case CMD_STEP:                                                              \
-                                        break;                                                                          \
-                                        case CMD_RESET:                                                                 \
-                                            rc_core.cur_linenum = 1;                                                \
-                                            longjmp(exec_startpoint, 0);        /* 跳转至解释器起点 */                     \
-                                        break;                                                                      \
-                                        default:                                                                    \
-                                        break;                                                                      \
-                                    }                                                                               \
-                                    rt_queue_free(&mq_manager2exec_desc, rc_cmd);            /* 释放消息内存 */                    \
-                                } while(!rc_core.startup);                                                          \
-                            }                                                                                       \
-                        }
+int rc_core_init();                     // RC运行状态信息初始化
 
 
+inline void STEPCHECK(int linenum)  {
+    int flag = 0;    
+    void *line ;                                      
+    do{ 
+        void* rc_cmd;                    /* RC控制命令 */                   
+        int len = rt_queue_receive(&mq_rc_exec_desc, &rc_cmd, TM_INFINITE);   /* 等待管理器命令 */
+        printf("received message> len=%d bytes, cmd=%d\n", len, *((const char *)rc_cmd));       
+        char cmd = *((const char *)rc_cmd);                                               
+        switch(cmd) {                                                                       
+            case CMD_START:   
+                flag = 0;    
+                std::cout << "===========  line : " << linenum  << "  ============" << std::endl;   
+                send_filename_and_ptr(linenum, rc_core.cur_program);
+                     
+                break;   
+            case CMD_NEXT:
+                std::cout << "===========  line : " << linenum  << "  ============" << std::endl;  
+                send_filename_and_ptr(linenum, rc_core.cur_program);
+                       
+                if(rc_core.stepflag) {
+                    flag = 1;
+                } else {
+
+                }
+                break;                                                                       
+            case CMD_RESET:                                                                 
+                rc_core.cur_linenum = 1;                                                
+                longjmp(exec_startpoint, 0);        /* 跳转至解释器起点 */                     
+                break;                                                                      
+            default:                                                                    
+                break;                                                                      
+            }                                                                               
+            rt_queue_free(&mq_rc_exec_desc, rc_cmd);            /* 释放消息内存 */       
+    } while(flag || !rc_core.startup);                                                          
+}                                                                                       
+
+inline void inst_buffer_write(ROBOT_INST &temp_inst) {
+    rt_mutex_acquire(&inst_mutex_desc, TM_INFINITE); 
+    robot_inst_buffer_code = temp_inst;
+    robot_inst_buffer_flag = true;
+    rt_cond_signal(&inst_cond_desc);
+    rt_mutex_release(&inst_mutex_desc);       /* 释放同步互斥量 */
+}
+
+inline void inst_buffer_read(ROBOT_INST &temp_inst) {
+    rt_mutex_acquire(&inst_mutex_desc, TM_INFINITE); 
+    while(robot_inst_buffer_flag == false) {
+        rt_cond_wait(&inst_cond_desc, &inst_mutex_desc, TM_INFINITE);
+    }
+    temp_inst = robot_inst_buffer_code;
+    robot_inst_buffer_flag = false;
+    rt_mutex_release(&inst_mutex_desc);       /* 释放同步互斥量 */
+}
+
+inline void init_runtime_param(){
+    rc_runtime_param.axis_count = 6;
+    rc_runtime_param.robot_type = ESTUN_ER4;
+
+    rc_runtime_param.Axis[0].DH_p.Theta = 0;
+    rc_runtime_param.Axis[0].DH_p.d = 505;
+    rc_runtime_param.Axis[0].DH_p.a = 150;
+    rc_runtime_param.Axis[0].DH_p.Alpha = -90;
+    rc_runtime_param.Axis[0].DH_p.offset = 0;
+
+    rc_runtime_param.Axis[0].Lim_p.vellim = 155;
+    rc_runtime_param.Axis[0].Lim_p.acclim = 200;
+    rc_runtime_param.Axis[0].Lim_p.pos_min = -180;
+    rc_runtime_param.Axis[0].Lim_p.pos_max = 180;
+
+    rc_runtime_param.Axis[1].DH_p.Theta = 0;
+    rc_runtime_param.Axis[1].DH_p.d = 0;
+    rc_runtime_param.Axis[1].DH_p.a = 610;
+    rc_runtime_param.Axis[1].DH_p.Alpha = 0;
+    rc_runtime_param.Axis[1].DH_p.offset = -90;
+
+    rc_runtime_param.Axis[1].Lim_p.vellim = 155;
+    rc_runtime_param.Axis[1].Lim_p.acclim = 200;
+    rc_runtime_param.Axis[1].Lim_p.pos_min = -70;
+    rc_runtime_param.Axis[1].Lim_p.pos_max = 160;
+
+    rc_runtime_param.Axis[2].DH_p.Theta = 0;
+    rc_runtime_param.Axis[2].DH_p.d = 0;
+    rc_runtime_param.Axis[2].DH_p.a = 150;
+    rc_runtime_param.Axis[2].DH_p.Alpha = 90;
+    rc_runtime_param.Axis[2].DH_p.offset = 0;
+
+    rc_runtime_param.Axis[2].Lim_p.vellim = 230;
+    rc_runtime_param.Axis[2].Lim_p.acclim = 200;
+    rc_runtime_param.Axis[2].Lim_p.pos_min = -200;
+    rc_runtime_param.Axis[2].Lim_p.pos_max = 80;
+
+    rc_runtime_param.Axis[3].DH_p.Theta = 0;
+    rc_runtime_param.Axis[3].DH_p.d = -675.5;
+    rc_runtime_param.Axis[3].DH_p.a = 0;
+    rc_runtime_param.Axis[3].DH_p.Alpha = -90;
+    rc_runtime_param.Axis[3].DH_p.offset = 0;
+
+    rc_runtime_param.Axis[3].Lim_p.vellim = 360;
+    rc_runtime_param.Axis[3].Lim_p.acclim = 200;
+    rc_runtime_param.Axis[3].Lim_p.pos_min = -170;
+    rc_runtime_param.Axis[3].Lim_p.pos_max = 170;
+
+    rc_runtime_param.Axis[4].DH_p.Theta = 0;
+    rc_runtime_param.Axis[4].DH_p.d = 0;
+    rc_runtime_param.Axis[4].DH_p.a = 0;
+    rc_runtime_param.Axis[4].DH_p.Alpha = 90; 
+    rc_runtime_param.Axis[4].DH_p.offset = 0;
+
+    rc_runtime_param.Axis[4].Lim_p.vellim = 200;
+    rc_runtime_param.Axis[4].Lim_p.acclim = 200;
+    rc_runtime_param.Axis[4].Lim_p.pos_min = -135;
+    rc_runtime_param.Axis[4].Lim_p.pos_max = 135;
+
+    rc_runtime_param.Axis[5].DH_p.Theta = 0;
+    rc_runtime_param.Axis[5].DH_p.d = -136;
+    rc_runtime_param.Axis[5].DH_p.a = 0;
+    rc_runtime_param.Axis[5].DH_p.Alpha = 180; 
+    rc_runtime_param.Axis[5].DH_p.offset = 0;
+
+    rc_runtime_param.Axis[5].Lim_p.vellim = 300;
+    rc_runtime_param.Axis[5].Lim_p.acclim = 200;
+    rc_runtime_param.Axis[5].Lim_p.pos_min = -360;
+    rc_runtime_param.Axis[5].Lim_p.pos_max = 360;
+
+
+}
+
+
+inline int interp_step(AxisPos_Deg &onepoint){
+    void *request;
+    rt_queue_receive(&mq_rc_interp_desc, &request, TM_INFINITE);
+    char cmd = *((const char *)request); 
+    switch(cmd) {
+        case 1:
+            for(int i = 0; i < onepoint.size(); i ++) {
+                rc_shm->interp_data.interp_value[i].command_pos = -onepoint[i];
+            }
+            rc_shm->interp_data.interp_value[1].command_pos = onepoint[1];
+            rt_queue_free(&mq_rc_interp_desc, request);
+            break;
+        case 2:
+            rt_queue_free(&mq_rc_interp_desc, request);
+            longjmp(interp_startpoint, 0);        /* 跳转至interp起点 */    
+            break;
+        default:
+            break;
+    }
+
+    void *msg ;
+    msg = rt_queue_alloc(&mq_plc_desc, 1);
+    (*(char*)msg) = 2;
+    rt_queue_send(&mq_plc_desc, msg, 1, Q_NORMAL);   
+}
+
+
+inline int send_cmd_to_exec(RcCommand command) {
+    void *cmd ;
+    cmd = rt_queue_alloc(&mq_rc_exec_desc, 1);
+    (*(char*)cmd) = command;
+    rt_queue_send(&mq_rc_exec_desc, cmd, 1, Q_NORMAL);
+}
+
+
+inline int send_cmd_to_interp(int command) {
+    void *cmd ;
+    cmd = rt_queue_alloc(&mq_rc_interp_desc, 1);
+    (*(char*)cmd) = command;
+    rt_queue_send(&mq_rc_interp_desc, cmd, 1, Q_NORMAL);
+}
+
+inline int rsi_waitfor_run() {
+    void *request;
+    rt_queue_receive(&mq_rc_rsi_desc, &request, TM_INFINITE);
+    char cmd = *((const char *)request); 
+    return cmd;
+}
 
 
 

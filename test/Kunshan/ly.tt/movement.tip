@@ -1,8 +1,0 @@
-// KAIROVersion 2.10
-PTP(ap0)
-//PTPRel(ad0)
-//WaitIsFinished(100)
-//WaitJustInTime()
-//StopRobot()
-Lin(cp0)
-//LinRel(cd0)

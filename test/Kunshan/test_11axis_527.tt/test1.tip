@@ -1,6 +1,0 @@
-// KAIROVersion 2.10
-PTP(cp_TableUp)
-PTP(point_MID)
-Tool(t0)
-RefSys(crsa0_W)
-WaitTime(1000)

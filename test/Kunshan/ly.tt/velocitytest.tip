@@ -1,4 +1,0 @@
-// KAIROVersion 2.10
-PTP(ap1)
-Lin(ap1, d0)
-Lin(ap2, d0)

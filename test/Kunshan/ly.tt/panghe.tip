@@ -1,6 +1,0 @@
-// KAIROVersion 2.10
-PTP(ap0)
-LOOP 10 DO
-   PTP(ap1)
-   PTP(ap2)
-END_LOOP

@@ -1,5 +1,0 @@
-// KAIROVersion 2.10
-PTP(ap0)
-Lin(cp0)
-Circ(cp3, cp4)
-Lin(cp5)

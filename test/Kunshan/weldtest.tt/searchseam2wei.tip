@@ -1,5 +1,0 @@
-// KAIROVersion 2.10
-Tool(tool_yu)
-BiTeachPoint(cpstartpoint, cpendpoint, vector2d0, vector2d1)
-BiCorrectionRoutine()
-PTP(ap1)
