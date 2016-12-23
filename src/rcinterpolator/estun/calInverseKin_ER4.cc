@@ -79,10 +79,15 @@ double calcRealAngle(double curAng, double candidateAng1,double candidateAng2)
 }
 
 // Only Suitable for the same Robotic Structure
-int calInverseKin_ER4(const tmatrix& transMatrix, Robot_param*  axes,//const std::vector<Robot_param *> &axes,
+int calInverseKin_ER4(const tmatrix& transMatrix, RobotConfig& param,/*Robot_param*  axes,*/ //const std::vector<Robot_param *> &axes,
 								const AxisPos_Deg& posLast, AxisPos_Deg& posTar)
 {
-	dmatrix T(transMatrix);
+	//dmatrix T(transMatrix);
+	tmatrix transtool;
+	for(int i = 0; i < 4; ++i)
+		for(int j = 0; j < 4; ++j)
+			transtool(i,j) = param.transTool[i][j];
+	dmatrix T = transMatrix * transtool.inverse();
 	AxisPos_Deg pLast(M_PI * posLast / 180.0);
 
 	double nx(T(0,0)), ny(T(1,0)), nz(T(2,0));
@@ -91,12 +96,19 @@ int calInverseKin_ER4(const tmatrix& transMatrix, Robot_param*  axes,//const std
 	double px(T(0,3)/1000.0), py(T(1,3)/1000.0), pz(T(2,3)/1000.0);
 
 	// according to DH_Parmater
-	double d1(axes[0].DH_p.d/1000.0);
-	double d4(axes[3].DH_p.d/1000.0);
-	double d6(axes[5].DH_p.d/1000.0);
-	double a1(axes[0].DH_p.a/1000.0);
-	double a2(axes[1].DH_p.a/1000.0);
-	double a3(axes[2].DH_p.a/1000.0);
+	// double d1(axes[0].DH_p.d/1000.0);
+	// double d4(axes[3].DH_p.d/1000.0);
+	// double d6(axes[5].DH_p.d/1000.0);
+	// double a1(axes[0].DH_p.a/1000.0);
+	// double a2(axes[1].DH_p.a/1000.0);
+	// double a3(axes[2].DH_p.a/1000.0);
+
+	double d1(param.Axis[0].DH_p.d/1000.0);
+	double d4(param.Axis[3].DH_p.d/1000.0);
+	double d6(param.Axis[5].DH_p.d/1000.0);
+	double a1(param.Axis[0].DH_p.a/1000.0);
+	double a2(param.Axis[1].DH_p.a/1000.0);
+	double a3(param.Axis[2].DH_p.a/1000.0);
 
 	//std::cout << d1 <<" "<< d4 <<" "<< d6 <<" " << a1 <<" "<< a2 <<" "<< a3 << std::endl;
 	// solve for theta1

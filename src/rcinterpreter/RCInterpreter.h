@@ -47,7 +47,7 @@ public:
 		dir = opendir(projName.c_str());
 		if(dir != NULL) {
 
-			std::ifstream dataFile(programName + ".dat");     
+			std::ifstream dataFile(programName + ".tid");     
 			std::ifstream codeFile(programName + ".tip"); 
 
 			compileOnePragam(programName, symbolTable, dataFile, codeFile);

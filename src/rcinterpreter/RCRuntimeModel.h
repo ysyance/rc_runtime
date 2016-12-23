@@ -186,7 +186,7 @@ public:
 				rt_mutex_release(&rc_mutex_desc);
 
 				XyzPose Oripos;
-				calForwardKin(p1, rc_runtime_param.Axis, Oripos);
+				calForwardKin(p1, rc_runtime_param, Oripos);
 				temp_inst.args[0].cpv = Oripos;
 
 				/* step 3: specify the second point(the target position) of MOVL inst  */
@@ -202,7 +202,7 @@ public:
 					for(int i = 0; i < 6; i ++) {
 						p2[i] = apaddr[posIndex][i];
 					}
-					calForwardKin(p2, rc_runtime_param.Axis, Tarpos);
+					calForwardKin(p2, rc_runtime_param, Tarpos);
 				}
 				
 				temp_inst.args[1].cpv = Tarpos;

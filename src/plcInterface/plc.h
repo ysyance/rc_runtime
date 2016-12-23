@@ -5,7 +5,8 @@
 #include <native/heap.h>
 #include <native/mutex.h>
 #include <native/cond.h>
-
+#include <Eigen/Dense>
+#include <Eigen/Geometry>
 
 #define ROBOT_AXIS_COUNT 6          /* 机器人轴个数 */
 #define CIRCULAR_INTERP_QUEUE_SIZE 10   /* 环形插补队列大小 */
@@ -49,6 +50,7 @@ typedef struct {
     int axis_count;
     RobotModel robot_type ;
     Robot_param Axis[MAX_AXIS_COUNT];
+    double transTool[4][4];
 } RobotConfig;
 
  /*-----------------------------------------------------------------------------

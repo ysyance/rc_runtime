@@ -313,7 +313,7 @@ void Joint_JogInterp(size_t index,
 }
 
 
-tmatrix calForwardKin(const AxisPos_Deg &PosAxis, Robot_param*  axes, XyzPose &PosCart);
+tmatrix calForwardKin(const AxisPos_Deg &PosAxis, RobotConfig &param,/*Robot_param*  axes,*/ XyzPose &PosCart);
 
 /* VelLim and AccLim should be two dimenson*/
 void Cart_JogInterp(size_t index, 
@@ -352,7 +352,7 @@ void Cart_JogInterp(size_t index,
 	}
 	incAcc = direction * incAcc;
 	XyzPose oriPos;
-	tmatrix transT = calForwardKin(oriDeg, param.Axis, oriPos);
+	tmatrix transT = calForwardKin(oriDeg, param, oriPos);
 
 	//std::cout << " before switch " << std::endl;
 	switch(procedure)
@@ -378,13 +378,13 @@ void Cart_JogInterp(size_t index,
 					tmatrix deltaT = TermPos2TransMatrix(Ttmp);
 					if(coor == BASE)  		transTtmp = deltaT * transT;
 					else if(coor == TOOL)		transTtmp = transT * deltaT;
-					if(calInverseKin_ER4(transTtmp, param.Axis, last_tmp, tmp) == -1)
+					if(calInverseKin_ER4(transTtmp, param, last_tmp, tmp) == -1)
 					{
 						tmp = last_tmp;
 						std::cout << " Can't move to target !" << std::endl;
 						break;
 					}
-					calForwardKin(tmp, param.Axis, OutPos);		/* for test */
+					calForwardKin(tmp, param, OutPos);		/* for test */
 					// std::cout << param.Axis[0].DH_p.d << " " << param.Axis[1].DH_p.d << " " << param.Axis[2].DH_p.d << " "
 					// << param.Axis[3].DH_p.d <<" " << param.Axis[4].DH_p.d << " " << param.Axis[5].DH_p.d << std::endl;
 					std::cout << "Pos = " << OutPos.transpose() << std::endl;
@@ -413,14 +413,14 @@ void Cart_JogInterp(size_t index,
 					tmatrix deltaT = TermPos2TransMatrix(Ttmp);
 					if(coor == BASE)  		transTtmp = deltaT * transT;
 					else if(coor == TOOL)		transTtmp = transT * deltaT;
-					if(calInverseKin_ER4(transTtmp, param.Axis, last_tmp, tmp) == -1)
+					if(calInverseKin_ER4(transTtmp, param, last_tmp, tmp) == -1)
 					{
 						tmp = last_tmp;
 						std::cout << " Can't move to target !" << std::endl;
 						std::cout << " Last_tmp = " << last_tmp.transpose() << std::endl;
 						break;
 					}
-					calForwardKin(tmp, param.Axis, OutPos);		/* for test */
+					calForwardKin(tmp, param, OutPos);		/* for test */
 					// std::cout << param.Axis[0].DH_p.d << " " << param.Axis[1].DH_p.d << " " << param.Axis[2].DH_p.d << " "
 					// << param.Axis[3].DH_p.d <<" " << param.Axis[4].DH_p.d << " " << param.Axis[5].DH_p.d << std::endl;
 					std::cout << "Pos = " << OutPos.transpose() << std::endl;
@@ -450,14 +450,14 @@ void Cart_JogInterp(size_t index,
 				tmatrix deltaT = TermPos2TransMatrix(Ttmp);
 				if(coor == BASE)  		transTtmp = deltaT * transT;
 				else if(coor == TOOL)		transTtmp = transT * deltaT;
-				if(calInverseKin_ER4(transTtmp, param.Axis, last_tmp, tmp) == -1)
+				if(calInverseKin_ER4(transTtmp, param, last_tmp, tmp) == -1)
 				{
 					tmp = last_tmp;
 					std::cout << " Can't move to target !" << std::endl;
 					std::cout << " Last_tmp = " << last_tmp.transpose() << std::endl;
 					break;
 				}
-				calForwardKin(tmp, param.Axis, OutPos);		/* for test */
+				calForwardKin(tmp, param, OutPos);		/* for test */
 				// std::cout << param.Axis[0].DH_p.d << " " << param.Axis[1].DH_p.d << " " << param.Axis[2].DH_p.d << " "
 				// 	<< param.Axis[3].DH_p.d <<" " << param.Axis[4].DH_p.d << " " << param.Axis[5].DH_p.d << std::endl;
 				std::cout << "Pos = " << OutPos.transpose() << std::endl;
@@ -489,14 +489,14 @@ void Cart_JogInterp(size_t index,
 				tmatrix deltaT = TermPos2TransMatrix(Ttmp);
 				if(coor == BASE)  		transTtmp = deltaT * transT;
 				else if(coor == TOOL)		transTtmp = transT * deltaT;
-				if(calInverseKin_ER4(transTtmp, param.Axis, last_tmp, tmp) == -1)
+				if(calInverseKin_ER4(transTtmp, param, last_tmp, tmp) == -1)
 				{
 					tmp = last_tmp;
 					std::cout << " Can't move to target !" << std::endl;
 					std::cout << " Last_tmp = " << last_tmp.transpose() << std::endl;
 					//break;
 				}
-				calForwardKin(tmp, param.Axis, OutPos);		/* for test */
+				calForwardKin(tmp, param, OutPos);		/* for test */
 				// std::cout << param.Axis[0].DH_p.d << " " << param.Axis[1].DH_p.d << " " << param.Axis[2].DH_p.d << " "
 				// 	<< param.Axis[3].DH_p.d <<" " << param.Axis[4].DH_p.d << " " << param.Axis[5].DH_p.d << std::endl;
 				std::cout << "Pos = " << OutPos.transpose() << std::endl;
@@ -512,14 +512,14 @@ void Cart_JogInterp(size_t index,
 			tmatrix deltaT = TermPos2TransMatrix(Ttmp);
 			if(coor == BASE)  		transTtmp = deltaT * transT;
 			else if(coor == TOOL)		transTtmp = transT * deltaT;
-			if(calInverseKin_ER4(transTtmp, param.Axis, last_tmp, tmp) == -1)
+			if(calInverseKin_ER4(transTtmp, param, last_tmp, tmp) == -1)
 			{
 				tmp = last_tmp;
 				std::cout << " Can't move to target !" << std::endl;
 				std::cout << " Last_tmp = " << last_tmp.transpose() << std::endl;
 				//break;
 			}
-			calForwardKin(tmp, param.Axis, OutPos);		/* for test */
+			calForwardKin(tmp, param, OutPos);		/* for test */
 			// std::cout << param.Axis[0].DH_p.d << " " << param.Axis[1].DH_p.d << " " << param.Axis[2].DH_p.d << " "
 			// 		<< param.Axis[3].DH_p.d <<" " << param.Axis[4].DH_p.d << " " << param.Axis[5].DH_p.d << std::endl;
 			std::cout << "Pos = " << OutPos.transpose() << std::endl;
@@ -617,7 +617,7 @@ void LineInterp(const XyzPose &oriPos,
 	AxisPos_Deg last_tmp(n), zero_tmp(n),oriDeg(n),tarDeg(n);    // one argument in calInverseKin_ER4
 	zero_tmp << 0,0,0,0,0,0;
 	tmatrix transT = TermPos2TransMatrix(oriPos);
-	calInverseKin_ER4(transT, param.Axis, zero_tmp, last_tmp);
+	calInverseKin_ER4(transT, param, zero_tmp, last_tmp);
 	oriDeg = last_tmp;
 
 	for(size_t i = 0; i != N3+1; ++i)
@@ -643,7 +643,7 @@ void LineInterp(const XyzPose &oriPos,
 
 		/*******************************  calculate each InverseKin   ****************************************/	
 		tmatrix transT = TermPos2TransMatrix(Ttmp);
-		if(calInverseKin_ER4(transT, param.Axis,last_tmp, tmp) == -1)
+		if(calInverseKin_ER4(transT, param,last_tmp, tmp) == -1)
 		{
 			tmp = last_tmp;
 			std::cout << " Can't move to target !" << std::endl;

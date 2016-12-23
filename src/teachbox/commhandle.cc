@@ -66,7 +66,7 @@ int getMotionSignal(int axisIndex){
 			}
 			rt_mutex_release(&rc_mutex_desc);
 			XyzPose Outpos;
-		    calForwardKin(p1, rc_runtime_param.Axis, Outpos);
+		    calForwardKin(p1, rc_runtime_param, Outpos);
 		    std::cout << Outpos.transpose() << std::endl;
 			temp_inst.args[0].apv = p1;
 
@@ -96,7 +96,7 @@ int replyPositionRequest(){
 	rt_mutex_release(&rc_mutex_desc);
 
 	XyzPose Outpos;
-	calForwardKin(p, rc_runtime_param.Axis, Outpos);
+	calForwardKin(p, rc_runtime_param, Outpos);
 	std::cout << Outpos.transpose() << std::endl;
 	std::vector<double> curpos;
 	for(int i = 0; i < 6; i ++) {

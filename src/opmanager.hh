@@ -187,6 +187,18 @@ inline void inst_buffer_read(ROBOT_INST &temp_inst) {
 inline void init_runtime_param(){
     rc_runtime_param.axis_count = 6;
     rc_runtime_param.robot_type = ESTUN_ER4;
+    // tmatrix transtool = dmatrix::Identity(4,4);
+    // transtool(2,3) = 115;
+    // rc_runtime_param.transTool = transtool;
+    for(int i = 0; i < 4; ++i)
+        for(int j = 0; j < 4; ++j)
+        {
+            if(i == j)
+                rc_runtime_param.transTool[i][j] = 1;
+            else
+                rc_runtime_param.transTool[i][j] = 0;
+        }
+    rc_runtime_param.transTool[2][3] = 115;
 
     rc_runtime_param.Axis[0].DH_p.Theta = 0;
     rc_runtime_param.Axis[0].DH_p.d = 505;
