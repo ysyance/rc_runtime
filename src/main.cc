@@ -68,7 +68,13 @@ void rsi_routine(void *cookie) {
 	/* create a RSI Executor according to file name */
 	RSIExecutor rsiExec(*rsiFileName);
  	/* compile the specified rsi file to obtain address space and code shadow */
-	rsiExec.compile();
+ 	try {
+		rsiExec.compile();
+	} catch(rc_exception &e) {
+		e.what();
+	} catch(std::exception &e) {
+		std::cout << "C++ runtime exception" << std::endl;
+	}
 	/* set RSIStopFlag as false to start to running RSI */
 	RSIStopFlag = false;
 	/* set RSI executor running period */
@@ -154,9 +160,11 @@ static void executor_routine(void *cookie){
 				executor.execute();
 			} catch(rc_exception &e) {
 				e.what();
+				rc_core.startup = 0;
 				longjmp(exec_startpoint, 0);        /* 跳转至解释器起点 */
 			} catch(std::exception &e) {
 				std::cout << "C++ runtime exception" << std::endl;
+				rc_core.startup = 0;
 				longjmp(exec_startpoint, 0);        /* 跳转至解释器起点 */
 			}
 		}
@@ -213,7 +221,7 @@ static void manager_routine(void *cookie){
 	err = rt_task_create(&rc_executor_desc, RC_EXECUTOR_NAME, 0, RC_EXECUTOR_PRIORITY, T_JOINABLE|T_FPU|T_CPU(1));
 	err = rt_task_create(&rc_supervisor_desc, RC_SUPERVISOR_NAME, 0, RC_SUPERVISOR_PRIORITY, T_JOINABLE|T_CPU(1));
 	err = rt_task_create(&rc_interp_desc, RC_INTERP_NAME, 0, RC_INTERP_PRIORITY, T_JOINABLE|T_FPU|T_CPU(1));
-	err = rt_task_create(&rc_rsi_desc, RC_RSI_NAME, 0, RC_RSI_PRIORITY, T_JOINABLE|T_FPU);
+	// err = rt_task_create(&rc_rsi_desc, RC_RSI_NAME, 0, RC_RSI_PRIORITY, T_JOINABLE|T_FPU);
 	if(!err){
 		rt_task_start(&rc_executor_desc, &executor_routine, NULL);
 		rt_task_start(&rc_interp_desc, &interp_routine, NULL);

@@ -512,8 +512,11 @@ public:
 											 {}
 public:
 	virtual int execute(void *cookie) override {
+		rc_core.cur_linenum = lineno;
+		STEPCHECK(rc_core.cur_linenum);
 		LOGGER_TRACE(lineno, "LIBCALL");
 		rcLibEntry[index].pfun(params, config, symTable);
+		send_cmd_to_exec(CMD_NEXT);
 	}	
 public:
 	uint32_t index;						// the index of library function

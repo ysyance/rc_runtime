@@ -110,13 +110,11 @@ public:
 			case TBOOL: {
 				this->v.value_b = (rhs.type==TBOOL) * rhs.v.value_b + (rhs.type == TCHAR) * rhs.v.value_c
 								+ (rhs.type==TINT) * rhs.v.value_i + (rhs.type==TDOUBLE) * rhs.v.value_d;
-	
 				break;
 			}
 			case TCHAR: {
 				this->v.value_c = (rhs.type==TBOOL) * rhs.v.value_b + (rhs.type == TCHAR) * rhs.v.value_c
 								+ (rhs.type==TINT) * rhs.v.value_i + (rhs.type==TDOUBLE) * rhs.v.value_d;
-	
 				break;
 			}
 			case TINT: {
@@ -127,7 +125,6 @@ public:
 			case TDOUBLE: {
 				this->v.value_d = (rhs.type==TBOOL) * rhs.v.value_b + (rhs.type == TCHAR) * rhs.v.value_c
 								+ (rhs.type==TINT) * rhs.v.value_i + (rhs.type==TDOUBLE) * rhs.v.value_d;
-	
 				break;
 			}
 			case TSTRING: {

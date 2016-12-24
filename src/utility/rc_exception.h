@@ -271,7 +271,7 @@ private:
 
 class rc_projectnotfind_exception : public rc_exception {
 public:
-	rc_projectnotfind_exception(std::string n) : rc_exception(EXECP_PROJ_NOT_FOUND),
+	rc_projectnotfind_exception(std::string n) : rc_exception(EXECP_PROJ_NOT_FOUND, 0, 0),
 												 name(n)
 
 	{
@@ -293,7 +293,7 @@ private:
 
 class rc_programnotfound_exception : public rc_exception {
 public:
-	rc_programnotfound_exception(std::string n) : rc_exception(EXECP_PROGRAM_NOT_FOUND),
+	rc_programnotfound_exception(std::string n) : rc_exception(EXECP_PROGRAM_NOT_FOUND, 0, 0),
 												 name(n)
 
 	{
@@ -316,7 +316,7 @@ private:
 
 class rc_wrongfuncparams_exception : public rc_exception {
 public:
-	rc_wrongfuncparams_exception(std::string n) : rc_exception(EXECP_WRONG_LIBFUNC_PARAM),
+	rc_wrongfuncparams_exception(std::string n) : rc_exception(EXECP_WRONG_LIBFUNC_PARAM, 0, 0),
 												 name(n)
 
 	{
@@ -338,7 +338,7 @@ private:
 
 class rc_rsicomm_outoftime_exception : public rc_exception {
 public:
-	rc_rsicomm_outoftime_exception(std::string n) : rc_exception(EXECP_RSICOMM_OUTOFTIME),
+	rc_rsicomm_outoftime_exception(std::string n) : rc_exception(EXECP_RSICOMM_OUTOFTIME, 0, 0),
 												 name(n)
 
 	{

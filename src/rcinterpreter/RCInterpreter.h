@@ -34,15 +34,39 @@ using namespace antlr4::tree;
 
 class RCInterpreter {
 public:
-	RCInterpreter() {}
-	RCInterpreter(std::string pro) : projName(pro) {}
-	RCInterpreter(std::string pro, std::string program) : projName(pro), programName(program) {}
+	RCInterpreter() : symbolTable(addrspace, stringpool, apaddr, cpaddr, tooladdr, cooraddr, dataIndexMap, constIndexMap, funcMap) {}
+
+	RCInterpreter(std::string pro) : projName(pro),
+	symbolTable(addrspace, stringpool, apaddr, cpaddr, tooladdr, cooraddr, dataIndexMap, constIndexMap, funcMap) {}
+
+	RCInterpreter(std::string pro, std::string program) : projName(pro), programName(program),
+	symbolTable(addrspace, stringpool, apaddr, cpaddr, tooladdr, cooraddr, dataIndexMap, constIndexMap, funcMap) {}
 
 public:
 	int compile() {
-		RC_SymbolTable symbolTable(	addrspace, stringpool, apaddr, 
-									cpaddr, tooladdr, cooraddr,
-									dataIndexMap, constIndexMap, funcMap);
+		/* create inner data BXXX */
+		for(int i = 0; i < 10; i ++) {
+			int index = addrspace.size();
+			addrspace.push_back(RC_IValue(TCHAR, (uint8_t)0));
+			std::string BXXX = "B00" + std::to_string(i);
+			dataIndexMap.insert({BXXX, index});
+		}
+
+		/* create inner data IXXX */
+		for(int i = 0; i < 10; i ++) {
+			int index = addrspace.size();
+			addrspace.push_back(RC_IValue(TINT, 0));
+			std::string IXXX = "I00" + std::to_string(i);
+			dataIndexMap.insert({IXXX, index});
+		}
+
+		/* create inner data RXXX */
+		for(int i = 0; i < 10; i ++) {
+			int index = addrspace.size();
+			addrspace.push_back(RC_IValue(TDOUBLE, 0.0));
+			std::string RXXX = "R00" + std::to_string(i);
+			dataIndexMap.insert({RXXX, index});
+		}
 
 		for(int i = 0; i < RC_LIB_SIZE; i ++) {
 			funcMap.insert({rcLibEntry[i].name, i});
@@ -96,6 +120,9 @@ public:
 		progList.insert({name, code});
 		/* JUST FOR DEBUG */
 		Utility::printfCodeShadow(code);
+		Utility::printfStringPool(stringpool);
+		Utility::printfAddrspace(addrspace);
+		Utility::printfDataIndexMap(dataIndexMap);
 	}
 
 public:
@@ -129,9 +156,13 @@ private:
 	ToolDataSpace tooladdr;
 	CoorDataSpace cooraddr;
 
+
+
 	std::unordered_map<std::string, int> dataIndexMap;		// parser xml file and generator dataMap
 	std::unordered_map<std::string, int> constIndexMap;		// the index of all the constants in addr space 
 	std::unordered_map<std::string, int> funcMap;  	    	// all library function map to check if designated function is existed
 
 	std::unordered_map<std::string, CodeModel> progList; 	// <programName, code>
+
+	RC_SymbolTable symbolTable;
 };

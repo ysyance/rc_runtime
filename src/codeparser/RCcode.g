@@ -111,6 +111,7 @@ params
 numorid
  : NUM 						# numExpr
  | ID 						# idExpr
+ | CSTRING 					# cstrExpr
  ;
 
 oneinst_stat

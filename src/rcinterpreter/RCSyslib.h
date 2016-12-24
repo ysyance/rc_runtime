@@ -32,6 +32,7 @@ typedef struct {
 
 /* ** ALL THE IMPLEMENTATION OF LIBRARY FUNCTION IN C/C++ ************** */
 inline int rc_sum(std::vector<int>& params, RCEntityBase* config, RC_SymbolTable& symTable) {
+	std::cout << "LIBCALL : RC_SUM" << std::endl;
 	return 0;
 }
 
@@ -48,9 +49,11 @@ inline int rc_div(std::vector<int>& params, RCEntityBase* config, RC_SymbolTable
 }
 
 inline int rc_start_rsi(std::vector<int>& params, RCEntityBase* config, RC_SymbolTable& symTable) {
-	if( params.size() == 1 && isstring(symTable.addrspace[params[0]]) ) {
+	std::cerr << "LIBCALL : RC_START_RSI" << std::endl;
+	if( params.size() == 1 ) {
 		int32_t index = symTable.addrspace[params[0]].v.value_s;
-		std::string rsiName = symTable.stringpool[index];
+		std::string rsiName = "../rc-runtime/" + symTable.stringpool[index];
+		rt_task_create(&rc_rsi_desc, RC_RSI_NAME, 0, RC_RSI_PRIORITY, T_JOINABLE|T_FPU);
 		rt_task_start(&rc_rsi_desc, rsi_routine, &rsiName);
 		rt_task_join(&rc_rsi_desc);
 	} else {

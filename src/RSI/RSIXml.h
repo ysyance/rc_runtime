@@ -22,7 +22,7 @@ public:
 			// doc.Print();  
 			std::cout << "xml file load sucessfully !" << std::endl;
 		} else {
-			std::cout << "can not parse xml conf/rsiconfig.xml" << std::endl;
+			std::cout << "can not parse xml file: " << file << std::endl;
 			exit(-1);
 		}
 	}

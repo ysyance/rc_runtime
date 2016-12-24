@@ -760,6 +760,14 @@ public:
    
   };
 
+  class  CstrExprContext : public NumoridContext {
+  public:
+    CstrExprContext(NumoridContext *ctx);
+
+    antlr4::tree::TerminalNode *CSTRING();
+    virtual antlrcpp::Any accept(antlr4::tree::ParseTreeVisitor *visitor) override;
+  };
+
   class  NumExprContext : public NumoridContext {
   public:
     NumExprContext(NumoridContext *ctx);

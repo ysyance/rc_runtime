@@ -167,6 +167,10 @@ public:
     return visitChildren(ctx);
   }
 
+  virtual antlrcpp::Any visitCstrExpr(RCcodeParser::CstrExprContext *ctx) override {
+    return visitChildren(ctx);
+  }
+
   virtual antlrcpp::Any visitLabelExpr(RCcodeParser::LabelExprContext *ctx) override {
     return visitChildren(ctx);
   }

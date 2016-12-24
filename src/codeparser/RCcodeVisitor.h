@@ -95,6 +95,8 @@ public:
 
     virtual antlrcpp::Any visitIdExpr(RCcodeParser::IdExprContext *context) = 0;
 
+    virtual antlrcpp::Any visitCstrExpr(RCcodeParser::CstrExprContext *context) = 0;
+
     virtual antlrcpp::Any visitLabelExpr(RCcodeParser::LabelExprContext *context) = 0;
 
     virtual antlrcpp::Any visitRetExpr(RCcodeParser::RetExprContext *context) = 0;

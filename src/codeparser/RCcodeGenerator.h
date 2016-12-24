@@ -1403,6 +1403,24 @@ public:
         }
     }
 
+    virtual antlrcpp::Any visitCstrExpr(RCcodeParser::CstrExprContext *ctx) override {
+        LOGGER_INF("CstrExpr");
+
+
+        std::string cStr = ctx->CSTRING()->getText();
+        if(cStr.size() > 2) {
+            cStr = cStr.substr(1, cStr.size()-2);
+        } else {
+            cStr = "";
+        }
+        int strIndex = stringpool.size();
+        stringpool.push_back(cStr);
+        int dataIndex = addrspace.size();
+        addrspace.push_back(RC_IValue(TSTRING, strIndex));
+
+        return dataIndex;
+    }
+
 
     virtual antlrcpp::Any visitLabelExpr(RCcodeParser::LabelExprContext *ctx) override {
     	LOGGER_INF("LabelExpr");
