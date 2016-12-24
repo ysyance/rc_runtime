@@ -255,8 +255,11 @@ int rsi_axiscorr(std::vector<int>& params, EntityBase* config, std::vector<IValu
 int rsi_poscorr(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) ;
 
 inline int rsi_transfame(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) {}
-inline int rsi_posact(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) {}
-inline int rsi_axisact(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) {}
+
+int rsi_posact(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) ;
+int rsi_axisact(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) ;
+
+
 inline int rsi_geartorque(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) {}
 inline int rsi_motorcurrent(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) {}
 

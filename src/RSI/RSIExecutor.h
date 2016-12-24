@@ -27,7 +27,7 @@ extern bool RSIStopFlag; /* THIS IS VERY IMPORTANT, WHICH CONTROL THE WHOLE LIFE
 
 class RSIExecutor {
 public:
-	RSIExecutor(std::string &f) : file(f) {
+	RSIExecutor(std::string f) : file(f) {
 		addrspace.push_back(0);  // addrspace[0] is the returned value of all the library function  in global
 	}
 
@@ -53,6 +53,10 @@ public:
 
 		RSICodeGenerator CG(code, symTable);        // second time, generate execute model
 		CG.visit(tree);
+
+		for(int i = 0; i < addrspace.size(); i ++) {
+			std::cout << i << ": " << addrspace[i] << std::endl;
+		}
 
 		return 0;
 

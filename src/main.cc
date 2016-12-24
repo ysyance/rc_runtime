@@ -64,9 +64,11 @@ RT_MUTEX inst_mutex_desc;             	/* 同步对象－－互斥量描述符 *
  * 返回值：无
  */
 void rsi_routine(void *cookie) {
+	std::cout << "rsi start" << std::endl;
 	std::string *rsiFileName = (std::string*)cookie;
 	/* create a RSI Executor according to file name */
 	RSIExecutor rsiExec(*rsiFileName);
+
  	/* compile the specified rsi file to obtain address space and code shadow */
  	try {
 		rsiExec.compile();
@@ -83,7 +85,10 @@ void rsi_routine(void *cookie) {
 	while(!RSIStopFlag){
 		rt_task_wait_period(NULL);
 		try {
+			RTIME start = rt_timer_read();
 			rsiExec.execute();
+			RTIME end = rt_timer_read();
+			std::cout << "RSI cost " << end - start << " ns" << std::endl;
 		} catch(rc_exception &e) {
 			e.what();
 			RSIStopFlag = true;
@@ -191,6 +196,8 @@ static void supervisor_routine(void *cookie){
 		//std::cout << "rc_core.startup = " << rc_core.startup << std::endl;
 		RTIME end = rt_timer_read();
 		// std::cout << "it cost " << end - start << " ns" << std::endl;
+		std::cout << std::to_string(1.23) << std::endl;
+		std::cout << std::stod("1.235") << std::endl;
 	}
 }
 
@@ -268,6 +275,34 @@ int main(int argc, char **argv) {
 	if(!err){
 		rt_task_start(&rc_manager_desc, &manager_routine, argv);
 	}
+
+	// /* create a RSI Executor according to file name */
+	// RSIExecutor rsiExec("rsidemo");
+ // 	/* compile the specified rsi file to obtain address space and code shadow */
+ // 	try {
+	// 	rsiExec.compile();
+	// } catch(rc_exception &e) {
+	// 	e.what();
+	// } catch(std::exception &e) {
+	// 	std::cout << "C++ runtime exception" << std::endl;
+	// }
+	// /* set RSIStopFlag as false to start to running RSI */
+	// RSIStopFlag = false;
+	// /* set RSI executor running period */
+	// rt_task_set_periodic(NULL, TM_NOW, RSI_RUN_PERIOD);
+	// /* start running RSI periodic */
+	// while(!RSIStopFlag){
+	// 	rt_task_wait_period(NULL);
+	// 	try {
+	// 		rsiExec.execute();
+	// 	} catch(rc_exception &e) {
+	// 		e.what();
+	// 		RSIStopFlag = true;
+	// 	} catch(std::exception &e) {
+	// 		std::cout << "C++ runtime exception" << std::endl;
+	// 		RSIStopFlag = true;
+	// 	}
+	// }
 
 	pause();
 

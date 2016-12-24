@@ -345,6 +345,31 @@ inline int rsi_waitfor_run() {
     return cmd;
 }
 
+inline void cur_cartpos_get(std::vector<double> &pos) {
+    AxisPos_Deg p1(6);
+    rt_mutex_acquire(&rc_mutex_desc, TM_INFINITE);
+    for(int i = 0; i < 6; i ++) {
+        p1[i] = -rc_shm->actual_info.axis_info[i].actual_pos;
+    }
+    p1[1] = rc_shm->actual_info.axis_info[1].actual_pos;
+    rt_mutex_release(&rc_mutex_desc);
+    XyzPose Outpos;
+    calForwardKin(p1, rc_runtime_param, Outpos);
+    for(int i = 0; i < 6; i ++) {
+        pos[i] = Outpos[i];
+    }
+
+}
+
+inline void cur_axispos_get(std::vector<double> &pos) {
+    rt_mutex_acquire(&rc_mutex_desc, TM_INFINITE);
+    for(int i = 0; i < 6; i ++) {
+        pos[i] = -rc_shm->actual_info.axis_info[i].actual_pos;
+    }
+    pos[1] = rc_shm->actual_info.axis_info[1].actual_pos;
+    rt_mutex_release(&rc_mutex_desc);
+} 
+
 
 
 #endif

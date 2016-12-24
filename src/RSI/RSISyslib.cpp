@@ -11,6 +11,8 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include "opmanager.hh"
+
 bool RSIStopFlag = true; /* THIS IS VERY IMPORTANT, WHICH CONTROL THE WHOLE LIFECYCLE OF RSI */
 
 #define RSI_DEBUG
@@ -100,6 +102,8 @@ inline int rsi_poscorr(std::vector<int>& params, EntityBase* config, std::vector
 #ifdef RSI_DEBUG
 		entity->printInfo();
 #endif
+
+
 	} else {
 		std::cout << "this fb does not have config entity" << std::endl;
 	}
@@ -116,5 +120,26 @@ inline int rsi_axiscorr(std::vector<int>& params, EntityBase* config, std::vecto
 	} else {
 		std::cout << "this fb does not have config entity" << std::endl;
 	}	
+	return 0;
+}
+
+
+inline int rsi_posact(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) {
+	int size = params.size();
+	std::vector<IValue> pos(6, 0);
+	cur_cartpos_get(pos);
+	for(int i = 0; i < size; i ++) {
+		addrspace[params[i]] = pos[i];
+	}
+	return 0;
+}
+
+inline int rsi_axisact(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) {
+	int size = params.size();
+	std::vector<IValue> pos(6, 0);
+	cur_axispos_get(pos);
+	for(int i = 0; i < size; i ++) {
+		addrspace[params[i]] = pos[i];
+	}
 	return 0;
 }

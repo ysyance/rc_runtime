@@ -183,7 +183,7 @@ public:
 		/* else section */
 		std::vector<BaseStatement*> *elseStatBlock = new std::vector<BaseStatement*>();
 		compileStack.push(elseStatBlock);
-		visit(ctx->else_stat());
+		if(ctx->else_stat() != NULL) visit(ctx->else_stat());
 		tempStat->elseThenStat = elseStatBlock;
 		compileStack.pop();
 

@@ -85,11 +85,11 @@ int getMotionSignal(int axisIndex){
 
 
 int replyPositionRequest(){
-	std::cout << "teach terminal request postion info" << std::endl;
+	// std::cout << "teach terminal request postion info" << std::endl;
 	AxisPos_Deg p(6);
 	rt_mutex_acquire(&rc_mutex_desc, TM_INFINITE);
 	for(int i = 0; i < 6; i ++) {
-		std::cout << "axis actual "  << i << ":" << rc_shm->actual_info.axis_info[i].actual_pos << std::endl;
+		// std::cout << "axis actual "  << i << ":" << rc_shm->actual_info.axis_info[i].actual_pos << std::endl;
 		p[i] = -rc_shm->actual_info.axis_info[i].actual_pos;
 	}
 	p[1] = rc_shm->actual_info.axis_info[1].actual_pos;
@@ -97,14 +97,14 @@ int replyPositionRequest(){
 
 	XyzPose Outpos;
 	calForwardKin(p, rc_runtime_param, Outpos);
-	std::cout << Outpos.transpose() << std::endl;
+	// std::cout << Outpos.transpose() << std::endl;
 	std::vector<double> curpos;
 	for(int i = 0; i < 6; i ++) {
 		curpos.push_back(p[i]);
 		curpos.push_back(Outpos[i]);
 		curpos.push_back(0);
 	}
-	std::cout << std::endl;
+	// std::cout << std::endl;
 	send_position_info(curpos);
 	return 0;
 }
