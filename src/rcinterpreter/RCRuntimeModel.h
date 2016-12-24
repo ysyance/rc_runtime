@@ -5,6 +5,7 @@
 #include "rc_logger.h"
 
 #include "opmanager.hh"
+#include "RCSyslib.h"
 
 
 class RCBaseStatement {
@@ -17,6 +18,7 @@ public:
 				cpaddr(sym.cpaddr),
 				tooladdr(sym.tooladdr),
 				cooraddr(sym.cooraddr), 
+				symTable(sym),
 				lineno(0)
 	{}
 
@@ -40,6 +42,8 @@ public:
 	CPDataSpace &cpaddr;
 	ToolDataSpace &tooladdr;
 	CoorDataSpace &cooraddr;
+
+	RC_SymbolTable &symTable;
 
 	int lineno;
 };
@@ -77,29 +81,33 @@ public:
 											 {}
 public:
 	virtual int execute(void *cookie) override {
+		rc_core.cur_linenum = lineno;
 		switch(type) {
 			case RET: {
-				std::cout << "RET" << std::endl;
+				LOGGER_TRACE(lineno, "RET");
 				break;
 			}
 			case NOP: {
-				std::cout << "NOP" << std::endl;
+				LOGGER_TRACE(lineno, "NOP");
 				break;
 			}
 			case PAUSE: {
-				std::cout << "PAUSE" << std::endl;
+				LOGGER_TRACE(lineno, "PAUSE");
 				break;
 			}
 			case HALT: {
-				std::cout << "HALT" << std::endl;
+				while(1) {
+					STEPCHECK(rc_core.cur_linenum);
+					LOGGER_TRACE(lineno, "HALT");
+				}
 				break;
 			}
 			case BREAK: {
-				std::cout << "BREAK" << std::endl;
+				LOGGER_TRACE(lineno, "BREAK");
 				break;
 			}
 			case LABEL: {
-				std::cout << "LABEL" << std::endl;
+				LOGGER_TRACE(lineno, "LABEL");
 				break;
 			}
 			default:
@@ -167,7 +175,6 @@ public:
 					p2[i] = apaddr[posIndex][i];
 				}
 				temp_inst.args[1].apv = p2;
-
 				/* step 4: insert inst into inst-buffer */
 				inst_buffer_write(temp_inst);	
 				break;
@@ -208,7 +215,6 @@ public:
 				temp_inst.args[1].cpv = Tarpos;
 				/* step 4: insert inst into inst-buffer */
 				inst_buffer_write(temp_inst);
-
 				break;
 			}
 			case MOVC: {
@@ -349,7 +355,7 @@ public:
 			}
 			
 			case DIN: {
-				LOGGER_TRACE(lineno, "DIV");
+				LOGGER_TRACE(lineno, "DIN");
 				break;
 			}
 			
@@ -501,15 +507,18 @@ public:
 class RCLibCallStatement : public RCBaseStatement {
 public:
 	RCLibCallStatement(RC_SymbolTable &sym) : RCBaseStatement(sym), 
-											 index(0)
+											 index(0),
+											 config(NULL)
 											 {}
 public:
 	virtual int execute(void *cookie) override {
 		LOGGER_TRACE(lineno, "LIBCALL");
+		rcLibEntry[index].pfun(params, config, symTable);
 	}	
 public:
 	uint32_t index;						// the index of library function
 	std::vector<int> params;			// the index of function parameters
+	RCEntityBase *config;
 
 public:
 	virtual void printInfo(std::string  empty) override {

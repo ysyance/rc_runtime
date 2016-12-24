@@ -1,0 +1,5 @@
+MOVJ HOME, V50, Z0 ; # GO Back Home
+
+RC_START_RSI(rsi_file);
+
+HALT;

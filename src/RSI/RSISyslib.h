@@ -16,10 +16,16 @@
 #include <tinyxml.h>
 
 #include "IValue.h"
+#include "rc_exception.h"
 
 #define MAX_SPOU_NAME_SIZE  50
 
 #define RSI_DEBUG_PRINT
+
+extern bool RSIStopFlag; /* THIS IS VERY IMPORTANT, WHICH CONTROL THE WHOLE LIFECYCLE OF RSI */
+
+#define RSI_STOP_CHECK() do{if(RSIStopFlag == true) return 0;}while(0);
+
 
 #ifdef RSI_DEBUG_PRINT
 extern std::unordered_map<int, std::string> rdataIndexMap;   // index --> var
@@ -239,7 +245,7 @@ inline int rsi_delay(std::vector<int>& params, EntityBase* config, std::vector<I
 inline int rsi_monitor(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) {}
 inline int rsi_stop(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) {
 	if(addrspace[params[0]] == 1) {
-		exit(0);
+		RSIStopFlag = true;
 	}
 }
 

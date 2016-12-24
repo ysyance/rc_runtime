@@ -33,7 +33,8 @@ public:
 	virtual int execute(void *cookie) override{
 #ifdef RSI_DEBUG
 		std::cout << "=====assign state execute=====" << std::endl;
-#endif
+#endif  
+		RSI_STOP_CHECK();
 		if(caller == NULL) {
 			(*addr)[left] = (*addr)[right];
 		} else {
@@ -59,7 +60,8 @@ public:
 	virtual int execute(void *cookie) override {
 #ifdef RSI_DEBUG
 		std::cout << "=====if state execute=====" << std::endl;
-#endif
+#endif  
+		RSI_STOP_CHECK();
 		int cond = 0;
 		if(exprCaller == NULL) {
 			cond = (int)(*addr)[exprVar];
@@ -69,17 +71,20 @@ public:
 		}
 		if(cond) {
 			for(auto &elem : *ifThenStat) {
+				RSI_STOP_CHECK();
 				elem->execute(cookie);
 			}
 		} else {
 			if(elseifThenStat != NULL) {
 				for(int i = 0; i < elseifThenStat->size(); i ++) {
+					RSI_STOP_CHECK();
 					int flag = ((*elseifThenStat)[i])->execute(cookie);
 					if(flag) return 0;
 				}
 			}
 			if(elseThenStat != NULL) {
 				for(int i = 0; i < elseThenStat->size(); i ++) {
+					RSI_STOP_CHECK();
 					((*elseThenStat)[i])->execute(cookie);
 				}
 			}
@@ -105,6 +110,7 @@ public:
 			 			{}
 
 	virtual int execute(void *cookie) override {
+		RSI_STOP_CHECK();
 		int cond = 0;
 		if(exprCaller == NULL) {
 			cond = (int)(*addr)[exprVar];
@@ -115,6 +121,7 @@ public:
 		if(cond) {
 			flag = 1;
 			for(auto &elem : *Stat) {
+				RSI_STOP_CHECK();
 				elem->execute(cookie);
 			}
 		}
@@ -138,10 +145,12 @@ public:
 #ifdef RSI_DEBUG
 		std::cout << "=====loop state execute=====" << std::endl;
 #endif
+		RSI_STOP_CHECK();
 		int times = (int)(*addr)[varIndex];
 		times = times > 0 ? times : 0;
 		for(int i = 0; i < times; i ++) {
 			for(auto &elem : *Stat) {
+				RSI_STOP_CHECK();
 				elem->execute(cookie);
 			}
 		}
@@ -163,10 +172,12 @@ public:
 #ifdef RSI_DEBUG
 		std::cout << "=====while state execute=====" << std::endl;
 #endif		
+		RSI_STOP_CHECK();
 		int cond = 0;
 		if(exprCaller == NULL) {
 			while(cond = ((*addr)[exprVar] > 0 ? (*addr)[exprVar] : 0)) {
 				for(auto &elem : *Stat) {
+					RSI_STOP_CHECK();
 					elem->execute(cookie);
 				}
 			}
@@ -176,6 +187,7 @@ public:
 				cond = (*addr)[0];
 				if(cond == 0) break;
 				for(auto &elem : *Stat) {
+					RSI_STOP_CHECK();
 					elem->execute(cookie);
 				}
 			}
@@ -197,6 +209,7 @@ public:
 #ifdef RSI_DEBUG
 		std::cout << "=====call state execute=====" << std::endl;
 #endif		
+		RSI_STOP_CHECK();
 		libEntry[index].pfun(params, config, *addr);
 	}
 

@@ -18,7 +18,9 @@ enum RC_EXCEPTION_TYPE{
 	EXECP_VAR_NOT_DEFINED,
 	EXECP_LIB_FUNC_NOT_EXIST,
 	EXECP_PROJ_NOT_FOUND,
-	EXECP_PROGRAM_NOT_FOUND
+	EXECP_PROGRAM_NOT_FOUND,
+	EXECP_WRONG_LIBFUNC_PARAM,
+	EXECP_RSICOMM_OUTOFTIME,
 };
 
 static std::vector<std::string> rc_excep_info = {
@@ -33,7 +35,9 @@ static std::vector<std::string> rc_excep_info = {
 	"RC the var is not defined in this program",
 	"RC the lib function is not existing",
 	"RC the project is not found",
-	"RC the program is not found"
+	"RC the program is not found",
+	"RC the type or num of the parameters of lib function is wrong",
+	"RC rsi communication out of time",
 };
 
 
@@ -300,6 +304,51 @@ public:
 		std::cerr << "[EXCEPTION" << " " << type << "] " 
 					<< "line " << line << ":" << col << " " 
 					<< "[PROGRAM:" << name << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string name;
+};
+
+
+
+class rc_wrongfuncparams_exception : public rc_exception {
+public:
+	rc_wrongfuncparams_exception(std::string n) : rc_exception(EXECP_WRONG_LIBFUNC_PARAM),
+												 name(n)
+
+	{
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[LIBFUNC:" << name << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string name;
+};
+
+
+class rc_rsicomm_outoftime_exception : public rc_exception {
+public:
+	rc_rsicomm_outoftime_exception(std::string n) : rc_exception(EXECP_RSICOMM_OUTOFTIME),
+												 name(n)
+
+	{
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[RSI:" << name << "] --> "
 					<< rc_excep_info[type] 
 					<< std::endl;
 	}

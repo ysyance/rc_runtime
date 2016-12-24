@@ -240,7 +240,7 @@ public:
 		dataIndexMap.insert({"TRUE", index});
 		addrspace.push_back(RC_IValue(TBOOL, 1));
 
-		funcMap.insert({"COMM", 0});
+		// funcMap.insert({"COMM", 0});
 	}
 
 public:

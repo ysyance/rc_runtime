@@ -9,34 +9,26 @@
 #include <setjmp.h>  				// 用于设置长跳转，实现解释器运行控制
 #include "opmanager.hh"
 
-#include "RSIMain.h"
 #include "RCInterpreter.h"
+#include "RSIExecutor.h"
 
 
 RT_TASK rc_supervisor_desc;							/* RC监控器任务描述符 */
 RT_TASK_INFO  rc_supervisor_info;					/* RC监控器任务状态 */
-#define RC_SUPERVISOR_NAME "rc_supervisor_task"   	/* RC监控器任务名 */
-#define RC_SUPERVISOR_PRIORITY 84					/* RC监控器任务优先级 */
 
 RT_TASK rc_manager_desc;							/* RC管理器任务描述符 */
 RT_TASK_INFO  rc_manager_info;						/* RC管理器任务状态 */
-#define RC_MANAGER_NAME "rc_manager_task"			/* RC管理器任务名 */
-#define RC_MANAGER_PRIORITY 83						/* RC管理器任务优先级 */
 
 RT_TASK rc_interp_desc;								/* RC interp任务描述符 */
 RT_TASK_INFO  rc_interp_info;						/* RC interp任务状态 */
-#define RC_INTERP_NAME "rc_interp_task"   			/* RC interp任务名 */
-#define RC_INTERP_PRIORITY 82						/* RC interp任务优先级 */
 
 RT_TASK rc_rsi_desc;								/* RSI任务描述符 */
 RT_TASK_INFO  rc_rsi_info;							/* RSI任务状态 */
-#define RC_RSI_NAME "rc_rsi_task"					/* RSI任务名 */
-#define RC_RSI_PRIORITY 81							/* RSI任务优先级 */
 
 RT_TASK rc_executor_desc;							/* RC执行器任务描述符 */
 RT_TASK_INFO  rc_executor_info;						/* RC执行器任务状态 */
-#define RC_EXECUTOR_NAME "rc_executor_task" 		/* RC执行器任务名 */
-#define RC_EXECUTOR_PRIORITY 80						/* RC执行器任务优先级 */
+
+
 
 RCMem *rc_shm;							/* RC与PLC共享内存区指针 */
 RT_HEAP rc_heap_desc;					/* 共享内存区描述符 */
@@ -71,20 +63,28 @@ RT_MUTEX inst_mutex_desc;             	/* 同步对象－－互斥量描述符 *
  * 参数：cookie  用户给定参数
  * 返回值：无
  */
-static void rsi_routine(void *cookie) {
-	char** argv = (char**)cookie;
-
-	int jstatus = setjmp(rsi_startpoint);
-
-	int cmd = rsi_waitfor_run();
-
-	switch(cmd) {
-		case 0:
-			break;
-		case 1:
-			break;
-		default:
-			break;
+void rsi_routine(void *cookie) {
+	std::string *rsiFileName = (std::string*)cookie;
+	/* create a RSI Executor according to file name */
+	RSIExecutor rsiExec(*rsiFileName);
+ 	/* compile the specified rsi file to obtain address space and code shadow */
+	rsiExec.compile();
+	/* set RSIStopFlag as false to start to running RSI */
+	RSIStopFlag = false;
+	/* set RSI executor running period */
+	rt_task_set_periodic(NULL, TM_NOW, RSI_RUN_PERIOD);
+	/* start running RSI periodic */
+	while(!RSIStopFlag){
+		rt_task_wait_period(NULL);
+		try {
+			rsiExec.execute();
+		} catch(rc_exception &e) {
+			e.what();
+			RSIStopFlag = true;
+		} catch(std::exception &e) {
+			std::cout << "C++ runtime exception" << std::endl;
+			RSIStopFlag = true;
+		}
 	}
 }
 
@@ -102,7 +102,7 @@ static void interp_routine(void *cookie){
 
 	int jstatus = setjmp(interp_startpoint);
 	while(1){
-		fprintf(stderr,"\n************************** interp start ********************************\n");
+		fprintf(stderr,"\n|<< ------------------------------ interp start ---------------------- >>|\n");
 		rc_core.interp_status = 0;
 		// waiting for order input
 		// read order
@@ -111,13 +111,11 @@ static void interp_routine(void *cookie){
 
 		inst_buffer_read(temp_inst);
 		
-
 		rc_core.interp_status = 1;
 		rc_shm->interp_startup_flag = 1;
 		// waiting for start interp msg
-		fprintf(stderr,"************************** inst read ********************************\n");
-		interp_compute(temp_inst);
 
+		interp_compute(temp_inst);
 
 		if(rc_core.jog_mode == 1) {
 			rc_core.jog_mode = 0; // clear jog mode
@@ -207,7 +205,7 @@ static void manager_routine(void *cookie){
 
 	rt_queue_create(&mq_rc_exec_desc, MQ_RC_EXEC_NAME, 50, Q_UNLIMITED, Q_FIFO);
 	rt_queue_create(&mq_rc_manager_desc, MQ_RC_MANAGER_NAME, 50, Q_UNLIMITED, Q_FIFO);
-	// rt_queue_create(&mq_rc_rsi_desc, MQ_RC_RSI_NAME, 50, Q_UNLIMITED, Q_FIFO);
+	rt_queue_create(&mq_rc_rsi_desc, MQ_RC_RSI_NAME, 50, Q_UNLIMITED, Q_FIFO);
 
 	rt_mutex_create(&inst_mutex_desc, INST_MUTEX_NAME);
 	rt_cond_create(&inst_cond_desc, INST_COND_NAME);
@@ -215,7 +213,7 @@ static void manager_routine(void *cookie){
 	err = rt_task_create(&rc_executor_desc, RC_EXECUTOR_NAME, 0, RC_EXECUTOR_PRIORITY, T_JOINABLE|T_FPU|T_CPU(1));
 	err = rt_task_create(&rc_supervisor_desc, RC_SUPERVISOR_NAME, 0, RC_SUPERVISOR_PRIORITY, T_JOINABLE|T_CPU(1));
 	err = rt_task_create(&rc_interp_desc, RC_INTERP_NAME, 0, RC_INTERP_PRIORITY, T_JOINABLE|T_FPU|T_CPU(1));
-	// err = rt_task_create(&rc_rsi_desc, RC_RSI_NAME, 0, RC_RSI_PRIORITY, T_JOINABLE|T_FPU);
+	err = rt_task_create(&rc_rsi_desc, RC_RSI_NAME, 0, RC_RSI_PRIORITY, T_JOINABLE|T_FPU);
 	if(!err){
 		rt_task_start(&rc_executor_desc, &executor_routine, NULL);
 		rt_task_start(&rc_interp_desc, &interp_routine, NULL);

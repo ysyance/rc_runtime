@@ -2,6 +2,8 @@
 
 int connfd;     // 与示教盒连接socket描述符
 
+#define PORTNUMBER 8899
+
 
 int teach_conn_init(){
     int sockfd;

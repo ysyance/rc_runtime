@@ -50,9 +50,9 @@ void AxisInterp(const AxisPos_Deg &originalPos,
 				double accPerc, 
 				RobotConfig &param)
 {
-	fprintf(stderr,"************************** enter axis interp ********************************\n");
-	std::cout << originalPos << std::endl;
-	std::cout << targetPos << std::endl;
+	// fprintf(stderr,"|>> ============= enter axis interp ===========>\n");
+	// std::cout << originalPos << std::endl;
+	// std::cout << targetPos << std::endl;
 	size_t n = param.axis_count;
 	AxisPos_Deg ChangePos = targetPos - originalPos;
 	dvector t(n);
@@ -160,8 +160,8 @@ void AxisInterp(const AxisPos_Deg &originalPos,
 
 		interp_step(tmp);
 	}
-	std::cout << "N3: " << N3 << std::endl;
-	fprintf(stderr,"************************** go away axis interp ********************************\n");
+
+	// fprintf(stderr,"<< ============= go away axis interp =========== <<|\n");
 
 }
 
@@ -744,7 +744,7 @@ int interp_compute(ROBOT_INST &temp_inst){
 			 	Cart_JogInterp(temp_inst.args[0].jjp.jointindex, 
 						temp_inst.args[0].jjp.direction,
 						rc_core.coordinate, 
-						rc_core.vper,//rc_core.vper, 
+						rc_core.vper,
 						Vellim/* mm/s */,
 						Acclim,
 				        temp_inst.args[0].apv, 
@@ -762,7 +762,7 @@ int interp_compute(ROBOT_INST &temp_inst){
 			Cart_JogInterp(temp_inst.args[0].jjp.jointindex, 
 						temp_inst.args[0].jjp.direction,
 						rc_core.coordinate, 
-						rc_core.vper,//rc_core.vper, 
+						rc_core.vper, 
 						Vellim/* mm/s */,
 						Acclim,
 				        temp_inst.args[0].apv, 

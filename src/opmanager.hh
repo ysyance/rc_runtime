@@ -27,11 +27,31 @@
 #include "rclinterface.h"
 
 
-#define PORTNUMBER  8899  // 与示教盒连接端口号
 
-extern int connfd;          // 与示教盒连接socket描述符
+extern RT_TASK rc_supervisor_desc;                         /* RC监控器任务描述符 */
+extern RT_TASK_INFO  rc_supervisor_info;                   /* RC监控器任务状态 */
+#define RC_SUPERVISOR_NAME "rc_supervisor_task"     /* RC监控器任务名 */
+#define RC_SUPERVISOR_PRIORITY 84                   /* RC监控器任务优先级 */
 
-int teach_conn_init();        // 与示教盒连接初始化
+extern RT_TASK rc_manager_desc;                            /* RC管理器任务描述符 */
+extern RT_TASK_INFO  rc_manager_info;                      /* RC管理器任务状态 */
+#define RC_MANAGER_NAME "rc_manager_task"           /* RC管理器任务名 */
+#define RC_MANAGER_PRIORITY 83                      /* RC管理器任务优先级 */
+
+extern RT_TASK rc_interp_desc;                             /* RC interp任务描述符 */
+extern RT_TASK_INFO  rc_interp_info;                       /* RC interp任务状态 */
+#define RC_INTERP_NAME "rc_interp_task"             /* RC interp任务名 */
+#define RC_INTERP_PRIORITY 82                       /* RC interp任务优先级 */
+
+extern RT_TASK rc_rsi_desc;                                /* RSI任务描述符 */
+extern RT_TASK_INFO  rc_rsi_info;                          /* RSI任务状态 */
+#define RC_RSI_NAME "rc_rsi_task"                   /* RSI任务名 */
+#define RC_RSI_PRIORITY 81                          /* RSI任务优先级 */
+
+extern RT_TASK rc_executor_desc;                           /* RC执行器任务描述符 */
+extern RT_TASK_INFO  rc_executor_info;                     /* RC执行器任务状态 */
+#define RC_EXECUTOR_NAME "rc_executor_task"         /* RC执行器任务名 */
+#define RC_EXECUTOR_PRIORITY 80                     /* RC执行器任务优先级 */
 
 
 #define RC_SUPERVISOR_PERIODE  100000000       // RC监控器循环周期
@@ -86,6 +106,12 @@ extern ROBOT_INST robot_inst_buffer_code;              // inst buffer
 extern bool robot_inst_buffer_flag ;                   // inst buffer flag
 
 
+extern bool RSIStopFlag; /* THIS IS VERY IMPORTANT, WHICH CONTROL THE WHOLE LIFECYCLE OF RSI */
+#define RSI_RUN_PERIOD   160000000   /* 160 ms */
+inline void RSI_SET_STOP() { RSIStopFlag = true; }
+
+
+
 // 运行管理器核心数据结构——当前RC运行状态信息数据
 struct RCOperationCtrl{
     RcMode  mode;                   // RC运行模式
@@ -136,17 +162,17 @@ inline void STEPCHECK(int linenum)  {
     do{ 
         void* rc_cmd;                    /* RC控制命令 */                   
         int len = rt_queue_receive(&mq_rc_exec_desc, &rc_cmd, TM_INFINITE);   /* 等待管理器命令 */
-        printf("received message> len=%d bytes, cmd=%d\n", len, *((const char *)rc_cmd));       
+        printf("[ received message: len=%d bytes, cmd=%d ]\n", len, *((const char *)rc_cmd));       
         char cmd = *((const char *)rc_cmd);                                               
         switch(cmd) {                                                                       
             case CMD_START:   
                 flag = 0;    
-                std::cout << "===========  line : " << linenum  << "  ============" << std::endl;   
+                std::cout << "PC --------->  line : " << linenum  << std::endl;   
                 send_filename_and_ptr(linenum, rc_core.cur_program);
                      
                 break;   
             case CMD_NEXT:
-                std::cout << "===========  line : " << linenum  << "  ============" << std::endl;  
+                std::cout << "PC --------->  line : " << linenum  << std::endl;  
                 send_filename_and_ptr(linenum, rc_core.cur_program);
                        
                 if(rc_core.stepflag) {

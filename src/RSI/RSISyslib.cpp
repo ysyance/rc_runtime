@@ -11,7 +11,13 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+bool RSIStopFlag = true; /* THIS IS VERY IMPORTANT, WHICH CONTROL THE WHOLE LIFECYCLE OF RSI */
+
 #define RSI_DEBUG
+
+#ifdef RSI_DEBUG_PRINT
+std::unordered_map<int, std::string> rdataIndexMap;   // index --> var
+#endif
 
 inline int rsi_pid(std::vector<int>& params, EntityBase* config, std::vector<IValue>& addrspace) {
 	EntityPID *entity = dynamic_cast<EntityPID*>(config);
@@ -74,6 +80,7 @@ inline int rsi_comm_interface( 	std::vector<int>& params,
     int rn = recvfrom(sockfd, entity->recvBuffer, 4096, 0, NULL, NULL);
     if(rn == -1 && errno == EAGAIN) {
     	std::cout << "receive timeout " << std::endl;
+    	throw rc_rsicomm_outoftime_exception("rsi_comm_interface");
     } else {
     	std::cout << "recv <== " << rn << " bytes" << std::endl;
     	entity->xmlParse(addrspace);

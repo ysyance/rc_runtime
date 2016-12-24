@@ -1,3 +1,0 @@
-// KAIROVersion 2.10
-CALL movement
-PTP(ap0, ap1)

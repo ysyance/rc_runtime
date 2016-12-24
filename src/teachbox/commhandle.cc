@@ -197,7 +197,7 @@ int importFileChanged(const string& filename){
 
 
 int resetPointer(int curPointer,int totalline) {
-	std::cout << "reset pointer" << std::endl;
+	std::cout << "[RC PC RESET : PC = 1]" << std::endl;
 
 	rc_shm->interp_startup_flag = 0;
 	rc_core.startup = 0;
@@ -219,7 +219,7 @@ int resetPointer(int curPointer,int totalline) {
 
 
 int startKeyDown() {
-	std::cout << "start key down" << std::endl;
+	// std::cout << "start key down" << std::endl;
 
 	if(rc_shm->servo_poweron_flag == 0) {
 		// send_warm(1, "", "servo is poweroff");
@@ -246,7 +246,7 @@ int startKeyDown() {
 
 
 int startKeyUp() {
-	std::cout << "start key up" << std::endl;
+	// std::cout << "start key up" << std::endl;
 
 	if(rc_core.mode == OP_TEACH) {
 		rc_shm->interp_startup_flag = 0;
@@ -258,7 +258,7 @@ int startKeyUp() {
 
 
 int stopKeyDown() {
-	std::cout << "stop key down" << std::endl;
+	// std::cout << "stop key down" << std::endl;
 
 	rc_shm->interp_startup_flag = 0;
 	rc_core.startup = 0;

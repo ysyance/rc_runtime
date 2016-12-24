@@ -2,15 +2,61 @@
 
 #pragma once
 
-#include <vector>
+#include <iostream>
+#include <fstream>
+#include <unordered_map>
 #include <string>
 
+#include "antlr4-runtime.h"
+#include "RSILexer.h"
+#include "RSIParser.h"
+#include "RSIVisitor.h"
+#include "RSIBaseVisitor.h"
+#include "RSIConstVisitor.h"
+#include "RSICodeGenerator.h"
+#include "RSIExecutor.h"
+
+#include "RSIXml.h"
 #include "RSIRuntimeModel.h"
+
+using namespace antlr4;
+using namespace antlr4::tree;
+
+extern bool RSIStopFlag; /* THIS IS VERY IMPORTANT, WHICH CONTROL THE WHOLE LIFECYCLE OF RSI */
 
 
 class RSIExecutor {
 public:
-	RSIExecutor(CodeShadow &c):code(c) {}
+	RSIExecutor(std::string &f) : file(f) {
+		addrspace.push_back(0);  // addrspace[0] is the returned value of all the library function  in global
+	}
+
+	int compile() {
+		RSIXmlLoader loader(file + ".xml");
+		loader.parseXml(addrspace, dataIndexMap, fbMap);
+
+		SymbolTable symTable(addrspace, dataIndexMap, constIndexMap, fbMap, funcMap);
+		symTable.create();
+
+		/* read rsi code */
+		std::ifstream infile(file + ".rsi");     
+		ANTLRInputStream input(infile);     
+		/* rsi code lexer analysis */  
+		RSILexer lexer(&input);
+		CommonTokenStream tokens(&lexer);
+		/* rsi code parser analysis */  
+		RSIParser parser(&tokens);
+		ParseTree *tree = parser.prog();
+
+		RSIConstVisitor vi(symTable);                // first time, build constant table
+		vi.visit(tree);
+
+		RSICodeGenerator CG(code, symTable);        // second time, generate execute model
+		CG.visit(tree);
+
+		return 0;
+
+	}
 
 	int execute() {
 		std::cout << std::endl << "| ==== RSI executor start ===>" << std::endl << std::endl;
@@ -20,9 +66,18 @@ public:
 		std::cout << std::endl << " <=== RSI executor stop ==== |" << std::endl << std::endl;
 		return 0;
 	}
+
 public:
-	CodeShadow &code;		// code model in memory
-	int period; 			// period in ms
+	std::string file;		// the name of config file and code file with different suffix
+
+private:
+	std::unordered_map<std::string, int> dataIndexMap;    // parser xml file and generator dataMap; var --> index
+	std::unordered_map<std::string, int> constIndexMap;   // the index of all the constants in addr space 
+	std::unordered_map<std::string, EntityBase*> fbMap;   // parser xml file and generator functionblock map
+	std::unordered_map<std::string, int> funcMap;         // all library function map to check if designated function is existed
+
+	std::vector<IValue> addrspace;     	// RSI address space ; 
+	CodeShadow code;					// code model in memory
 };
 
 

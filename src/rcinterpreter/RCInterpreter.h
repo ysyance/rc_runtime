@@ -43,6 +43,11 @@ public:
 		RC_SymbolTable symbolTable(	addrspace, stringpool, apaddr, 
 									cpaddr, tooladdr, cooraddr,
 									dataIndexMap, constIndexMap, funcMap);
+
+		for(int i = 0; i < RC_LIB_SIZE; i ++) {
+			funcMap.insert({rcLibEntry[i].name, i});
+		}
+
 		DIR *dir;
 		dir = opendir(projName.c_str());
 		if(dir != NULL) {

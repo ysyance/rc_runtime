@@ -1,3 +1,0 @@
-ap0 : AXISPOS = (a1 = 53.0, a2 = 0.0, a3 = 0.0, a4 = 0.0, a5 = 0.0, a6 = 0.0, aux1 = 0, aux2 = 0, aux3 = 0, aux4 = 0, aux5 = 0)
-ap1 : AXISPOS = (a1 = 0.0, a2 = 0.0, a3 = 0.0, a4 = 0.0, a5 = 0.0, a6 = 0.0, aux1 = 0, aux2 = 0, aux3 = 0, aux4 = 0, aux5 = 0)
-ap2 : AXISPOS = (a1 = 121.0, a2 = -21.0, a3 = -95.0, a4 = -66.0, a5 = -52.0, a6 = 98.0, aux1 = 0, aux2 = 0, aux3 = 0, aux4 = 0, aux5 = 0)

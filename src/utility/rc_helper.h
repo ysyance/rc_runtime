@@ -90,10 +90,12 @@ public:
 
 
 	static void printfCodeShadow(CodeModel &code) {
+		std::cout << std::endl;
 		std::cout << "|< ----------- RC code shadow ------------ >|" << std::endl;
 		for(int i = 0; i < code.size(); i ++) {
 			code[i]->printInfo();
 		}
+		std::cout << "|< -------- END OF RC CODE SHADOW -------- >|" << std::endl << std::endl;
 	}
 
 public:
