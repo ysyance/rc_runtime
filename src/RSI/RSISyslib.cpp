@@ -15,7 +15,7 @@
 
 bool RSIStopFlag = true; /* THIS IS VERY IMPORTANT, WHICH CONTROL THE WHOLE LIFECYCLE OF RSI */
 
-#define RSI_DEBUG
+// #define RSI_DEBUG
 
 #ifdef RSI_DEBUG_PRINT
 std::unordered_map<int, std::string> rdataIndexMap;   // index --> var
@@ -29,6 +29,7 @@ inline int rsi_pid(std::vector<int>& params, EntityBase* config, std::vector<IVa
 #endif
 	} else {
 		std::cout << "this fb does not have config entity" << std::endl;
+		rc_fb_lackofconfig_exception("PID");
 	}
 	return 0;
 }
@@ -44,7 +45,7 @@ inline int rsi_comm_interface( 	std::vector<int>& params,
 #endif
 	} else {
 		std::cout << "this fb does not have config entity" << std::endl;
-		return -1;
+		throw rc_fb_lackofconfig_exception("COMMUNICATION");
 	}
 
     // struct sockaddr_in addr;
@@ -106,6 +107,7 @@ inline int rsi_poscorr(std::vector<int>& params, EntityBase* config, std::vector
 
 	} else {
 		std::cout << "this fb does not have config entity" << std::endl;
+		rc_fb_lackofconfig_exception("POSCORR");
 	}
 	return 0;
 }
@@ -119,6 +121,7 @@ inline int rsi_axiscorr(std::vector<int>& params, EntityBase* config, std::vecto
 #endif
 	} else {
 		std::cout << "this fb does not have config entity" << std::endl;
+		rc_fb_lackofconfig_exception("AXISCORR");
 	}	
 	return 0;
 }

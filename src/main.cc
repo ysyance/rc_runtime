@@ -196,8 +196,8 @@ static void supervisor_routine(void *cookie){
 		//std::cout << "rc_core.startup = " << rc_core.startup << std::endl;
 		RTIME end = rt_timer_read();
 		// std::cout << "it cost " << end - start << " ns" << std::endl;
-		std::cout << std::to_string(1.23) << std::endl;
-		std::cout << std::stod("1.235") << std::endl;
+		// std::cout << std::to_string(1.23) << std::endl;
+		// std::cout << std::stod("1.235") << std::endl;
 	}
 }
 

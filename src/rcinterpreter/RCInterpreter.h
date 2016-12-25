@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <string>
 
+#include "RCXml.h"
 #include "RCRuntimeModel.h"
 
 #include "antlr4-runtime.h"
@@ -34,13 +35,14 @@ using namespace antlr4::tree;
 
 class RCInterpreter {
 public:
-	RCInterpreter() : symbolTable(addrspace, stringpool, apaddr, cpaddr, tooladdr, cooraddr, dataIndexMap, constIndexMap, funcMap) {}
+	RCInterpreter() : 
+	symbolTable(addrspace, stringpool, apaddr, cpaddr, tooladdr, cooraddr, dataIndexMap, constIndexMap, funcMap, fbMap, rDataIndexMap) {}
 
 	RCInterpreter(std::string pro) : projName(pro),
-	symbolTable(addrspace, stringpool, apaddr, cpaddr, tooladdr, cooraddr, dataIndexMap, constIndexMap, funcMap) {}
+	symbolTable(addrspace, stringpool, apaddr, cpaddr, tooladdr, cooraddr, dataIndexMap, constIndexMap, funcMap, fbMap, rDataIndexMap) {}
 
 	RCInterpreter(std::string pro, std::string program) : projName(pro), programName(program),
-	symbolTable(addrspace, stringpool, apaddr, cpaddr, tooladdr, cooraddr, dataIndexMap, constIndexMap, funcMap) {}
+	symbolTable(addrspace, stringpool, apaddr, cpaddr, tooladdr, cooraddr, dataIndexMap, constIndexMap, funcMap, fbMap, rDataIndexMap) {}
 
 public:
 	int compile() {
@@ -70,6 +72,13 @@ public:
 
 		for(int i = 0; i < RC_LIB_SIZE; i ++) {
 			funcMap.insert({rcLibEntry[i].name, i});
+		}
+
+		RCXmlLoader xmlLoader("../rc-runtime/config.xml");
+		xmlLoader.parseXml(symbolTable);
+
+		for(auto &e : dataIndexMap) {
+			rDataIndexMap.insert({e.second, e.first});
 		}
 
 		DIR *dir;
@@ -161,6 +170,9 @@ private:
 	std::unordered_map<std::string, int> dataIndexMap;		// parser xml file and generator dataMap
 	std::unordered_map<std::string, int> constIndexMap;		// the index of all the constants in addr space 
 	std::unordered_map<std::string, int> funcMap;  	    	// all library function map to check if designated function is existed
+	std::unordered_map<std::string, RCEntityBase*> fbMap; 	    	// all library function map to check if designated function is existed
+
+	std::unordered_map<int, std::string> rDataIndexMap;  // index ---> data
 
 	std::unordered_map<std::string, CodeModel> progList; 	// <programName, code>
 

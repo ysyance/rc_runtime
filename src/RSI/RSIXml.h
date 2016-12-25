@@ -23,7 +23,7 @@ public:
 			std::cout << "xml file load sucessfully !" << std::endl;
 		} else {
 			std::cout << "can not parse xml file: " << file << std::endl;
-			exit(-1);
+			throw rc_xmlparser_exception(file);
 		}
 	}
 

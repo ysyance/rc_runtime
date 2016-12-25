@@ -281,23 +281,50 @@ public:
 											{}
 public:
 	virtual int execute(void *cookie) override {
+		rc_core.cur_linenum = lineno;
+		STEPCHECK(rc_core.cur_linenum);
 		switch(type) {
 			case SET: {
 				LOGGER_TRACE(lineno, "SET");
+				uint8_t type = addrspace[index1].type;
+				if(type == TBOOL || type == TCHAR) {
+					addrspace[index1].v.value_b = addrspace[index2].v.value_b;
+				} else if(type == TINT) {
+					addrspace[index1].v.value_i = addrspace[index2].v.value_i;
+				} else if(type == TDOUBLE) {
+					addrspace[index1].v.value_d = addrspace[index2].v.value_d;
+				}
 				break;
 			}
 			case SETE: {
 				LOGGER_TRACE(lineno, "SETE");
+				uint8_t type = addrspace[elem.first].type;
+				if(type == TJTPOSE) {
+					uint32_t pointIndex = addrspace[elem.first].v.value_ap;
+					apaddr[pointIndex][elem.second] = addrspace[index2].v.value_d;
+				} else if(type == TTRPOSE) {
+					uint32_t pointIndex = addrspace[elem.first].v.value_cp;
+					cpaddr[pointIndex][elem.second] = addrspace[index2].v.value_d;
+				}
 				break;
 			}
 			case GETE: {
 				LOGGER_TRACE(lineno, "GETE");
+				uint8_t type = addrspace[elem.first].type;
+				if(type == TJTPOSE) {
+					uint32_t pointIndex = addrspace[elem.first].v.value_ap;
+					addrspace[index1].v.value_d = apaddr[pointIndex][elem.second];
+				} else if(type == TTRPOSE) {
+					uint32_t pointIndex = addrspace[elem.first].v.value_cp;
+					addrspace[index1].v.value_d = cpaddr[pointIndex][elem.second];
+				}
 				break;
 			}
 			
 			default:
-			break;
+				break;
 		}
+		send_cmd_to_exec(CMD_NEXT);
 	}
 
 public:
@@ -403,21 +430,78 @@ public:
 											 {}
 public:
 	virtual int execute(void *cookie) override {
+		rc_core.cur_linenum = lineno;
+		STEPCHECK(rc_core.cur_linenum);
 		switch(type) {
 			case INCR: {
 				LOGGER_TRACE(lineno, "INCR");
+				uint8_t type = addrspace[index1].type;
+				if(type == TCHAR) {
+					addrspace[index1].v.value_c ++;
+				} else if(type == TINT) {
+					addrspace[index1].v.value_i ++;
+				} else if(type == TDOUBLE) {
+					addrspace[index1].v.value_d = addrspace[index1].v.value_d + 1;
+				}
 				break;
 			}
 			case DECR: {
 				LOGGER_TRACE(lineno, "DECR");
+				uint8_t type = addrspace[index1].type;
+				if(type == TCHAR) {
+					addrspace[index1].v.value_c --;
+				} else if(type == TINT) {
+					addrspace[index1].v.value_i --;
+				} else if(type == TDOUBLE) {
+					addrspace[index1].v.value_d = addrspace[index1].v.value_d - 1;
+				}
 				break;
 			}
 			case ADD: {
 				LOGGER_TRACE(lineno, "ADD");
+				if(index1 == 0) {
+					uint8_t type = addrspace[elem1.first].type;
+					if(type == TJTPOSE) {
+						uint32_t pointIndex = addrspace[elem1.first].v.value_ap;
+						apaddr[pointIndex][elem1.second] += addrspace[index2].v.value_d;
+					} else if(type == TTRPOSE) {
+						uint32_t pointIndex = addrspace[elem1.first].v.value_cp;
+						cpaddr[pointIndex][elem1.second] += addrspace[index2].v.value_d;
+					}
+				} else {
+					uint8_t type = addrspace[index1].type;
+					if(type == TCHAR) {
+						addrspace[index1].v.value_c += addrspace[index2].v.value_c;
+					} else if(type == TINT) {
+						addrspace[index1].v.value_i += addrspace[index2].v.value_i;
+					} else if(type == TDOUBLE) {
+						addrspace[index1].v.value_d += addrspace[index2].v.value_d ;
+					} 
+				}
 				break;
 			}
 			case SUB: {
 				LOGGER_TRACE(lineno, "SUB");
+				if(index1 == 0) {
+					uint8_t type = addrspace[elem1.first].type;
+					if(type == TJTPOSE) {
+						uint32_t pointIndex = addrspace[elem1.first].v.value_ap;
+						apaddr[pointIndex][elem1.second] -= addrspace[index2].v.value_d;
+					} else if(type == TTRPOSE) {
+						uint32_t pointIndex = addrspace[elem1.first].v.value_cp;
+						cpaddr[pointIndex][elem1.second] -= addrspace[index2].v.value_d;
+					}
+				} else {
+					uint8_t type = addrspace[index1].type;
+					if(type == TCHAR) {
+						addrspace[index1].v.value_c -= addrspace[index2].v.value_c;
+					} else if(type == TINT) {
+						addrspace[index1].v.value_i -= addrspace[index2].v.value_i;
+					} else if(type == TDOUBLE) {
+						addrspace[index1].v.value_d -= addrspace[index2].v.value_d ;
+					} 
+				}
+				
 				break;
 			}
 			case MUL: {
@@ -463,6 +547,7 @@ public:
 			default:
 			break;
 		}
+		send_cmd_to_exec(CMD_NEXT);
 		
 	}
 
@@ -548,6 +633,9 @@ public:
 											{}
 public:
 	virtual int execute(void *cookie) override {
+		rc_core.cur_linenum = lineno;
+		STEPCHECK(rc_core.cur_linenum);
+
 		LOGGER_TRACE(lineno, "ASSIGNMENT");
 		switch(type) {
 			case GENERIC: {
@@ -567,6 +655,7 @@ public:
 			default:
 			break;
 		}
+		send_cmd_to_exec(CMD_NEXT);
 	}	
 
 	virtual bool selfCheck() {

@@ -21,6 +21,8 @@ enum RC_EXCEPTION_TYPE{
 	EXECP_PROGRAM_NOT_FOUND,
 	EXECP_WRONG_LIBFUNC_PARAM,
 	EXECP_RSICOMM_OUTOFTIME,
+	EXECP_XMLPARSE_FORMAT,
+	EXECP_FB_LACKOF_CONFIG
 };
 
 static std::vector<std::string> rc_excep_info = {
@@ -38,6 +40,8 @@ static std::vector<std::string> rc_excep_info = {
 	"RC the program is not found",
 	"RC the type or num of the parameters of lib function is wrong",
 	"RC rsi communication out of time",
+	"RC wrong xml format or wrong xml file name"
+	"RC this function block is lack of config entity"
 };
 
 
@@ -349,6 +353,49 @@ public:
 		std::cerr << "[EXCEPTION" << " " << type << "] " 
 					<< "line " << line << ":" << col << " " 
 					<< "[RSI:" << name << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string name;
+};
+
+class rc_xmlparser_exception : public rc_exception {
+public:
+	rc_xmlparser_exception(std::string n) : rc_exception(EXECP_XMLPARSE_FORMAT, 0, 0),
+												 name(n)
+
+	{
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[XML:" << name << "] --> "
+					<< rc_excep_info[type] 
+					<< std::endl;
+	}
+
+private:
+	std::string name;
+};
+
+
+class rc_fb_lackofconfig_exception : public rc_exception {
+public:
+	rc_fb_lackofconfig_exception(std::string n) : rc_exception(EXECP_FB_LACKOF_CONFIG, 0, 0),
+												 name(n)
+
+	{
+	}
+
+public:
+	virtual void what() {
+		std::cerr << "[EXCEPTION" << " " << type << "] " 
+					<< "line " << line << ":" << col << " " 
+					<< "[FB:" << name << "] --> "
 					<< rc_excep_info[type] 
 					<< std::endl;
 	}

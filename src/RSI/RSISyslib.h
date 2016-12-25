@@ -533,7 +533,7 @@ public:
 				tagEle->SetAttribute(elem.first, std::to_string(addrspace[elem.second]));
 			}
 			if(e.tagText.first != "") {
-				tagEle->LinkEndChild(new TiXmlText(std::to_string(e.tagText.second)));
+				tagEle->LinkEndChild(new TiXmlText(std::to_string(addrspace[e.tagText.second])));
 			}
 			rootEle->LinkEndChild(tagEle);
 		}

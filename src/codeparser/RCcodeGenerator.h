@@ -27,6 +27,7 @@ public:
 	std::unordered_map<std::string, int> &dataIndexMap;		// parser xml file and generator dataMap
 	std::unordered_map<std::string, int> &constIndexMap;	// the index of all the constants in addr space 
     std::unordered_map<std::string, int> &funcMap;
+    std::unordered_map<std::string, RCEntityBase*> &fbMap;
 
     std::stack<std::vector<RCBaseStatement*>*> compileStack;
 
@@ -42,7 +43,8 @@ public:
 					cooraddr(sym.cooraddr),
 					dataIndexMap(sym.dataIndexMap),
 					constIndexMap(sym.constIndexMap),
-                    funcMap(sym.funcMap)
+                    funcMap(sym.funcMap),
+                    fbMap(sym.fbMap)
 	{}
 
 public:
@@ -1336,6 +1338,11 @@ public:
         tempStat->lineno = line;
 
         std::string funcName = ctx->ID()->getText();
+        if(fbMap.find(funcName) != fbMap.end()) {
+            tempStat->config = fbMap[funcName];
+            funcName = fbMap[funcName]->funcName;
+        }
+
         if(funcMap.find(funcName) != funcMap.end()) {
             tempStat->index = funcMap[funcName];
         } else {

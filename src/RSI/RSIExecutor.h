@@ -54,9 +54,9 @@ public:
 		RSICodeGenerator CG(code, symTable);        // second time, generate execute model
 		CG.visit(tree);
 
-		for(int i = 0; i < addrspace.size(); i ++) {
-			std::cout << i << ": " << addrspace[i] << std::endl;
-		}
+		// for(int i = 0; i < addrspace.size(); i ++) {
+		// 	std::cout << i << ": " << addrspace[i] << std::endl;
+		// }
 
 		return 0;
 

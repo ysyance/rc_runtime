@@ -4,6 +4,7 @@
 #include <vector>
 #include "rc_exception.h"
 
+class RCEntityBase;
 
 
 /* Internal Value Type Tag */
@@ -214,7 +215,9 @@ public:
 
 			  		std::unordered_map<std::string, int> &d,		
 					std::unordered_map<std::string, int> &c,	
-					std::unordered_map<std::string, int> &func) : 
+					std::unordered_map<std::string, int> &func,
+					std::unordered_map<std::string, RCEntityBase*> &fb,
+					std::unordered_map<int, std::string> &rdata) : 
 						addrspace(a), 
 
 						stringpool(s),
@@ -225,7 +228,9 @@ public:
 
 						dataIndexMap(d), 
 						constIndexMap(c), 
-						funcMap(func) 
+						funcMap(func),
+						fbMap(fb),
+						rDataIndexMap(rdata) 
 	{
 		addrspace.push_back(RC_IValue(TINT, 0));
 
@@ -252,6 +257,8 @@ public:
 	std::unordered_map<std::string, int> &dataIndexMap;		// parser xml file and generator dataMap
 	std::unordered_map<std::string, int> &constIndexMap;	// the index of all the constants in addr space 
 	std::unordered_map<std::string, int> &funcMap;  	    // all library function map to check if designated function is existed
+	std::unordered_map<std::string, RCEntityBase*> &fbMap;     // all library function map to check if designated function is existed
 
+	std::unordered_map<int, std::string> &rDataIndexMap;  // index ---> data
 	// std::unordered_map<std::string, CodeModel> &progList; 	// <programName, code>
 };
